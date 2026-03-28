@@ -545,6 +545,14 @@
 }
 
 /* Panel divider */
+.spell-issue {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.75rem;
+}
+
 .panel-divider {
   border: none;
   border-top: 1px solid var(--border);

@@ -1,21 +1,31 @@
 import React from 'react';
+import { useCV } from '../../../context/CVContext';
 import './shared.css';
 
+const LANG_MAP = { pl: 'pl', en: 'en' };
+
+function useLang() {
+  const { cvLanguage } = useCV();
+  return LANG_MAP[cvLanguage] || 'pl';
+}
+
 export function Input({ label, error, ...props }) {
+  const lang = useLang();
   return (
     <div className="field">
       {label && <label className="field-label">{label}</label>}
-      <input className={`field-input ${error ? 'field-input--error' : ''}`} {...props} />
+      <input className={`field-input ${error ? 'field-input--error' : ''}`} lang={lang} spellCheck {...props} />
       {error && <span className="field-error">{error}</span>}
     </div>
   );
 }
 
 export function Textarea({ label, error, ...props }) {
+  const lang = useLang();
   return (
     <div className="field">
       {label && <label className="field-label">{label}</label>}
-      <textarea className={`field-textarea ${error ? 'field-input--error' : ''}`} {...props} />
+      <textarea className={`field-textarea ${error ? 'field-input--error' : ''}`} lang={lang} spellCheck {...props} />
       {error && <span className="field-error">{error}</span>}
     </div>
   );

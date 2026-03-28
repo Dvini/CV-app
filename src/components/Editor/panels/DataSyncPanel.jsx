@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Database, FileJson, Upload, RotateCcw, Plus, Copy, Trash2, Pencil, Check, X } from 'lucide-react';
+import { Database, FileJson, Upload, RotateCcw, Plus, Copy, Trash2, Pencil, Check, X, SpellCheck, Loader, AlertTriangle } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
@@ -8,11 +8,15 @@ export function DataSyncPanel() {
   const {
     exportJSON, importJSON, resetToDefaults, data, handleClauseChange, toggleClause,
     profiles, activeProfileId, switchProfile, createProfile, deleteProfile, renameProfile,
+    cvLanguage,
   } = useCV();
   const fileInputRef = useRef(null);
 
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
+  const [spellResults, setSpellResults] = useState(null);
+  const [spellLoading, setSpellLoading] = useState(false);
+  const [spellError, setSpellError] = useState(null);
 
   const startRename = (profile) => {
     setEditingId(profile.id);
@@ -110,6 +114,78 @@ export function DataSyncPanel() {
       <button onClick={resetToDefaults} className="btn-danger-outline" style={{ width: '100%', marginBottom: '1.5rem' }}>
         <RotateCcw size={15} /> Resetuj do domyślnych
       </button>
+
+      <hr className="panel-divider" />
+
+      {/* Spell check */}
+      <div style={{ marginTop: '1rem', marginBottom: '1.25rem' }}>
+        <p className="field-hint" style={{ marginBottom: '0.5rem' }}>
+          Sprawdź pisownię za pomocą LanguageTool (wymaga połączenia z internetem).
+        </p>
+        <button
+          className="btn-secondary"
+          style={{ width: '100%' }}
+          onClick={async () => {
+            setSpellLoading(true);
+            setSpellError(null);
+            setSpellResults(null);
+            try {
+              const { extractTexts, checkSpelling } = await import('../../../utils/spellCheck');
+              const texts = extractTexts(data);
+              const results = await checkSpelling(texts, cvLanguage);
+              setSpellResults(results);
+            } catch {
+              setSpellError('Nie udało się sprawdzić pisowni. Sprawdź połączenie z internetem.');
+            } finally {
+              setSpellLoading(false);
+            }
+          }}
+          disabled={spellLoading}
+        >
+          {spellLoading ? <Loader size={15} className="spin" /> : <SpellCheck size={15} />}
+          {spellLoading ? ' Sprawdzanie...' : ' Sprawdź pisownię'}
+        </button>
+
+        {spellError && (
+          <p className="field-error" style={{ marginTop: '0.5rem' }}>{spellError}</p>
+        )}
+
+        {spellResults && spellResults.length === 0 && (
+          <p className="field-hint" style={{ marginTop: '0.5rem', color: 'var(--success, #22c55e)' }}>
+            ✓ Nie znaleziono błędów.
+          </p>
+        )}
+
+        {spellResults && spellResults.length > 0 && (
+          <div className="spell-results" style={{ marginTop: '0.5rem' }}>
+            <p className="field-hint" style={{ marginBottom: '0.375rem' }}>
+              Znaleziono {spellResults.length} {spellResults.length === 1 ? 'problem' : spellResults.length < 5 ? 'problemy' : 'problemów'}:
+            </p>
+            <div style={{ maxHeight: '200px', overflow: 'auto', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+              {spellResults.map((r, i) => (
+                <div key={i} className="spell-issue">
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.375rem' }}>
+                    <AlertTriangle size={13} style={{ color: 'var(--warning, #f59e0b)', flexShrink: 0, marginTop: '0.125rem' }} />
+                    <div>
+                      <div style={{ fontSize: '0.75rem' }}>{r.message}</div>
+                      {r.context && (
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginTop: '0.125rem' }}>
+                          „…{r.context.substring(Math.max(0, r.offset - 10), r.offset)}<strong style={{ color: 'var(--danger, #ef4444)' }}>{r.context.substring(r.offset, r.offset + r.length)}</strong>{r.context.substring(r.offset + r.length, r.offset + r.length + 10)}…"
+                        </div>
+                      )}
+                      {r.replacements.length > 0 && (
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginTop: '0.125rem' }}>
+                          Sugestie: {r.replacements.join(', ')}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       <hr className="panel-divider" />
 
