@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
-export function PersonalPanel() {
+export function PersonalPanel({ isOpen, onToggle }) {
   const { data, handlePersonalChange } = useCV();
   const photoInputRef = useRef(null);
   const p = data.personal;
@@ -29,7 +29,7 @@ export function PersonalPanel() {
   };
 
   return (
-    <Panel title="Dane Osobowe" icon={User} defaultOpen={true}>
+    <Panel title="Dane Osobowe" icon={User} isOpen={isOpen} onToggle={onToggle}>
       {/* Photo toggle & upload */}
       <div className="photo-section">
         <label className="toggle-row">

@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
-export function ProjectsPanel() {
+export function ProjectsPanel({ isOpen, onToggle }) {
   const { data, addItem, updateItem, removeItem, moveItem } = useCV();
 
   const add = () =>
@@ -17,7 +17,7 @@ export function ProjectsPanel() {
     });
 
   return (
-    <Panel title="Projekty" icon={FolderKanban}>
+    <Panel title="Projekty" icon={FolderKanban} isOpen={isOpen} onToggle={onToggle}>
       <div className="items-list">
         {data.projects.map((proj, index) => (
           <div key={proj.id} className="item-card">

@@ -4,11 +4,11 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
-export function SkillsPanel() {
+export function SkillsPanel({ isOpen, onToggle }) {
   const { data, handleSkillsChange } = useCV();
 
   return (
-    <Panel title="Umiejętności" icon={Wrench}>
+    <Panel title="Umiejętności" icon={Wrench} isOpen={isOpen} onToggle={onToggle}>
       <Textarea
         label="Wymień swoje umiejętności (oddziel przecinkami)"
         value={data.skills}

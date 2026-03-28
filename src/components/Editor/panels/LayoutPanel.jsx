@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { sectionNamesPl } from '../../../constants/translations';
 
-export function LayoutPanel() {
+export function LayoutPanel({ isOpen, onToggle }) {
   const {
     sectionOrder,
     sectionColumns,
@@ -16,7 +16,7 @@ export function LayoutPanel() {
   } = useCV();
 
   return (
-    <Panel title="Układ sekcji" icon={LayoutGrid}>
+    <Panel title="Układ sekcji" icon={LayoutGrid} isOpen={isOpen} onToggle={onToggle}>
       <p className="field-hint" style={{ marginBottom: '0.75rem' }}>
         Ustaw kolejność i położenie sekcji na swoim CV.
       </p>

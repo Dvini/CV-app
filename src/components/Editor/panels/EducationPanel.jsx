@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input } from '../shared/FormFields';
 
-export function EducationPanel() {
+export function EducationPanel({ isOpen, onToggle }) {
   const { data, addItem, updateItem, removeItem, moveItem } = useCV();
 
   const add = () =>
@@ -17,7 +17,7 @@ export function EducationPanel() {
     });
 
   return (
-    <Panel title="Edukacja" icon={GraduationCap}>
+    <Panel title="Edukacja" icon={GraduationCap} isOpen={isOpen} onToggle={onToggle}>
       <div className="items-list">
         {data.education.map((edu, index) => (
           <div key={edu.id} className="item-card">

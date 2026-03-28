@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
-export function ExperiencePanel() {
+export function ExperiencePanel({ isOpen, onToggle }) {
   const { data, addItem, updateItem, removeItem, moveItem } = useCV();
 
   const add = () =>
@@ -19,7 +19,7 @@ export function ExperiencePanel() {
     });
 
   return (
-    <Panel title="Doświadczenie zawodowe" icon={Briefcase}>
+    <Panel title="Doświadczenie zawodowe" icon={Briefcase} isOpen={isOpen} onToggle={onToggle}>
       <div className="items-list">
         {data.experience.map((exp, index) => (
           <div key={exp.id} className="item-card">

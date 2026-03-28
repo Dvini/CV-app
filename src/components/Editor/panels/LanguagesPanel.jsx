@@ -5,7 +5,7 @@ import { Panel } from '../shared/Panel';
 import { Input, Select } from '../shared/FormFields';
 import { languageLevels } from '../../../constants/translations';
 
-export function LanguagesPanel() {
+export function LanguagesPanel({ isOpen, onToggle }) {
   const { data, addItem, updateItem, removeItem, moveItem } = useCV();
 
   const add = () =>
@@ -16,7 +16,7 @@ export function LanguagesPanel() {
     });
 
   return (
-    <Panel title="Języki obce" icon={Globe}>
+    <Panel title="Języki obce" icon={Globe} isOpen={isOpen} onToggle={onToggle}>
       <div className="items-list">
         {data.languages.map((lang, index) => (
           <div key={lang.id} className="item-card">

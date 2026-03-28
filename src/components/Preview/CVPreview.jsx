@@ -73,7 +73,7 @@ export function CVPreview() {
       });
 
       const totalHeight = measureContainer.scrollHeight;
-      const pages = Math.max(1, Math.ceil(totalHeight / visualContentHeight));
+      const pages = Math.max(1, Math.ceil((totalHeight - 5) / visualContentHeight));
       if (pages !== pageCount) setPageCount(pages);
 
       const editsStr = JSON.stringify(edits);

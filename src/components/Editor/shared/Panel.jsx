@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import './Panel.css';
 
-export function Panel({ title, icon: Icon, defaultOpen = false, children }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenProp, onToggle, children }) {
+  const [isOpenInternal, setIsOpenInternal] = useState(defaultOpen);
 
+  // Controlled mode if parent passes isOpen; otherwise use internal state
+  const isControlled = isOpenProp !== undefined;
+  const isOpen = isControlled ? isOpenProp : isOpenInternal;
+  const handleToggle = isControlled ? onToggle : () => setIsOpenInternal((prev) => !prev);
   return (
     <div className={`panel ${isOpen ? 'panel--open' : ''}`}>
       <button
         className="panel-header"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={handleToggle}
         aria-expanded={isOpen}
       >
         <div className="panel-header-left">

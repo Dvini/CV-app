@@ -4,7 +4,7 @@ import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { presetColors } from '../../../constants/colors';
 
-export function AppearancePanel() {
+export function AppearancePanel({ isOpen, onToggle }) {
   const {
     cvLanguage, setCvLanguage,
     template, setTemplate,
@@ -28,7 +28,7 @@ export function AppearancePanel() {
   ];
 
   return (
-    <Panel title="Wygląd CV" icon={Palette} defaultOpen={true}>
+    <Panel title="Wygląd CV" icon={Palette} isOpen={isOpen} onToggle={onToggle}>
       <div className="appearance-sections">
         {/* Language */}
         <div className="appearance-group">
