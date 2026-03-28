@@ -3,6 +3,8 @@ import { useCV } from '../../context/CVContext';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
 import { MinimalistTemplate } from './templates/MinimalistTemplate';
+import { CompactTemplate } from './templates/CompactTemplate';
+import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
 import { A4_HEIGHT_PX } from '../../constants/layout';
 import './CVPreview.css';
@@ -50,6 +52,10 @@ export function CVPreview() {
         return <TwoColumnTemplate />;
       case 'minimalist':
         return <MinimalistTemplate />;
+      case 'compact':
+        return <CompactTemplate />;
+      case 'creative':
+        return <CreativeTemplate />;
       case 'classic':
       default:
         return <ClassicTemplate />;

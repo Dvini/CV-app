@@ -20,6 +20,8 @@ export function AppearancePanel({ isOpen, onToggle }) {
     { key: 'classic', label: 'Klasyczny (1 kolumna)' },
     { key: 'twocolumn', label: 'Nowoczesny (2 kolumny)' },
     { key: 'minimalist', label: 'Minimalistyczny' },
+    { key: 'compact', label: 'Kompaktowy' },
+    { key: 'creative', label: 'Kreatywny (2 kolumny)' },
   ];
 
   const marginOptions = [
