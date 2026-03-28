@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { LayoutGrid, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
@@ -13,7 +13,52 @@ export function LayoutPanel({ isOpen, onToggle }) {
     toggleColumn,
     isFirstInColumn,
     isLastInColumn,
+    setSectionOrder,
   } = useCV();
+
+  const dragItem = useRef(null);
+  const [dragOverItem, setDragOverItem] = useState(null);
+
+  const handleDragStart = (e, section) => {
+    dragItem.current = section;
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, section) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragItem.current !== section) {
+      setDragOverItem(section);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverItem(null);
+  };
+
+  const handleDrop = (e, targetSection) => {
+    e.preventDefault();
+    const sourceSection = dragItem.current;
+    if (!sourceSection || sourceSection === targetSection) return;
+
+    setSectionOrder((prev) => {
+      const newOrder = [...prev];
+      const fromIdx = newOrder.indexOf(sourceSection);
+      const toIdx = newOrder.indexOf(targetSection);
+      if (fromIdx === -1 || toIdx === -1) return prev;
+      newOrder.splice(fromIdx, 1);
+      newOrder.splice(toIdx, 0, sourceSection);
+      return newOrder;
+    });
+
+    dragItem.current = null;
+    setDragOverItem(null);
+  };
+
+  const handleDragEnd = () => {
+    dragItem.current = null;
+    setDragOverItem(null);
+  };
 
   return (
     <Panel title="Układ sekcji" icon={LayoutGrid} isOpen={isOpen} onToggle={onToggle}>
@@ -22,9 +67,18 @@ export function LayoutPanel({ isOpen, onToggle }) {
       </p>
       <div className="layout-list">
         {sectionOrder.map((section) => (
-          <div key={section} className="layout-item">
+          <div
+            key={section}
+            className={`layout-item${dragOverItem === section ? ' layout-item--drag-over' : ''}`}
+            draggable
+            onDragStart={(e) => handleDragStart(e, section)}
+            onDragOver={(e) => handleDragOver(e, section)}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, section)}
+            onDragEnd={handleDragEnd}
+          >
             <div className="layout-item-left">
-              <GripVertical size={14} className="layout-grip" />
+              <GripVertical size={14} className="layout-grip" style={{ cursor: 'grab' }} />
               <span className="layout-item-name">
                 {sectionNamesPl[section] || section}
               </span>

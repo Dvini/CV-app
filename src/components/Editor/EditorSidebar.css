@@ -363,6 +363,11 @@
   border-color: var(--border-hover);
 }
 
+.layout-item--drag-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
 .layout-item-left {
   display: flex;
   align-items: center;
