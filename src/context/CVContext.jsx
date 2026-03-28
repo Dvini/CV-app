@@ -73,14 +73,21 @@ export function CVProvider({ children }) {
     languages: data?.languages || defaultData.languages,
     interests: data?.interests ?? defaultData.interests,
     projects: data?.projects || defaultData.projects || [],
+    certificates: data?.certificates || defaultData.certificates,
+    references: data?.references || defaultData.references,
+    publications: data?.publications || defaultData.publications,
+    volunteer: data?.volunteer || defaultData.volunteer,
+    custom: data?.custom || defaultData.custom,
     clause: data?.clause ?? defaultData.clause,
     showClause: data?.showClause ?? defaultData.showClause,
   }), [data]);
 
   const safeSectionOrder = useMemo(() => {
     const order = [...(sectionOrder || defaultSectionOrder)];
-    if (!order.includes('projects')) order.push('projects');
-    if (!order.includes('interests')) order.push('interests');
+    // Ensure all default sections exist in the order
+    for (const section of defaultSectionOrder) {
+      if (!order.includes(section)) order.push(section);
+    }
     return order;
   }, [sectionOrder]);
 

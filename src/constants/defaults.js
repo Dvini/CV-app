@@ -77,6 +77,11 @@ export const defaultData = {
   clause:
     'Wyrażam zgodę na przetwarzanie moich danych osobowych dla potrzeb niezbędnych do realizacji procesu rekrutacji zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r.',
   showClause: true,
+  certificates: [],
+  references: [],
+  publications: [],
+  volunteer: [],
+  custom: [],
 };
 
 export const defaultSectionOrder = [
@@ -88,6 +93,11 @@ export const defaultSectionOrder = [
   'skills',
   'languages',
   'interests',
+  'certificates',
+  'references',
+  'publications',
+  'volunteer',
+  'custom',
 ];
 
 export const defaultSectionColumns = {
@@ -99,4 +109,9 @@ export const defaultSectionColumns = {
   skills: 'side',
   languages: 'side',
   interests: 'side',
+  certificates: 'side',
+  references: 'main',
+  publications: 'main',
+  volunteer: 'main',
+  custom: 'main',
 };

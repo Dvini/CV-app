@@ -243,6 +243,144 @@ export function ClauseSection() {
   );
 }
 
+/* Certificates */
+export function CertificatesSection({ columnType }) {
+  const { data } = useCV();
+  const { headingClass, themeColor, t } = useHeading();
+  if (!data.certificates || data.certificates.length === 0) return null;
+
+  const isSide = columnType === 'side';
+
+  return (
+    <div className="cv-section">
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.certificates}</h2>
+      <div className="cv-items">
+        {data.certificates.map((cert) => (
+          <div key={cert.id} className="cv-item cv-breakable">
+            <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
+              <h3 className="cv-item-title">{cert.name}</h3>
+              {cert.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{cert.date}</span>}
+            </div>
+            {cert.issuer && <div className="cv-item-subtitle">{cert.issuer}</div>}
+            {cert.credentialUrl && (
+              <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="cv-item-link">{cert.credentialUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* References */
+export function ReferencesSection({ columnType }) {
+  const { data } = useCV();
+  const { headingClass, themeColor, t } = useHeading();
+  if (!data.references || data.references.length === 0) return null;
+
+  const isSide = columnType === 'side';
+
+  return (
+    <div className="cv-section">
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.references}</h2>
+      <div className="cv-items">
+        {data.references.map((ref) => (
+          <div key={ref.id} className="cv-item cv-breakable">
+            <h3 className="cv-item-title">{ref.name}</h3>
+            {ref.position && <div className="cv-item-subtitle">{ref.position}{ref.company ? `, ${ref.company}` : ''}</div>}
+            {ref.contact && <div className="cv-text">{ref.contact}</div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Publications */
+export function PublicationsSection({ columnType }) {
+  const { data } = useCV();
+  const { headingClass, themeColor, t } = useHeading();
+  if (!data.publications || data.publications.length === 0) return null;
+
+  const isSide = columnType === 'side';
+
+  return (
+    <div className="cv-section">
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.publications}</h2>
+      <div className="cv-items">
+        {data.publications.map((pub) => (
+          <div key={pub.id} className="cv-item cv-breakable">
+            <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
+              <h3 className="cv-item-title">{pub.title}</h3>
+              {pub.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{pub.date}</span>}
+            </div>
+            {pub.publisher && <div className="cv-item-subtitle">{pub.publisher}</div>}
+            {pub.url && (
+              <a href={pub.url} target="_blank" rel="noopener noreferrer" className="cv-item-link">{pub.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Volunteer */
+export function VolunteerSection({ columnType }) {
+  const { data } = useCV();
+  const { headingClass, themeColor, t } = useHeading();
+  if (!data.volunteer || data.volunteer.length === 0) return null;
+
+  const isSide = columnType === 'side';
+
+  return (
+    <div className="cv-section">
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.volunteer}</h2>
+      <div className="cv-items">
+        {data.volunteer.map((vol) => (
+          <div key={vol.id} className="cv-item cv-breakable">
+            <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
+              <h3 className="cv-item-title">{vol.role}</h3>
+              <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
+                {vol.startDate}{vol.endDate ? ` – ${vol.endDate}` : ''}
+              </span>
+            </div>
+            {vol.organization && <div className="cv-item-subtitle">{vol.organization}</div>}
+            {vol.description && <p className="cv-text cv-text--pre">{vol.description}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Custom section */
+export function CustomSection({ columnType }) {
+  const { data } = useCV();
+  const { headingClass, themeColor, t } = useHeading();
+  if (!data.custom || data.custom.length === 0) return null;
+
+  const isSide = columnType === 'side';
+
+  return (
+    <div className="cv-section">
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.custom}</h2>
+      <div className="cv-items">
+        {data.custom.map((item) => (
+          <div key={item.id} className="cv-item cv-breakable">
+            <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
+              <h3 className="cv-item-title">{item.title}</h3>
+              {item.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{item.date}</span>}
+            </div>
+            {item.subtitle && <div className="cv-item-subtitle">{item.subtitle}</div>}
+            {item.description && <p className="cv-text cv-text--pre">{item.description}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* Section dispatcher */
 export function renderCVSection(sectionKey, columnType = 'full') {
   switch (sectionKey) {
@@ -254,6 +392,11 @@ export function renderCVSection(sectionKey, columnType = 'full') {
     case 'languages': return <LanguagesSection key={sectionKey} />;
     case 'projects': return <ProjectsSection key={sectionKey} columnType={columnType} />;
     case 'interests': return <InterestsSection key={sectionKey} />;
+    case 'certificates': return <CertificatesSection key={sectionKey} columnType={columnType} />;
+    case 'references': return <ReferencesSection key={sectionKey} columnType={columnType} />;
+    case 'publications': return <PublicationsSection key={sectionKey} columnType={columnType} />;
+    case 'volunteer': return <VolunteerSection key={sectionKey} columnType={columnType} />;
+    case 'custom': return <CustomSection key={sectionKey} columnType={columnType} />;
     default: return null;
   }
 }

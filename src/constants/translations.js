@@ -8,6 +8,11 @@ export const cvTranslations = {
     languages: 'Języki',
     projects: 'Projekty',
     interests: 'Zainteresowania',
+    certificates: 'Certyfikaty',
+    references: 'Referencje',
+    publications: 'Publikacje',
+    volunteer: 'Wolontariat',
+    custom: 'Dodatkowe',
     tech: 'Technologie:',
   },
   en: {
@@ -19,6 +24,11 @@ export const cvTranslations = {
     languages: 'Languages',
     projects: 'Projects',
     interests: 'Interests',
+    certificates: 'Certificates',
+    references: 'References',
+    publications: 'Publications',
+    volunteer: 'Volunteer',
+    custom: 'Additional',
     tech: 'Technologies:',
   },
 };
@@ -32,6 +42,11 @@ export const sectionNamesPl = {
   languages: 'Języki',
   projects: 'Projekty',
   interests: 'Zainteresowania',
+  certificates: 'Certyfikaty',
+  references: 'Referencje',
+  publications: 'Publikacje',
+  volunteer: 'Wolontariat',
+  custom: 'Sekcja własna',
 };
 
 export const languageLevels = [

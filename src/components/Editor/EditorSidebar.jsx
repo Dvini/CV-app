@@ -12,6 +12,11 @@ const SkillsPanel = lazy(() => import('./panels/SkillsPanel').then(m => ({ defau
 const LanguagesPanel = lazy(() => import('./panels/LanguagesPanel').then(m => ({ default: m.LanguagesPanel })));
 const InterestsPanel = lazy(() => import('./panels/InterestsPanel').then(m => ({ default: m.InterestsPanel })));
 const ProjectsPanel = lazy(() => import('./panels/ProjectsPanel').then(m => ({ default: m.ProjectsPanel })));
+const CertificatesPanel = lazy(() => import('./panels/CertificatesPanel').then(m => ({ default: m.CertificatesPanel })));
+const ReferencesPanel = lazy(() => import('./panels/ReferencesPanel').then(m => ({ default: m.ReferencesPanel })));
+const PublicationsPanel = lazy(() => import('./panels/PublicationsPanel').then(m => ({ default: m.PublicationsPanel })));
+const VolunteerPanel = lazy(() => import('./panels/VolunteerPanel').then(m => ({ default: m.VolunteerPanel })));
+const CustomPanel = lazy(() => import('./panels/CustomPanel').then(m => ({ default: m.CustomPanel })));
 
 export function EditorSidebar() {
   const [openPanel, setOpenPanel] = useState('personal');
@@ -33,6 +38,11 @@ export function EditorSidebar() {
           <LanguagesPanel isOpen={openPanel === 'languages'} onToggle={() => toggle('languages')} />
           <SkillsPanel isOpen={openPanel === 'skills'} onToggle={() => toggle('skills')} />
           <InterestsPanel isOpen={openPanel === 'interests'} onToggle={() => toggle('interests')} />
+          <CertificatesPanel isOpen={openPanel === 'certificates'} onToggle={() => toggle('certificates')} />
+          <ReferencesPanel isOpen={openPanel === 'references'} onToggle={() => toggle('references')} />
+          <PublicationsPanel isOpen={openPanel === 'publications'} onToggle={() => toggle('publications')} />
+          <VolunteerPanel isOpen={openPanel === 'volunteer'} onToggle={() => toggle('volunteer')} />
+          <CustomPanel isOpen={openPanel === 'custom'} onToggle={() => toggle('custom')} />
         </Suspense>
       </div>
     </aside>
