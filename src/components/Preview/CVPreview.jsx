@@ -11,12 +11,37 @@ const A4_HEIGHT_PX = Math.round(A4_HEIGHT_MM * MM_TO_PX); // ~1123px
 const MIN_FOOTER_PX = 24; // absolute minimum for the footer bar
 
 export function CVPreview() {
-  const { template, fontFamily, margins, customMargin, data, getMarginValues } = useCV();
+  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, data, getMarginValues } = useCV();
   const contentRef = useRef(null);
   const [pageCount, setPageCount] = useState(1);
   const [pageSpacers, setPageSpacers] = useState([]);
 
-  const fontClass = fontFamily === 'serif' ? 'cv-font-serif' : 'cv-font-sans';
+  useEffect(() => {
+    if (fontFamily !== 'sans' && fontFamily !== 'serif') {
+      const linkId = `font-${fontFamily.replace(/\s+/g, '-')}`;
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+      }
+    }
+  }, [fontFamily]);
+
+  const getFontFamilyValue = () => {
+    switch (fontFamily) {
+      case 'sans': return 'Inter, system-ui, sans-serif';
+      case 'serif': return 'Merriweather, Georgia, serif';
+      case 'Roboto': return 'Roboto, sans-serif';
+      case 'Open Sans': return '"Open Sans", sans-serif';
+      case 'Montserrat': return 'Montserrat, sans-serif';
+      case 'Lato': return 'Lato, sans-serif';
+      case 'Playfair Display': return '"Playfair Display", serif';
+      default: return 'Inter, system-ui, sans-serif';
+    }
+  };
+
   const showClauseFooter = data.showClause && data.clause;
 
   const { v: marginV, h: marginH } = getMarginValues(); // mm
@@ -59,8 +84,24 @@ export function CVPreview() {
         const startPage = Math.floor((topRelative + 1) / visualContentHeight);
         const pageTextLimit = startPage * visualContentHeight + engineContentHeight;
         
+        const pageTopLimit = startPage * visualContentHeight;
+        const pageSafeTop = startPage * visualContentHeight + marginVPx;
+        
+        let needsPush = false;
+        let targetY = 0;
+
+        // Condition 1: Element crosses the bottom margin of the page
         if (bottomRelative - 1 > pageTextLimit && elRect.height < engineContentHeight) {
-          const targetY = (startPage + 1) * visualContentHeight + marginVPx;
+          needsPush = true;
+          targetY = (startPage + 1) * visualContentHeight + marginVPx;
+        } 
+        // Condition 2: Element natively falls exactly in the top margin padding of a new page
+        else if (startPage > 0 && topRelative >= pageTopLimit && topRelative < pageSafeTop) {
+          needsPush = true;
+          targetY = pageSafeTop;
+        }
+        
+        if (needsPush) {
           let elementToPush = el;
           let pushAmount = targetY - topRelative;
           let pushIndex = index;
@@ -148,12 +189,16 @@ export function CVPreview() {
   };
 
   return (
-    <main className="preview-area">
+    <main className="preview-area" style={{
+      '--cv-font-family': getFontFamilyValue(),
+      '--cv-heading-scale': fontSizeHeading,
+      '--cv-text-scale': fontSizeText
+    }}>
       <div className="preview-scroll">
         <div className="cv-pages-stack">
           {/* Hidden measuring container */}
           <div
-            className={`cv-measure-container ${fontClass}`}
+            className="cv-measure-container cv-dynamic-fonts"
             ref={contentRef}
             aria-hidden="true"
           >
@@ -167,7 +212,7 @@ export function CVPreview() {
                 Strona {pageIndex + 1} z {pageCount}
               </div>
               <div
-                className={`cv-preview-container ${fontClass}`}
+                className="cv-preview-container cv-dynamic-fonts"
                 id={pageIndex === 0 ? 'cv-preview-container' : undefined}
                 style={{ height: `${A4_HEIGHT_PX}px` }}
               >

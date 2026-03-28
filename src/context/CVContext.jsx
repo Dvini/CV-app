@@ -29,6 +29,8 @@ export function CVProvider({ children }) {
   });
   const [themeColor, setThemeColor] = useLocalStorage('cv_themeColor', '#2563eb');
   const [fontFamily, setFontFamily] = useLocalStorage('cv_fontFamily', 'sans');
+  const [fontSizeHeading, setFontSizeHeading] = useLocalStorage('cv_fontSizeHeading', 1);
+  const [fontSizeText, setFontSizeText] = useLocalStorage('cv_fontSizeText', 1);
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
 
@@ -190,6 +192,8 @@ export function CVProvider({ children }) {
       customMargin,
       themeColor,
       fontFamily,
+      fontSizeHeading,
+      fontSizeText,
       cvLanguage,
     };
     const blob = new Blob([JSON.stringify(stateToExport, null, 2)], {
@@ -219,6 +223,8 @@ export function CVProvider({ children }) {
         if (imported.customMargin) setCustomMargin(imported.customMargin);
         if (imported.themeColor) setThemeColor(imported.themeColor);
         if (imported.fontFamily) setFontFamily(imported.fontFamily);
+        if (imported.fontSizeHeading) setFontSizeHeading(imported.fontSizeHeading);
+        if (imported.fontSizeText) setFontSizeText(imported.fontSizeText);
         if (imported.cvLanguage) setCvLanguage(imported.cvLanguage);
       } catch {
         alert('Wystąpił błąd podczas odczytu pliku. Upewnij się, że to poprawny plik JSON.');
@@ -237,6 +243,8 @@ export function CVProvider({ children }) {
     setCustomMargin({ vertical: 15, horizontal: 15 });
     setThemeColor('#2563eb');
     setFontFamily('sans');
+    setFontSizeHeading(1);
+    setFontSizeText(1);
     setCvLanguage('pl');
   };
 
@@ -302,6 +310,10 @@ export function CVProvider({ children }) {
     setThemeColor,
     fontFamily,
     setFontFamily,
+    fontSizeHeading,
+    setFontSizeHeading,
+    fontSizeText,
+    setFontSizeText,
     cvLanguage,
     setCvLanguage,
     darkMode,

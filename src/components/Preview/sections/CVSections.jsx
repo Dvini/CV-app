@@ -25,7 +25,7 @@ export function SummarySection({ columnType }) {
   return (
     <div className="cv-section">
       {template === 'twocolumn' && (
-        <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.summary}</h2>
+        <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.summary}</h2>
       )}
       <p className={`cv-text cv-breakable ${template !== 'twocolumn' ? 'cv-text--mt' : ''}`}>
         {data.personal.summary}
@@ -44,7 +44,7 @@ export function ExperienceSection({ columnType }) {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.experience}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.experience}</h2>
       <div className="cv-items">
         {data.experience.map((exp) => (
           <div key={exp.id} className="cv-item cv-breakable">
@@ -81,7 +81,7 @@ export function EducationSection({ columnType }) {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.education}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.education}</h2>
       <div className="cv-items">
         {data.education.map((edu) => (
           <div key={edu.id} className="cv-item cv-breakable">
@@ -109,7 +109,7 @@ export function CoursesSection({ columnType }) {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.courses}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.courses}</h2>
       <div className="cv-items">
         {data.courses.map((course) => (
           <div key={course.id} className="cv-item cv-breakable">
@@ -140,7 +140,7 @@ export function SkillsSection() {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.skills}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.skills}</h2>
       <ul className="cv-skills-list">
         {skillsArray.map((skill, i) => (
           <li key={i} className="cv-breakable">{skill}</li>
@@ -158,7 +158,7 @@ export function LanguagesSection() {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.languages}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.languages}</h2>
       <div className="cv-languages">
         {data.languages.map((lang) => (
           <div key={lang.id} className="cv-lang-row cv-breakable">
@@ -181,7 +181,7 @@ export function ProjectsSection({ columnType }) {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.projects}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.projects}</h2>
       <div className="cv-items">
         {data.projects.map((proj) => (
           <div key={proj.id} className="cv-item cv-breakable">
@@ -221,7 +221,7 @@ export function InterestsSection() {
 
   return (
     <div className="cv-section">
-      <h2 className={headingClass} style={{ color: themeColor }} data-keep-with-next="true">{t.interests}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.interests}</h2>
       <ul className="cv-skills-list">
         {interestsArray.map((interest, i) => (
           <li key={i} className="cv-breakable">{interest}</li>
