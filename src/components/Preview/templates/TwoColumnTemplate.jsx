@@ -18,7 +18,7 @@ export function TwoColumnTemplate() {
           {/* Personal info in sidebar */}
           {data.personal.showPhoto && data.personal.photo && (
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
-              <img src={data.personal.photo} alt="" className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
+              <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
             </div>
           )}
           <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>

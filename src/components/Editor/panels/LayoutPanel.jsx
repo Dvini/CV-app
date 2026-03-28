@@ -34,6 +34,7 @@ export function LayoutPanel({ isOpen, onToggle }) {
                 <button
                   onClick={() => toggleColumn(section)}
                   className="btn-column-toggle"
+                  aria-label={`Zmień kolumnę dla ${sectionNamesPl[section] || section}`}
                 >
                   {sectionColumns[section] === 'side' ? 'Lewa kol.' : 'Prawa kol.'}
                 </button>
@@ -43,6 +44,8 @@ export function LayoutPanel({ isOpen, onToggle }) {
                   onClick={() => moveSection(section, 'up')}
                   disabled={isFirstInColumn(section)}
                   className="icon-btn"
+                  aria-label={`Przenieś ${sectionNamesPl[section] || section} w górę`}
+                  title="Do góry"
                 >
                   <ArrowUp size={14} />
                 </button>
@@ -50,6 +53,8 @@ export function LayoutPanel({ isOpen, onToggle }) {
                   onClick={() => moveSection(section, 'down')}
                   disabled={isLastInColumn(section)}
                   className="icon-btn"
+                  aria-label={`Przenieś ${sectionNamesPl[section] || section} w dół`}
+                  title="W dół"
                 >
                   <ArrowDown size={14} />
                 </button>

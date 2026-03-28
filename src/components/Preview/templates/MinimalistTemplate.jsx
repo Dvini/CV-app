@@ -12,7 +12,7 @@ export function MinimalistTemplate() {
       {/* Header */}
       <header className="cv-header cv-header--minimalist">
         {data.personal.showPhoto && data.personal.photo && (
-          <img src={data.personal.photo} alt="" className="cv-header-photo cv-header-photo--minimalist" style={{ ...getPhotoStyle(), marginBottom: '0.75rem' }} />
+          <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-header-photo cv-header-photo--minimalist" style={{ ...getPhotoStyle(), marginBottom: '0.75rem' }} />
         )}
         <h1 className="cv-name cv-name--minimalist">
           {data.personal.fullName || 'Imię Nazwisko'}

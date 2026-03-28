@@ -38,8 +38,10 @@ export function PersonalPanel({ isOpen, onToggle }) {
           <span className="toggle-label">Zdjęcie profilowe</span>
           <input
             type="checkbox"
+            role="switch"
             className="toggle-checkbox"
             checked={p.showPhoto || false}
+            aria-checked={p.showPhoto || false}
             onChange={() => handlePersonalChange('showPhoto', !p.showPhoto)}
           />
           <span className="toggle-slider" />
@@ -50,7 +52,7 @@ export function PersonalPanel({ isOpen, onToggle }) {
             {p.photo ? (
               <div className="photo-preview-wrap">
                 <img src={p.photo} alt="Zdjęcie" className="photo-preview-img" />
-                <button className="photo-remove-btn" onClick={removePhoto} title="Usuń zdjęcie">
+                <button className="photo-remove-btn" onClick={removePhoto} title="Usuń zdjęcie" aria-label="Usuń zdjęcie">
                   <X size={14} />
                 </button>
               </div>
@@ -65,6 +67,7 @@ export function PersonalPanel({ isOpen, onToggle }) {
               type="file"
               accept="image/*"
               onChange={handlePhotoUpload}
+              aria-label="Wczytaj plik zdjęcia"
               style={{ display: 'none' }}
             />
             {p.photo && (
@@ -105,6 +108,7 @@ export function PersonalPanel({ isOpen, onToggle }) {
                     max="180"
                     value={p.photoSize || 80}
                     onChange={(e) => handlePersonalChange('photoSize', parseInt(e.target.value, 10))}
+                    aria-label="Rozmiar zdjęcia"
                     style={{ width: '100%', cursor: 'pointer' }}
                   />
                 </div>

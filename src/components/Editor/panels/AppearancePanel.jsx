@@ -81,6 +81,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
             value={fontSizeHeading} 
             onChange={(e) => setFontSizeHeading(Number(e.target.value))}
             className="slider-input"
+            aria-label="Wielkość nagłówków"
             style={{ width: '100%', marginBottom: '1rem' }}
           />
 
@@ -94,6 +95,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
             value={fontSizeText} 
             onChange={(e) => setFontSizeText(Number(e.target.value))}
             className="slider-input"
+            aria-label="Wielkość tekstów"
             style={{ width: '100%' }}
           />
         </div>
@@ -107,6 +109,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
                 key={color.value}
                 onClick={() => setThemeColor(color.value)}
                 title={color.name}
+                aria-label={color.name}
                 className={`color-swatch ${themeColor === color.value ? 'color-swatch--active' : ''}`}
                 style={{ backgroundColor: color.value }}
               />
@@ -118,8 +121,9 @@ export function AppearancePanel({ isOpen, onToggle }) {
                 backgroundColor: !presetColors.some((c) => c.value === themeColor) ? themeColor : 'transparent',
               }}
               title="Wybierz własny kolor"
+              aria-label="Wybierz własny kolor"
             >
-              <input type="color" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="color-native-input" />
+              <input type="color" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="color-native-input" aria-label="Wybierz kolor akcentu" />
               {presetColors.some((c) => c.value === themeColor) && <Plus size={14} className="color-custom-icon" />}
             </label>
           </div>

@@ -13,7 +13,7 @@ export function ClassicTemplate() {
       <header className="cv-header">
         <div className="cv-header-content">
           {data.personal.showPhoto && data.personal.photo && (
-            <img src={data.personal.photo} alt="" className="cv-header-photo" style={{ ...getPhotoStyle() }} />
+            <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-header-photo" style={{ ...getPhotoStyle() }} />
           )}
           <div className="cv-header-text">
             <h1 className="cv-name">{data.personal.fullName || 'Imię Nazwisko'}</h1>

@@ -22,6 +22,7 @@ export function Header() {
             className="header-icon-btn"
             onClick={() => setDarkMode(!darkMode)}
             title={darkMode ? 'Jasny motyw' : 'Ciemny motyw'}
+            aria-label={darkMode ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw'}
           >
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
