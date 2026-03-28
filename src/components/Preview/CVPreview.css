@@ -76,6 +76,15 @@
   flex-shrink: 0;
 }
 
+.cv-page-top-margin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  z-index: 1;
+}
+
 .cv-content-offset {
   width: 100%;
 }

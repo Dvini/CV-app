@@ -6,7 +6,7 @@ import { MinimalistTemplate } from './templates/MinimalistTemplate';
 import { CompactTemplate } from './templates/CompactTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
-import { A4_HEIGHT_PX } from '../../constants/layout';
+import { A4_HEIGHT_PX, MM_TO_PX } from '../../constants/layout';
 import './CVPreview.css';
 
 const FONT_FAMILY_MAP = {
@@ -38,6 +38,7 @@ export function CVPreview() {
   const fontFamilyValue = FONT_FAMILY_MAP[fontFamily] || FONT_FAMILY_MAP.sans;
   const showClauseFooter = data.showClause && data.clause;
   const { v: marginV, h: marginH } = getMarginValues();
+  const marginVPx = Math.round(marginV * MM_TO_PX);
   const footerTextHeightPx = showClauseFooter ? 36 : 0;
 
   const { contentRef, pageCount, visualContentHeight } = usePagination({
@@ -95,6 +96,9 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
+                  {pageIndex > 0 && marginVPx > 0 && (
+                    <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
+                  )}
                   <div
                     className="cv-content-offset"
                     style={{
