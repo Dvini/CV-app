@@ -12,7 +12,7 @@ export function Header() {
       <header className="app-header" id="app-header">
         <div className="header-left">
           <div className="header-logo">
-            <FileText size={20} style={{ color: themeColor }} />
+            <FileText size={20} />
             <h1 className="header-title">Kreator CV</h1>
           </div>
         </div>
@@ -28,7 +28,6 @@ export function Header() {
           <button
             className="header-cta"
             onClick={() => window.print()}
-            style={{ backgroundColor: themeColor }}
           >
             <Download size={16} />
             <span>Pobierz PDF</span>
