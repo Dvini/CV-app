@@ -15,6 +15,8 @@ export function AppearancePanel({ isOpen, onToggle }) {
     fontSizeHeading, setFontSizeHeading,
     fontSizeText, setFontSizeText,
     showSectionIcons, setShowSectionIcons,
+    gradientEnabled, setGradientEnabled,
+    gradientColor, setGradientColor,
   } = useCV();
 
   const templates = [
@@ -158,6 +160,23 @@ export function AppearancePanel({ isOpen, onToggle }) {
               {presetColors.some((c) => c.value === themeColor) && <Plus size={14} className="color-custom-icon" />}
             </label>
           </div>
+        </div>
+
+        {/* Gradient */}
+        <div className="appearance-group">
+          <label className="appearance-label">Gradient (nagłówek/sidebar)</label>
+          <label className="toggle-wrapper" role="switch" aria-checked={gradientEnabled}>
+            <input type="checkbox" checked={gradientEnabled} onChange={(e) => setGradientEnabled(e.target.checked)} className="toggle-input" />
+            <span className="toggle-slider" /><span className="toggle-label-text">{gradientEnabled ? 'Włączony' : 'Wyłączony'}</span>
+          </label>
+          {gradientEnabled && (
+            <div className="color-picker-row" style={{ marginTop: '0.5rem' }}>
+              <label className="appearance-label" style={{ fontSize: '0.75rem', marginBottom: 0 }}>Drugi kolor:</label>
+              <label className="color-swatch color-swatch--custom color-swatch--active" style={{ backgroundColor: gradientColor }} title="Drugi kolor gradientu" aria-label="Drugi kolor gradientu">
+                <input type="color" value={gradientColor} onChange={(e) => setGradientColor(e.target.value)} className="color-native-input" aria-label="Wybierz drugi kolor gradientu" />
+              </label>
+            </div>
+          )}
         </div>
 
         {/* Margins */}

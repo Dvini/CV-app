@@ -5,7 +5,7 @@ import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
 export const CreativeTemplate = React.memo(function CreativeTemplate() {
-  const { data, sectionOrder, sectionColumns, getMarginStyle, getPhotoStyle, themeColor } = useCV();
+  const { data, sectionOrder, sectionColumns, getMarginStyle, getPhotoStyle, getAccentBackground } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
@@ -14,7 +14,7 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
   return (
     <div className="cv-page template-creative">
       {/* Colored header band */}
-      <header className="cv-header--creative" style={{ background: themeColor }}>
+      <header className="cv-header--creative" style={{ background: getAccentBackground() }}>
         <div className="cv-header-creative-inner" style={{ padding: `${getMarginStyle('container', true).paddingTop} ${getMarginStyle('container', true).paddingRight} 1rem ${getMarginStyle('container', true).paddingLeft}` }}>
           <div className="cv-header-creative-row">
             {data.personal.showPhoto && data.personal.photo && (

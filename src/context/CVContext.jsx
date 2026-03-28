@@ -63,6 +63,8 @@ export function CVProvider({ children }) {
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
   const [showSectionIcons, setShowSectionIcons] = useLocalStorage('cv_showSectionIcons', false);
+  const [gradientEnabled, setGradientEnabled] = useLocalStorage('cv_gradientEnabled', false);
+  const [gradientColor, setGradientColor] = useLocalStorage('cv_gradientColor', '#8b5cf6');
 
   // Run schema migrations when version is outdated
   useEffect(() => {
@@ -240,6 +242,8 @@ export function CVProvider({ children }) {
       fontSizeText,
       cvLanguage,
       showSectionIcons,
+      gradientEnabled,
+      gradientColor,
     };
     const blob = new Blob([JSON.stringify(stateToExport, null, 2)], {
       type: 'application/json',
@@ -272,6 +276,8 @@ export function CVProvider({ children }) {
         if (imported.fontSizeText) setFontSizeText(imported.fontSizeText);
         if (imported.cvLanguage) setCvLanguage(imported.cvLanguage);
         if (imported.showSectionIcons !== undefined) setShowSectionIcons(imported.showSectionIcons);
+        if (imported.gradientEnabled !== undefined) setGradientEnabled(imported.gradientEnabled);
+        if (imported.gradientColor) setGradientColor(imported.gradientColor);
       } catch {
         alert('Wystąpił błąd podczas odczytu pliku. Upewnij się, że to poprawny plik JSON.');
       }
@@ -293,6 +299,8 @@ export function CVProvider({ children }) {
     setFontSizeText(1);
     setCvLanguage('pl');
     setShowSectionIcons(false);
+    setGradientEnabled(false);
+    setGradientColor('#8b5cf6');
   };
 
   const getPhotoStyle = () => {
@@ -319,6 +327,13 @@ export function CVProvider({ children }) {
       borderRadius,
       objectFit: 'cover'
     };
+  };
+
+  const getAccentBackground = () => {
+    if (gradientEnabled) {
+      return `linear-gradient(135deg, ${themeColor}, ${gradientColor})`;
+    }
+    return themeColor;
   };
 
   // Margin styles
@@ -394,6 +409,10 @@ export function CVProvider({ children }) {
     setDarkMode,
     showSectionIcons,
     setShowSectionIcons,
+    gradientEnabled,
+    setGradientEnabled,
+    gradientColor,
+    setGradientColor,
     // Helpers
     handlePersonalChange,
     handleSkillsChange,
@@ -414,6 +433,7 @@ export function CVProvider({ children }) {
     getMarginStyle,
     getMarginValues,
     getPhotoStyle,
+    getAccentBackground,
     undo,
     redo,
     canUndo,
