@@ -1,10 +1,17 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, { createContext, useContext, useRef, useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   defaultData,
   defaultSectionOrder,
   defaultSectionColumns,
 } from '../constants/defaults';
+import {
+  MARGIN_PRESETS,
+  DEFAULT_CUSTOM_MARGIN,
+  DEFAULT_THEME_COLOR,
+  COLUMN_INNER_GAP_LEFT,
+  COLUMN_INNER_GAP_RIGHT,
+} from '../constants/layout';
 
 const CVContext = createContext(null);
 
@@ -23,21 +30,16 @@ export function CVProvider({ children }) {
   // Appearance
   const [template, setTemplate] = useLocalStorage('cv_template', 'classic');
   const [margins, setMargins] = useLocalStorage('cv_margins', 'normal');
-  const [customMargin, setCustomMargin] = useLocalStorage('cv_customMargin', {
-    vertical: 15,
-    horizontal: 15,
-  });
-  const [themeColor, setThemeColor] = useLocalStorage('cv_themeColor', '#2563eb');
+  const [customMargin, setCustomMargin] = useLocalStorage('cv_customMargin', DEFAULT_CUSTOM_MARGIN);
+  const [themeColor, setThemeColor] = useLocalStorage('cv_themeColor', DEFAULT_THEME_COLOR);
   const [fontFamily, setFontFamily] = useLocalStorage('cv_fontFamily', 'sans');
   const [fontSizeHeading, setFontSizeHeading] = useLocalStorage('cv_fontSizeHeading', 1);
   const [fontSizeText, setFontSizeText] = useLocalStorage('cv_fontSizeText', 1);
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
 
-  const fileInputRef = useRef(null);
-
   // --- Ensure backwards compatibility for loaded data ---
-  const safeData = {
+  const safeData = useMemo(() => ({
     ...defaultData,
     ...data,
     personal: { ...defaultData.personal, ...(data?.personal || {}) },
@@ -50,19 +52,19 @@ export function CVProvider({ children }) {
     projects: data?.projects || defaultData.projects || [],
     clause: data?.clause ?? defaultData.clause,
     showClause: data?.showClause ?? defaultData.showClause,
-  };
+  }), [data]);
 
-  const safeSectionOrder = (() => {
+  const safeSectionOrder = useMemo(() => {
     const order = [...(sectionOrder || defaultSectionOrder)];
     if (!order.includes('projects')) order.push('projects');
     if (!order.includes('interests')) order.push('interests');
     return order;
-  })();
+  }, [sectionOrder]);
 
-  const safeSectionColumns = {
+  const safeSectionColumns = useMemo(() => ({
     ...defaultSectionColumns,
     ...(sectionColumns || {}),
-  };
+  }), [sectionColumns]);
 
   // --- Data mutation helpers ---
   const handlePersonalChange = (field, value) => {
@@ -240,8 +242,8 @@ export function CVProvider({ children }) {
     setSectionColumns(defaultSectionColumns);
     setTemplate('classic');
     setMargins('normal');
-    setCustomMargin({ vertical: 15, horizontal: 15 });
-    setThemeColor('#2563eb');
+    setCustomMargin(DEFAULT_CUSTOM_MARGIN);
+    setThemeColor(DEFAULT_THEME_COLOR);
     setFontFamily('sans');
     setFontSizeHeading(1);
     setFontSizeText(1);
@@ -276,9 +278,8 @@ export function CVProvider({ children }) {
 
   // Margin styles
   const getMarginValues = () => {
-    const presets = { small: { v: 12, h: 12 }, normal: { v: 20, h: 20 }, large: { v: 25, h: 25 } };
     if (margins === 'custom') return { v: customMargin.vertical || 15, h: customMargin.horizontal || 15 };
-    return presets[margins] || presets.normal;
+    return MARGIN_PRESETS[margins] || MARGIN_PRESETS.normal;
   };
 
   const getMarginStyle = (variant = 'container', omitBottom = false) => {
@@ -287,26 +288,26 @@ export function CVProvider({ children }) {
       v = customMargin.vertical;
       h = customMargin.horizontal;
     } else {
-      const presets = { small: 12, normal: 20, large: 25 };
-      v = presets[margins] || presets.normal;
-      h = v;
+      const preset = MARGIN_PRESETS[margins] || MARGIN_PRESETS.normal;
+      v = preset.v;
+      h = preset.h;
     }
 
     if (variant === 'left-column') {
       return {
         paddingTop: `${v}mm`,
-        paddingRight: `6mm`, // fixed inner gap
+        paddingRight: `${COLUMN_INNER_GAP_LEFT}mm`,
         paddingBottom: omitBottom ? '0mm' : `${v}mm`,
-        paddingLeft: `${h}mm` // outer document margin
+        paddingLeft: `${h}mm`
       };
     }
     
     if (variant === 'right-column') {
       return {
         paddingTop: `${v}mm`,
-        paddingRight: `${h}mm`, // outer document margin
+        paddingRight: `${h}mm`,
         paddingBottom: omitBottom ? '0mm' : `${v}mm`,
-        paddingLeft: `8mm` // fixed inner gap
+        paddingLeft: `${COLUMN_INNER_GAP_RIGHT}mm`
       };
     }
 
@@ -344,7 +345,6 @@ export function CVProvider({ children }) {
     setCvLanguage,
     darkMode,
     setDarkMode,
-    fileInputRef,
     // Helpers
     handlePersonalChange,
     handleSkillsChange,

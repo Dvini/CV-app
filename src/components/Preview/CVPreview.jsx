@@ -3,12 +3,14 @@ import { useCV } from '../../context/CVContext';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
 import { MinimalistTemplate } from './templates/MinimalistTemplate';
+import {
+  A4_HEIGHT_PX,
+  MM_TO_PX,
+  FOOTER_TEXT_HEIGHT_PX,
+  PAGINATION_DEBOUNCE_MS,
+  PAGINATION_OBSERVER_DEBOUNCE_MS,
+} from '../../constants/layout';
 import './CVPreview.css';
-
-const A4_HEIGHT_MM = 297;
-const MM_TO_PX = 96 / 25.4; // 1mm ≈ 3.7795px at 96dpi
-const A4_HEIGHT_PX = Math.round(A4_HEIGHT_MM * MM_TO_PX); // ~1123px
-const MIN_FOOTER_PX = 24; // absolute minimum for the footer bar
 
 export function CVPreview() {
   const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, data, getMarginValues } = useCV();
@@ -48,7 +50,7 @@ export function CVPreview() {
   const marginVPx = Math.round(marginV * MM_TO_PX);
   
   // Footer visual height (allow more space for 2 lines)
-  const footerTextHeightPx = showClauseFooter ? 36 : 0; 
+  const footerTextHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
 
   // How much of the CV page is visually sliced for this sheet
   // This dictates where the gray backgrounds are cut off.
@@ -145,10 +147,10 @@ export function CVPreview() {
       setPageSpacers(prev => JSON.stringify(prev) !== editsStr ? edits : prev);
     };
 
-    const timer = setTimeout(calculatePages, 100);
-    const observer = new ResizeObserver(() => setTimeout(calculatePages, 50));
+    const timer = setTimeout(calculatePages, PAGINATION_DEBOUNCE_MS);
+    const observer = new ResizeObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
     observer.observe(contentRef.current);
-    const mutationObserver = new MutationObserver(() => setTimeout(calculatePages, 50));
+    const mutationObserver = new MutationObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
     mutationObserver.observe(contentRef.current, { childList: true, subtree: true, characterData: true });
 
     return () => {

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Database, FileJson, Upload, RotateCcw } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
 export function DataSyncPanel() {
-  const { fileInputRef, exportJSON, importJSON, resetToDefaults, data, handleClauseChange, toggleClause } = useCV();
+  const { exportJSON, importJSON, resetToDefaults, data, handleClauseChange, toggleClause } = useCV();
+  const fileInputRef = useRef(null);
 
   return (
     <Panel title="Zarządzaj danymi" icon={Database}>
