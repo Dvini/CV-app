@@ -3,20 +3,22 @@ import { User, Camera, X } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea, Select } from '../shared/FormFields';
+import { compressImage } from '../../../utils/imageUtils';
 
 export function PersonalPanel({ isOpen, onToggle }) {
   const { data, handlePersonalChange } = useCV();
   const photoInputRef = useRef(null);
   const p = data.personal;
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      handlePersonalChange('photo', ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      handlePersonalChange('photo', compressed);
+    } catch {
+      alert('Nie udało się załadować zdjęcia. Spróbuj inny plik.');
+    }
     e.target.value = null;
   };
 
