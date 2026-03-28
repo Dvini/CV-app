@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
-import { Download, Moon, Sun, FileText, Edit3 } from 'lucide-react';
+import { Download, Moon, Sun, FileText, Edit3, Loader } from 'lucide-react';
 import { useCV } from '../../context/CVContext';
 import './Header.css';
 
 export function Header() {
-  const { themeColor, darkMode, setDarkMode } = useCV();
+  const { themeColor, darkMode, setDarkMode, data } = useCV();
   const [mobileView, setMobileView] = useState('editor');
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const { exportToPDF } = await import('../../utils/pdfExport');
+      const name = data.personal.fullName
+        ? `CV_${data.personal.fullName.replace(/\s+/g, '_')}`
+        : 'CV';
+      await exportToPDF(name);
+    } catch {
+      alert('Nie udało się wygenerować PDF. Spróbuj ponownie.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <>
@@ -28,10 +44,11 @@ export function Header() {
           </button>
           <button
             className="header-cta"
-            onClick={() => window.print()}
+            onClick={handleExport}
+            disabled={exporting}
           >
-            <Download size={16} />
-            <span>Pobierz PDF</span>
+            {exporting ? <Loader size={16} className="spin" /> : <Download size={16} />}
+            <span>{exporting ? 'Generowanie...' : 'Pobierz PDF'}</span>
           </button>
         </div>
       </header>
