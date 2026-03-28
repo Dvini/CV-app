@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useRef, useMemo } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import React, { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react';
+import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
 import {
   defaultData,
   defaultSectionOrder,
@@ -15,7 +15,22 @@ import {
 
 const CVContext = createContext(null);
 
+const SCHEMA_VERSION = 2;
+
 export function CVProvider({ children }) {
+  const [storageWarning, setStorageWarning] = useState(null);
+
+  useEffect(() => {
+    return onStorageError((key) => {
+      setStorageWarning(`Nie udało się zapisać danych (${key}). Pamięć przeglądarki może być pełna.`);
+    });
+  }, []);
+
+  const dismissWarning = useCallback(() => setStorageWarning(null), []);
+
+  // Schema versioning
+  const [schemaVersion, setSchemaVersion] = useLocalStorage('cv_schema_version', SCHEMA_VERSION);
+
   // Core CV data
   const [data, setData] = useLocalStorage('cv_data', defaultData);
   const [sectionOrder, setSectionOrder] = useLocalStorage(
@@ -37,6 +52,14 @@ export function CVProvider({ children }) {
   const [fontSizeText, setFontSizeText] = useLocalStorage('cv_fontSizeText', 1);
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
+
+  // Run schema migrations when version is outdated
+  useEffect(() => {
+    if (schemaVersion < SCHEMA_VERSION) {
+      // Future migrations go here as version increments
+      setSchemaVersion(SCHEMA_VERSION);
+    }
+  }, [schemaVersion, setSchemaVersion]);
 
   // --- Ensure backwards compatibility for loaded data ---
   const safeData = useMemo(() => ({
@@ -327,6 +350,8 @@ export function CVProvider({ children }) {
     setSectionOrder,
     sectionColumns: safeSectionColumns,
     setSectionColumns,
+    storageWarning,
+    dismissWarning,
     template,
     setTemplate,
     margins,

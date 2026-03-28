@@ -7,7 +7,7 @@ import { CVPreview } from './components/Preview/CVPreview';
 import './styles/index.css';
 
 function AppContent() {
-  const { darkMode } = useCV();
+  const { darkMode, storageWarning, dismissWarning } = useCV();
 
   React.useEffect(() => {
     document.documentElement.setAttribute(
@@ -23,6 +23,12 @@ function AppContent() {
         <EditorSidebar />
         <CVPreview />
       </div>
+      {storageWarning && (
+        <div className="storage-warning-toast" role="alert">
+          <span>{storageWarning}</span>
+          <button onClick={dismissWarning} className="toast-dismiss">&times;</button>
+        </div>
+      )}
     </>
   );
 }

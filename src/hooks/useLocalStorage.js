@@ -1,5 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 
+const STORAGE_LISTENERS = [];
+
+function notifyStorageError(key) {
+  STORAGE_LISTENERS.forEach(fn => fn(key));
+}
+
+export function onStorageError(listener) {
+  STORAGE_LISTENERS.push(listener);
+  return () => {
+    const idx = STORAGE_LISTENERS.indexOf(listener);
+    if (idx !== -1) STORAGE_LISTENERS.splice(idx, 1);
+  };
+}
+
 export function useLocalStorage(key, defaultValue) {
   const [value, setValue] = useState(() => {
     try {
@@ -14,7 +28,7 @@ export function useLocalStorage(key, defaultValue) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // localStorage might be full
+      notifyStorageError(key);
     }
   }, [key, value]);
 
