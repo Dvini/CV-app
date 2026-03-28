@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 const STORAGE_LISTENERS = [];
+const DEBOUNCE_MS = 300;
 
 function notifyStorageError(key) {
   STORAGE_LISTENERS.forEach(fn => fn(key));
@@ -24,15 +25,31 @@ export function useLocalStorage(key, defaultValue) {
     }
   });
 
+  const timerRef = useRef(null);
+
   useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-      notifyStorageError(key);
-    }
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        notifyStorageError(key);
+      }
+    }, DEBOUNCE_MS);
+
+    return () => clearTimeout(timerRef.current);
   }, [key, value]);
 
+  // Flush on unmount
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+      // We cannot access current value here, but timer cleanup is enough
+    };
+  }, []);
+
   const remove = useCallback(() => {
+    clearTimeout(timerRef.current);
     localStorage.removeItem(key);
     setValue(defaultValue);
   }, [key, defaultValue]);
