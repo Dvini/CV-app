@@ -1,22 +1,24 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useCV } from '../../context/CVContext';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
 import { MinimalistTemplate } from './templates/MinimalistTemplate';
-import {
-  A4_HEIGHT_PX,
-  MM_TO_PX,
-  FOOTER_TEXT_HEIGHT_PX,
-  PAGINATION_DEBOUNCE_MS,
-  PAGINATION_OBSERVER_DEBOUNCE_MS,
-} from '../../constants/layout';
+import { usePagination } from '../../hooks/usePagination';
+import { A4_HEIGHT_PX } from '../../constants/layout';
 import './CVPreview.css';
+
+const FONT_FAMILY_MAP = {
+  sans: 'Inter, system-ui, sans-serif',
+  serif: 'Merriweather, Georgia, serif',
+  Roboto: 'Roboto, sans-serif',
+  'Open Sans': '"Open Sans", sans-serif',
+  Montserrat: 'Montserrat, sans-serif',
+  Lato: 'Lato, sans-serif',
+  'Playfair Display': '"Playfair Display", serif',
+};
 
 export function CVPreview() {
   const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, data, getMarginValues } = useCV();
-  const contentRef = useRef(null);
-  const [pageCount, setPageCount] = useState(1);
-  const [pageSpacers, setPageSpacers] = useState([]);
 
   useEffect(() => {
     if (fontFamily !== 'sans' && fontFamily !== 'serif') {
@@ -31,151 +33,15 @@ export function CVPreview() {
     }
   }, [fontFamily]);
 
-  const getFontFamilyValue = () => {
-    switch (fontFamily) {
-      case 'sans': return 'Inter, system-ui, sans-serif';
-      case 'serif': return 'Merriweather, Georgia, serif';
-      case 'Roboto': return 'Roboto, sans-serif';
-      case 'Open Sans': return '"Open Sans", sans-serif';
-      case 'Montserrat': return 'Montserrat, sans-serif';
-      case 'Lato': return 'Lato, sans-serif';
-      case 'Playfair Display': return '"Playfair Display", serif';
-      default: return 'Inter, system-ui, sans-serif';
-    }
-  };
-
+  const fontFamilyValue = FONT_FAMILY_MAP[fontFamily] || FONT_FAMILY_MAP.sans;
   const showClauseFooter = data.showClause && data.clause;
+  const { v: marginV, h: marginH } = getMarginValues();
+  const footerTextHeightPx = showClauseFooter ? 36 : 0;
 
-  const { v: marginV, h: marginH } = getMarginValues(); // mm
-  const marginVPx = Math.round(marginV * MM_TO_PX);
-  
-  // Footer visual height (allow more space for 2 lines)
-  const footerTextHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
-
-  // How much of the CV page is visually sliced for this sheet
-  // This dictates where the gray backgrounds are cut off.
-  const visualContentHeight = A4_HEIGHT_PX - footerTextHeightPx;
-
-  // The bottom limit for text. Text should never flow below the physical margin!
-  const engineContentHeight = A4_HEIGHT_PX - Math.max(footerTextHeightPx, marginVPx);
-
-  // 1. Measuring Engine
-  useEffect(() => {
-    if (!contentRef.current) return;
-
-    const calculatePages = () => {
-      const measureContainer = contentRef.current;
-      
-      // Reset all margins in measureContainer FIRST
-      measureContainer.querySelectorAll('.cv-breakable').forEach(el => {
-        el.style.marginTop = '';
-      });
-      
-      const breakables = Array.from(measureContainer.querySelectorAll('.cv-breakable'));
-      const marginVPx = Math.round(marginV * MM_TO_PX);
-      const edits = [];
-
-      for (let index = 0; index < breakables.length; index++) {
-        const el = breakables[index];
-        const elRect = el.getBoundingClientRect();
-        const containerRect = measureContainer.getBoundingClientRect();
-        
-        const topRelative = elRect.top - containerRect.top;
-        const bottomRelative = elRect.bottom - containerRect.top;
-        
-        const startPage = Math.floor((topRelative + 1) / visualContentHeight);
-        const pageTextLimit = startPage * visualContentHeight + engineContentHeight;
-        
-        const pageTopLimit = startPage * visualContentHeight;
-        const pageSafeTop = startPage * visualContentHeight + marginVPx;
-        
-        let needsPush = false;
-        let targetY = 0;
-
-        // Condition 1: Element crosses the bottom margin of the page
-        if (bottomRelative - 1 > pageTextLimit && elRect.height < engineContentHeight) {
-          needsPush = true;
-          targetY = (startPage + 1) * visualContentHeight + marginVPx;
-        } 
-        // Condition 2: Element natively falls exactly in the top margin padding of a new page
-        else if (startPage > 0 && topRelative >= pageTopLimit && topRelative < pageSafeTop) {
-          needsPush = true;
-          targetY = pageSafeTop;
-        }
-        
-        if (needsPush) {
-          let elementToPush = el;
-          let pushAmount = targetY - topRelative;
-          let pushIndex = index;
-
-          // Check if previous element is a heading that we should drag along
-          const prev = index > 0 ? breakables[index - 1] : null;
-
-          if (prev && prev.hasAttribute('data-keep-with-next')) {
-            // Ensure they belong to the same parent section wrapper
-            if (prev.closest('.cv-section') === el.closest('.cv-section')) {
-              const prevRect = prev.getBoundingClientRect();
-              const prevTopRelative = prevRect.top - containerRect.top;
-              
-              elementToPush = prev;
-              pushAmount = targetY - prevTopRelative;
-              pushIndex = index - 1;
-            }
-          }
-          
-          if (pushAmount > 0) {
-            const computedMargin = parseFloat(window.getComputedStyle(elementToPush).marginTop) || 0;
-            const newMargin = computedMargin + pushAmount;
-            elementToPush.style.marginTop = `${newMargin}px`;
-            
-            // Record the edit
-            const existingEdit = edits.find(e => e.index === pushIndex);
-            if (existingEdit) {
-              existingEdit.newMargin = newMargin;
-            } else {
-              edits.push({ index: pushIndex, newMargin });
-            }
-          }
-        }
-      }
-
-      const totalHeight = measureContainer.scrollHeight;
-      const pages = Math.max(1, Math.ceil((totalHeight - 5) / visualContentHeight));
-      if (pages !== pageCount) setPageCount(pages);
-
-      const editsStr = JSON.stringify(edits);
-      setPageSpacers(prev => JSON.stringify(prev) !== editsStr ? edits : prev);
-    };
-
-    const timer = setTimeout(calculatePages, PAGINATION_DEBOUNCE_MS);
-    const observer = new ResizeObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
-    observer.observe(contentRef.current);
-    const mutationObserver = new MutationObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
-    mutationObserver.observe(contentRef.current, { childList: true, subtree: true, characterData: true });
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-      mutationObserver.disconnect();
-    };
-  }, [template, margins, customMargin, visualContentHeight, engineContentHeight, marginV, data]);
-
-  // 2. Clone Synchronization (runs after every render)
-  useEffect(() => {
-    const cloneContainers = document.querySelectorAll('.cv-preview-container .cv-content-offset');
-    cloneContainers.forEach(container => {
-      const breakables = container.querySelectorAll('.cv-breakable');
-      
-      // Reset first
-      breakables.forEach(el => el.style.marginTop = '');
-      
-      // Apply calculated spacers
-      pageSpacers.forEach(spacer => {
-        if (breakables[spacer.index]) {
-          breakables[spacer.index].style.marginTop = `${spacer.newMargin}px`;
-        }
-      });
-    });
+  const { contentRef, pageCount, visualContentHeight } = usePagination({
+    showClauseFooter: !!showClauseFooter,
+    marginVMm: marginV,
+    deps: [template, margins, customMargin, data],
   });
 
   const renderTemplate = () => {
@@ -192,7 +58,7 @@ export function CVPreview() {
 
   return (
     <main className="preview-area" style={{
-      '--cv-font-family': getFontFamilyValue(),
+      '--cv-font-family': fontFamilyValue,
       '--cv-heading-scale': fontSizeHeading,
       '--cv-text-scale': fontSizeText
     }}>
