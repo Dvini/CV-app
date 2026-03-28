@@ -18,11 +18,12 @@ export function ContactLink({ url, className }) {
 }
 
 export function ContactInfo({ personal, className, linkClassName }) {
+  const spanClass = linkClassName || className;
   return (
     <>
-      {personal.email && <span className={linkClassName}>{personal.email}</span>}
-      {personal.phone && <span>{personal.phone}</span>}
-      {personal.location && <span>{personal.location}</span>}
+      {personal.email && <span className={spanClass}>{personal.email}</span>}
+      {personal.phone && <span className={spanClass}>{personal.phone}</span>}
+      {personal.location && <span className={spanClass}>{personal.location}</span>}
       {personal.linkedin && <ContactLink url={personal.linkedin} className={linkClassName} />}
       {personal.github && <ContactLink url={personal.github} className={linkClassName} />}
       {personal.website && <ContactLink url={personal.website} className={linkClassName} />}
