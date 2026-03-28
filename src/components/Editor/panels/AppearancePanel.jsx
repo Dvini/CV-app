@@ -12,6 +12,8 @@ export function AppearancePanel({ isOpen, onToggle }) {
     themeColor, setThemeColor,
     margins, setMargins,
     customMargin, setCustomMargin,
+    fontSizeHeading, setFontSizeHeading,
+    fontSizeText, setFontSizeText,
   } = useCV();
 
   const templates = [
@@ -51,13 +53,49 @@ export function AppearancePanel({ isOpen, onToggle }) {
           </div>
         </div>
 
-        {/* Font */}
+        {/* Typography */}
         <div className="appearance-group">
-          <label className="appearance-label">Rodzaj czcionki</label>
-          <div className="btn-group btn-group--2">
-            <button onClick={() => setFontFamily('sans')} className={`btn-option ${fontFamily === 'sans' ? 'btn-option--active' : ''}`} style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>Bezszeryfowa</button>
-            <button onClick={() => setFontFamily('serif')} className={`btn-option ${fontFamily === 'serif' ? 'btn-option--active' : ''}`} style={{ fontFamily: 'Merriweather, Georgia, serif' }}>Szeryfowa</button>
-          </div>
+          <label className="appearance-label">Krój czcionki</label>
+          <select 
+            value={fontFamily} 
+            onChange={(e) => setFontFamily(e.target.value)}
+            className="field-input"
+            style={{ marginBottom: '1rem', fontFamily: ['sans', 'serif'].includes(fontFamily) ? 'inherit' : fontFamily }}
+          >
+            <option value="sans">Domyślna bezszeryfowa (Inter)</option>
+            <option value="serif">Domyślna szeryfowa (Merriweather)</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Open Sans">Open Sans</option>
+            <option value="Montserrat">Montserrat</option>
+            <option value="Lato">Lato</option>
+            <option value="Playfair Display">Playfair Display</option>
+          </select>
+
+          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>Wielkość nagłówków</span>
+            <span>{Math.round(fontSizeHeading * 100)}%</span>
+          </label>
+          <input 
+            type="range" 
+            min="0.8" max="1.3" step="0.05" 
+            value={fontSizeHeading} 
+            onChange={(e) => setFontSizeHeading(Number(e.target.value))}
+            className="slider-input"
+            style={{ width: '100%', marginBottom: '1rem' }}
+          />
+
+          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>Wielkość tekstów</span>
+            <span>{Math.round(fontSizeText * 100)}%</span>
+          </label>
+          <input 
+            type="range" 
+            min="0.8" max="1.3" step="0.05" 
+            value={fontSizeText} 
+            onChange={(e) => setFontSizeText(Number(e.target.value))}
+            className="slider-input"
+            style={{ width: '100%' }}
+          />
         </div>
 
         {/* Accent Color */}

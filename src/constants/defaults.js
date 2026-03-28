@@ -62,6 +62,7 @@ export const defaultData = {
       level: 'C1',
     },
   ],
+  interests: 'Fotografia, podróże, technologie webowe',
   projects: [
     {
       id: 'proj-1',
@@ -84,6 +85,7 @@ export const defaultSectionOrder = [
   'projects',
   'skills',
   'languages',
+  'interests',
 ];
 
 export const defaultSectionColumns = {
@@ -94,4 +96,5 @@ export const defaultSectionColumns = {
   projects: 'main',
   skills: 'side',
   languages: 'side',
+  interests: 'side',
 };
