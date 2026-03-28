@@ -1,11 +1,12 @@
 import React from 'react';
 import { SquarePen, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
 export function CustomPanel({ isOpen, onToggle }) {
-  const { data, setData, cvLanguage, addItem, updateItem, removeItem, moveItem } = useCV();
+  const { data, setData, addItem, updateItem, removeItem, moveItem } = useCVData();
+  const { cvLanguage } = useCVAppearance();
 
   const handleTitleChange = (e) => {
     setData((prev) => ({ ...prev, customSectionTitle: e.target.value }));

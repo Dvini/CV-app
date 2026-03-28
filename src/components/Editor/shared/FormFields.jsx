@@ -1,11 +1,11 @@
 import React from 'react';
-import { useCV } from '../../../context/CVContext';
+import { useCVAppearance } from '../../../context/CVContext';
 import './shared.css';
 
 const LANG_MAP = { pl: 'pl', en: 'en' };
 
 function useLang() {
-  const { cvLanguage } = useCV();
+  const { cvLanguage } = useCVAppearance();
   return LANG_MAP[cvLanguage] || 'pl';
 }
 

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Download, Moon, Sun, FileText, Edit3, Loader } from 'lucide-react';
-import { useCV } from '../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../context/CVContext';
 import './Header.css';
 
 export function Header() {
-  const { themeColor, darkMode, setDarkMode, data } = useCV();
+  const { data } = useCVData();
+  const { themeColor, darkMode, setDarkMode } = useCVAppearance();
   const [mobileView, setMobileView] = useState('editor');
   const [exporting, setExporting] = useState(false);
 

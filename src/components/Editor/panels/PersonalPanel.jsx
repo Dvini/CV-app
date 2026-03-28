@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 import { User, Camera, X } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea, Select } from '../shared/FormFields';
 import { compressImage } from '../../../utils/imageUtils';
 
 export function PersonalPanel({ isOpen, onToggle }) {
-  const { data, handlePersonalChange } = useCV();
+  const { data, handlePersonalChange } = useCVData();
   const photoInputRef = useRef(null);
   const p = data.personal;
 

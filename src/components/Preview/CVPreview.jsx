@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useCV } from '../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../context/CVContext';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
 import { MinimalistTemplate } from './templates/MinimalistTemplate';
@@ -20,7 +20,8 @@ const FONT_FAMILY_MAP = {
 };
 
 export function CVPreview() {
-  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, data, getMarginValues } = useCV();
+  const { data } = useCVData();
+  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues } = useCVAppearance();
 
   useEffect(() => {
     if (fontFamily !== 'sans' && fontFamily !== 'serif') {

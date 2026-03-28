@@ -1,11 +1,11 @@
 import React from 'react';
 import { FolderKanban, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
 export function ProjectsPanel({ isOpen, onToggle }) {
-  const { data, addItem, updateItem, removeItem, moveItem } = useCV();
+  const { data, addItem, updateItem, removeItem, moveItem } = useCVData();
 
   const add = () =>
     addItem('projects', {

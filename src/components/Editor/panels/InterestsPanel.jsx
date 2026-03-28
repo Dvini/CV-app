@@ -1,11 +1,11 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
 export function InterestsPanel({ isOpen, onToggle }) {
-  const { data, handleInterestsChange } = useCV();
+  const { data, handleInterestsChange } = useCVData();
 
   return (
     <Panel title="Zainteresowania" icon={Heart} isOpen={isOpen} onToggle={onToggle}>

@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { Database, FileJson, Upload, RotateCcw, Plus, Copy, Trash2, Pencil, Check, X, SpellCheck, Loader, AlertTriangle } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance, useCVManager } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
 export function DataSyncPanel() {
+  const { data, handleClauseChange, toggleClause } = useCVData();
+  const { cvLanguage } = useCVAppearance();
   const {
-    exportJSON, importJSON, resetToDefaults, data, handleClauseChange, toggleClause,
+    exportJSON, importJSON, resetToDefaults,
     profiles, activeProfileId, switchProfile, createProfile, deleteProfile, renameProfile,
-    cvLanguage,
-  } = useCV();
+  } = useCVManager();
   const fileInputRef = useRef(null);
 
   const [editingId, setEditingId] = useState(null);

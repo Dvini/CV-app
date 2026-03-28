@@ -1,11 +1,11 @@
 import React from 'react';
 import { Briefcase, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
 export function ExperiencePanel({ isOpen, onToggle }) {
-  const { data, addItem, updateItem, removeItem, moveItem } = useCV();
+  const { data, addItem, updateItem, removeItem, moveItem } = useCVData();
 
   const add = () =>
     addItem('experience', {

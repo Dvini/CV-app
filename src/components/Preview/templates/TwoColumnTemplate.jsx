@@ -1,11 +1,12 @@
 import React from 'react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
 export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
-  const { data, sectionOrder, sectionColumns, getMarginStyle, getPhotoStyle, themeColor } = useCV();
+  const { data, sectionOrder, sectionColumns, getPhotoStyle } = useCVData();
+  const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');

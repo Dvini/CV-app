@@ -1,11 +1,11 @@
 import React from 'react';
 import { GraduationCap, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Input } from '../shared/FormFields';
 
 export function EducationPanel({ isOpen, onToggle }) {
-  const { data, addItem, updateItem, removeItem, moveItem } = useCV();
+  const { data, addItem, updateItem, removeItem, moveItem } = useCVData();
 
   const add = () =>
     addItem('education', {

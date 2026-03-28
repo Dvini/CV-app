@@ -1,11 +1,11 @@
 import React from 'react';
 import { Wrench } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
 export function SkillsPanel({ isOpen, onToggle }) {
-  const { data, handleSkillsChange } = useCV();
+  const { data, handleSkillsChange } = useCVData();
 
   return (
     <Panel title="Umiejętności" icon={Wrench} isOpen={isOpen} onToggle={onToggle}>

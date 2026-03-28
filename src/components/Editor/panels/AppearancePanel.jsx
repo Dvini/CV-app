@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Palette, Plus } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVAppearance } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { presetColors } from '../../../constants/colors';
 
@@ -16,7 +16,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     fontSizeText, setFontSizeText,
     showSectionIcons, setShowSectionIcons,
     creativeHeaderBg, setCreativeHeaderBg,
-  } = useCV();
+  } = useCVAppearance();
 
   const templates = [
     { key: 'classic', label: 'Klasyczny (1 kolumna)' },

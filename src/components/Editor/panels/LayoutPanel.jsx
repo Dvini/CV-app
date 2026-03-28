@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { LayoutGrid, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { sectionNamesPl } from '../../../constants/translations';
 
@@ -8,13 +8,13 @@ export function LayoutPanel({ isOpen, onToggle }) {
   const {
     sectionOrder,
     sectionColumns,
-    template,
     moveSection,
     toggleColumn,
     isFirstInColumn,
     isLastInColumn,
     setSectionOrder,
-  } = useCV();
+  } = useCVData();
+  const { template } = useCVAppearance();
 
   const dragItem = useRef(null);
   const [dragOverItem, setDragOverItem] = useState(null);

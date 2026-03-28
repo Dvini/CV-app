@@ -14,7 +14,9 @@ import {
   COLUMN_INNER_GAP_RIGHT,
 } from '../constants/layout';
 
-const CVContext = createContext(null);
+const CVDataContext = createContext(null);
+const CVAppearanceContext = createContext(null);
+const CVManagerContext = createContext(null);
 
 const SCHEMA_VERSION = 2;
 
@@ -458,15 +460,34 @@ export function CVProvider({ children }) {
     };
   };
 
-  const value = {
+  const dataValue = {
     data: safeData,
     setData,
     sectionOrder: safeSectionOrder,
     setSectionOrder,
     sectionColumns: safeSectionColumns,
     setSectionColumns,
-    storageWarning,
-    dismissWarning,
+    handlePersonalChange,
+    handleSkillsChange,
+    handleInterestsChange,
+    handleClauseChange,
+    toggleClause,
+    addItem,
+    updateItem,
+    removeItem,
+    moveItem,
+    moveSection,
+    toggleColumn,
+    isFirstInColumn,
+    isLastInColumn,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    getPhotoStyle,
+  };
+
+  const appearanceValue = {
     template,
     setTemplate,
     margins,
@@ -489,30 +510,16 @@ export function CVProvider({ children }) {
     setShowSectionIcons,
     creativeHeaderBg,
     setCreativeHeaderBg,
-    // Helpers
-    handlePersonalChange,
-    handleSkillsChange,
-    handleInterestsChange,
-    handleClauseChange,
-    toggleClause,
-    addItem,
-    updateItem,
-    removeItem,
-    moveItem,
-    moveSection,
-    toggleColumn,
-    isFirstInColumn,
-    isLastInColumn,
+    getMarginStyle,
+    getMarginValues,
+  };
+
+  const managerValue = {
+    storageWarning,
+    dismissWarning,
     exportJSON,
     importJSON,
     resetToDefaults,
-    getMarginStyle,
-    getMarginValues,
-    getPhotoStyle,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
     profiles,
     activeProfileId,
     switchProfile,
@@ -521,11 +528,35 @@ export function CVProvider({ children }) {
     renameProfile,
   };
 
-  return <CVContext.Provider value={value}>{children}</CVContext.Provider>;
+  return (
+    <CVManagerContext.Provider value={managerValue}>
+      <CVAppearanceContext.Provider value={appearanceValue}>
+        <CVDataContext.Provider value={dataValue}>
+          {children}
+        </CVDataContext.Provider>
+      </CVAppearanceContext.Provider>
+    </CVManagerContext.Provider>
+  );
+}
+
+export function useCVData() {
+  const ctx = useContext(CVDataContext);
+  if (!ctx) throw new Error('useCVData must be used within CVProvider');
+  return ctx;
+}
+
+export function useCVAppearance() {
+  const ctx = useContext(CVAppearanceContext);
+  if (!ctx) throw new Error('useCVAppearance must be used within CVProvider');
+  return ctx;
+}
+
+export function useCVManager() {
+  const ctx = useContext(CVManagerContext);
+  if (!ctx) throw new Error('useCVManager must be used within CVProvider');
+  return ctx;
 }
 
 export function useCV() {
-  const ctx = useContext(CVContext);
-  if (!ctx) throw new Error('useCV must be used within CVProvider');
-  return ctx;
+  return { ...useCVData(), ...useCVAppearance(), ...useCVManager() };
 }

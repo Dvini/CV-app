@@ -1,11 +1,12 @@
 import React from 'react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
 export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
-  const { data, sectionOrder, getMarginStyle, getPhotoStyle, themeColor } = useCV();
+  const { data, sectionOrder, getPhotoStyle } = useCVData();
+  const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (

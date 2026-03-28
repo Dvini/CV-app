@@ -1,5 +1,5 @@
 import React from 'react';
-import { CVProvider, useCV } from './context/CVContext';
+import { CVProvider, useCVData, useCVAppearance, useCVManager } from './context/CVContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Header } from './components/Layout/Header';
 import { EditorSidebar } from './components/Editor/EditorSidebar';
@@ -7,7 +7,9 @@ import { CVPreview } from './components/Preview/CVPreview';
 import './styles/index.css';
 
 function AppContent() {
-  const { darkMode, storageWarning, dismissWarning, undo, redo } = useCV();
+  const { undo, redo } = useCVData();
+  const { darkMode } = useCVAppearance();
+  const { storageWarning, dismissWarning } = useCVManager();
 
   React.useEffect(() => {
     document.documentElement.setAttribute(

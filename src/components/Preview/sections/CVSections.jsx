@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCV } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { cvTranslations } from '../../../constants/translations';
 import {
   User, Briefcase, GraduationCap, BookOpen, Code2, Globe,
@@ -25,7 +25,7 @@ const SECTION_ICONS = {
 
 /* Shared heading class logic */
 function useHeading() {
-  const { template, themeColor, cvLanguage, showSectionIcons } = useCV();
+  const { template, themeColor, cvLanguage, showSectionIcons } = useCVAppearance();
   const t = cvTranslations[cvLanguage] || cvTranslations['pl'];
 
   const headingClass =
@@ -49,8 +49,8 @@ function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t
 
 /* Personal / Summary */
 export function SummarySection({ columnType }) {
-  const { data, template } = useCV();
-  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
+  const { data } = useCVData();
+  const { headingClass, themeColor, t, showSectionIcons, template } = useHeading();
   if (!data.personal.summary) return null;
 
   return (
@@ -67,7 +67,7 @@ export function SummarySection({ columnType }) {
 
 /* Experience */
 export function ExperienceSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.experience.length === 0) return null;
 
@@ -104,7 +104,7 @@ export function ExperienceSection({ columnType }) {
 
 /* Education */
 export function EducationSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.education.length === 0) return null;
 
@@ -132,7 +132,7 @@ export function EducationSection({ columnType }) {
 
 /* Courses */
 export function CoursesSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.courses.length === 0) return null;
 
@@ -161,7 +161,7 @@ export function CoursesSection({ columnType }) {
 
 /* Skills */
 export function SkillsSection() {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   const skillsArray = data.skills
     .split(',')
@@ -183,7 +183,7 @@ export function SkillsSection() {
 
 /* Languages */
 export function LanguagesSection() {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.languages || data.languages.length === 0) return null;
 
@@ -204,7 +204,7 @@ export function LanguagesSection() {
 
 /* Projects */
 export function ProjectsSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.projects || data.projects.length === 0) return null;
 
@@ -242,7 +242,7 @@ export function ProjectsSection({ columnType }) {
 
 /* Interests */
 export function InterestsSection() {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   const interestsArray = (data.interests || '')
     .split(',')
@@ -264,7 +264,7 @@ export function InterestsSection() {
 
 /* Clause */
 export function ClauseSection() {
-  const { data } = useCV();
+  const { data } = useCVData();
   if (!data.showClause || !data.clause) return null;
 
   return (
@@ -276,7 +276,7 @@ export function ClauseSection() {
 
 /* Certificates */
 export function CertificatesSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.certificates || data.certificates.length === 0) return null;
 
@@ -305,7 +305,7 @@ export function CertificatesSection({ columnType }) {
 
 /* References */
 export function ReferencesSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.references || data.references.length === 0) return null;
 
@@ -329,7 +329,7 @@ export function ReferencesSection({ columnType }) {
 
 /* Publications */
 export function PublicationsSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.publications || data.publications.length === 0) return null;
 
@@ -358,7 +358,7 @@ export function PublicationsSection({ columnType }) {
 
 /* Volunteer */
 export function VolunteerSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.volunteer || data.volunteer.length === 0) return null;
 
@@ -387,7 +387,7 @@ export function VolunteerSection({ columnType }) {
 
 /* Custom section */
 export function CustomSection({ columnType }) {
-  const { data } = useCV();
+  const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.custom || data.custom.length === 0) return null;
 
