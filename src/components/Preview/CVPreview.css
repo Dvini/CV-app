@@ -289,9 +289,11 @@
 
 /* ===== PRINT ===== */
 @media print {
-  body {
+  html, body, #root, .app-layout {
     background: white !important;
     overflow: visible !important;
+    height: auto !important;
+    display: block !important;
   }
 
   #app-header,
@@ -299,7 +301,6 @@
   .mobile-nav,
   .page-count-badge,
   .cv-page-sheet-label,
-  .cv-page-footer-bar,
   .cv-measure-container {
     display: none !important;
   }
@@ -308,20 +309,26 @@
     padding: 0 !important;
     background: white !important;
     overflow: visible !important;
+    display: block !important;
   }
 
   .preview-scroll {
     padding: 0 !important;
     overflow: visible !important;
+    display: block !important;
   }
 
   .cv-pages-stack {
     gap: 0 !important;
+    display: block !important;
   }
 
   .cv-page-sheet {
-    width: 100% !important;
+    width: 210mm !important;
+    height: 296.5mm !important;
     max-width: none !important;
+    overflow: hidden !important;
+    page-break-inside: avoid;
     page-break-after: always;
   }
 
@@ -333,30 +340,11 @@
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
-    width: 100% !important;
+    width: 210mm !important;
+    height: 296.5mm !important;
     max-width: none !important;
     border-radius: 0 !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  .cv-page-content-clip {
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  .cv-content-offset {
-    transform: none !important;
-  }
-
-  /* Only show the first page sheet with full content, hide duplicates */
-  .cv-page-sheet:not(:first-child) {
-    display: none !important;
-  }
-
-  .cv-page-sheet:first-child .cv-preview-container {
-    height: auto !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 
   .cv-item,
@@ -365,23 +353,14 @@
     page-break-inside: avoid;
   }
 
-  /* Print RODO footer — position:fixed in print = repeated on every page */
+  /* Hide the fallback print footer, we are now printing visual slices that include their own footers */
   .cv-print-footer {
-    display: block !important;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 6pt;
-    color: #94a3b8;
-    font-style: italic;
-    padding: 2mm 5mm;
-    border-top: 0.5px solid #e2e8f0;
+    display: none !important;
   }
 
   @page {
-    margin: 5mm 5mm 12mm 5mm;
+    size: A4;
+    margin: 0;
   }
 }
 
