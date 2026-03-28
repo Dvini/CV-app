@@ -1,7 +1,6 @@
 /* ===== DESIGN SYSTEM — KREATOR CV ===== */
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700&display=swap');
+/* Fonts loaded via @fontsource in main.jsx */
 
 /* ===== CSS CUSTOM PROPERTIES ===== */
 :root {
