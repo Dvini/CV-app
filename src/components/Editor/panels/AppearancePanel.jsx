@@ -61,14 +61,14 @@ export function AppearancePanel({ isOpen, onToggle }) {
         {/* Section Icons toggle */}
         <div className="appearance-group">
           <label className="appearance-label">Ikony przy sekcjach CV</label>
-          <label className="toggle-wrapper" role="switch" aria-checked={showSectionIcons}>
+          <label className="toggle-row" role="switch" aria-checked={showSectionIcons}>
             <input
               type="checkbox"
               checked={showSectionIcons}
               onChange={(e) => setShowSectionIcons(e.target.checked)}
-              className="toggle-input"
+              className="toggle-checkbox"
             />
-            <span className="toggle-slider" /><span className="toggle-label-text">{showSectionIcons ? 'Włączone' : 'Wyłączone'}</span>
+            <span className="toggle-slider" /><span className="toggle-label">{showSectionIcons ? 'Włączone' : 'Wyłączone'}</span>
           </label>
         </div>
 
@@ -165,9 +165,9 @@ export function AppearancePanel({ isOpen, onToggle }) {
         {/* Gradient */}
         <div className="appearance-group">
           <label className="appearance-label">Gradient (nagłówek/sidebar)</label>
-          <label className="toggle-wrapper" role="switch" aria-checked={gradientEnabled}>
-            <input type="checkbox" checked={gradientEnabled} onChange={(e) => setGradientEnabled(e.target.checked)} className="toggle-input" />
-            <span className="toggle-slider" /><span className="toggle-label-text">{gradientEnabled ? 'Włączony' : 'Wyłączony'}</span>
+          <label className="toggle-row" role="switch" aria-checked={gradientEnabled}>
+            <input type="checkbox" checked={gradientEnabled} onChange={(e) => setGradientEnabled(e.target.checked)} className="toggle-checkbox" />
+            <span className="toggle-slider" /><span className="toggle-label">{gradientEnabled ? 'Włączony' : 'Wyłączony'}</span>
           </label>
           {gradientEnabled && (
             <div className="color-picker-row" style={{ marginTop: '0.5rem' }}>
