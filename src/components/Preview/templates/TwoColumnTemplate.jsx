@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
-export function TwoColumnTemplate() {
+export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { data, sectionOrder, sectionColumns, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
@@ -43,4 +43,4 @@ export function TwoColumnTemplate() {
       </div>
     </div>
   );
-}
+});

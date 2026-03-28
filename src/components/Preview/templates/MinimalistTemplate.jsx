@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
-export function MinimalistTemplate() {
+export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
   const { data, sectionOrder, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
@@ -33,4 +33,4 @@ export function MinimalistTemplate() {
 
     </div>
   );
-}
+});

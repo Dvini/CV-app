@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
-export function ClassicTemplate() {
+export const ClassicTemplate = React.memo(function ClassicTemplate() {
   const { data, sectionOrder, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
@@ -33,4 +33,4 @@ export function ClassicTemplate() {
 
     </div>
   );
-}
+});
