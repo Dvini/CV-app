@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from "react";
 
 const MAX_HISTORY = 50;
 
@@ -22,7 +22,9 @@ export function useHistory<T>(currentValue: T, setValue: (value: T) => void) {
     }
     setPast((p) => {
       const newPast = [...p, prevValue];
-      return newPast.length > MAX_HISTORY ? newPast.slice(-MAX_HISTORY) : newPast;
+      return newPast.length > MAX_HISTORY
+        ? newPast.slice(-MAX_HISTORY)
+        : newPast;
     });
     setFuture([]);
   }, []);

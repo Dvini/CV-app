@@ -10,7 +10,7 @@ export interface Personal {
   photo: string | null;
   showPhoto: boolean;
   photoSize: number;
-  photoShape: 'round' | 'square' | 'rectangle-portrait' | 'rectangle-landscape';
+  photoShape: "round" | "square" | "rectangle-portrait" | "rectangle-landscape";
   summary: string;
 }
 
@@ -115,50 +115,74 @@ export interface CVData {
 }
 
 export type SectionKey =
-  | 'personal'
-  | 'experience'
-  | 'education'
-  | 'courses'
-  | 'projects'
-  | 'skills'
-  | 'languages'
-  | 'interests'
-  | 'certificates'
-  | 'references'
-  | 'publications'
-  | 'volunteer'
-  | 'custom';
+  | "personal"
+  | "experience"
+  | "education"
+  | "courses"
+  | "projects"
+  | "skills"
+  | "languages"
+  | "interests"
+  | "certificates"
+  | "references"
+  | "publications"
+  | "volunteer"
+  | "custom";
 
-export type ColumnSide = 'main' | 'side';
+export type ColumnSide = "main" | "side";
 
 export type SectionColumns = Record<SectionKey, ColumnSide>;
 
-export type TemplateName = 'classic' | 'twocolumn' | 'minimalist' | 'compact' | 'creative';
+export type TemplateName =
+  | "classic"
+  | "twocolumn"
+  | "minimalist"
+  | "compact"
+  | "creative";
 
-export type MarginPreset = 'small' | 'normal' | 'large' | 'custom';
+export type MarginPreset = "small" | "normal" | "large" | "custom";
 
 export interface CustomMargin {
   vertical: number;
   horizontal: number;
 }
 
-export type FontFamily = 'sans' | 'serif' | 'Roboto' | 'Open Sans' | 'Montserrat' | 'Lato' | 'Playfair Display';
+export type FontFamily =
+  | "sans"
+  | "serif"
+  | "Roboto"
+  | "Open Sans"
+  | "Montserrat"
+  | "Lato"
+  | "Playfair Display";
 
-export type CVLanguage = 'pl' | 'en';
+export type CVLanguage = "pl" | "en";
 
-export type PhotoShape = 'round' | 'square' | 'rectangle-portrait' | 'rectangle-landscape';
+export type PhotoShape =
+  | "round"
+  | "square"
+  | "rectangle-portrait"
+  | "rectangle-landscape";
 
 export interface Profile {
   id: string;
   name: string;
 }
 
-export type MarginVariant = 'container' | 'left-column' | 'right-column';
+export type MarginVariant = "container" | "left-column" | "right-column";
 
-export type MoveDirection = 'up' | 'down';
+export type MoveDirection = "up" | "down";
 
 export type ArrayFieldName = keyof Pick<
   CVData,
-  'experience' | 'education' | 'courses' | 'languages' | 'projects' |
-  'certificates' | 'references' | 'publications' | 'volunteer' | 'custom'
+  | "experience"
+  | "education"
+  | "courses"
+  | "languages"
+  | "projects"
+  | "certificates"
+  | "references"
+  | "publications"
+  | "volunteer"
+  | "custom"
 >;

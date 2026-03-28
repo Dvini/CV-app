@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   A4_HEIGHT_PX,
   MM_TO_PX,
   FOOTER_TEXT_HEIGHT_PX,
   PAGINATION_DEBOUNCE_MS,
-} from '../constants/layout';
+} from "../constants/layout";
 
 interface SpacerEdit {
   index: number;
@@ -19,7 +19,7 @@ interface UsePaginationOptions {
 
 /**
  * Custom hook that handles A4 page pagination for the CV preview.
- * 
+ *
  * Measures CV content against A4 page boundaries and calculates
  * margin adjustments (spacers) to push elements to the next page
  * when they would otherwise cross a page boundary.
@@ -30,7 +30,11 @@ interface UsePaginationOptions {
  * @param {Array} options.deps - Additional dependencies to trigger recalculation
  * @returns {{ contentRef, pageCount, pageSpacers, visualContentHeight }}
  */
-export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePaginationOptions) {
+export function usePagination({
+  showClauseFooter,
+  marginVMm,
+  deps = [],
+}: UsePaginationOptions) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [pageCount, setPageCount] = useState(1);
   const [pageSpacers, setPageSpacers] = useState<SpacerEdit[]>([]);
@@ -38,18 +42,23 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
   const footerTextHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
   const visualContentHeight = A4_HEIGHT_PX - footerTextHeightPx;
   const marginVPx = Math.round(marginVMm * MM_TO_PX);
-  const engineContentHeight = A4_HEIGHT_PX - Math.max(footerTextHeightPx, marginVPx);
+  const engineContentHeight =
+    A4_HEIGHT_PX - Math.max(footerTextHeightPx, marginVPx);
 
   const calculatePages = useCallback(() => {
     const measureContainer = contentRef.current;
     if (!measureContainer) return;
 
     // Reset all margins in measureContainer FIRST
-    measureContainer.querySelectorAll<HTMLElement>('.cv-breakable').forEach(el => {
-      el.style.marginTop = '';
-    });
+    measureContainer
+      .querySelectorAll<HTMLElement>(".cv-breakable")
+      .forEach((el) => {
+        el.style.marginTop = "";
+      });
 
-    const breakables = Array.from(measureContainer.querySelectorAll<HTMLElement>('.cv-breakable'));
+    const breakables = Array.from(
+      measureContainer.querySelectorAll<HTMLElement>(".cv-breakable"),
+    );
     const edits: SpacerEdit[] = [];
 
     for (let index = 0; index < breakables.length; index++) {
@@ -61,7 +70,8 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
       const bottomRelative = elRect.bottom - containerRect.top;
 
       const startPage = Math.floor((topRelative + 1) / visualContentHeight);
-      const pageTextLimit = startPage * visualContentHeight + engineContentHeight;
+      const pageTextLimit =
+        startPage * visualContentHeight + engineContentHeight;
 
       const pageTopLimit = startPage * visualContentHeight;
       const pageSafeTop = startPage * visualContentHeight + marginVPx;
@@ -75,7 +85,11 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
         targetY = (startPage + 1) * visualContentHeight + marginVPx;
       }
       // Condition 2: Element natively falls exactly in the top margin padding of a new page
-      else if (startPage > 0 && topRelative >= pageTopLimit && topRelative < pageSafeTop) {
+      else if (
+        startPage > 0 &&
+        topRelative >= pageTopLimit &&
+        topRelative < pageSafeTop
+      ) {
         needsPush = true;
         targetY = pageSafeTop;
       }
@@ -94,8 +108,8 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
         if (!isOversized) {
           const prev = index > 0 ? breakables[index - 1] : null;
 
-          if (prev && prev.hasAttribute('data-keep-with-next')) {
-            if (prev.closest('.cv-section') === el.closest('.cv-section')) {
+          if (prev && prev.hasAttribute("data-keep-with-next")) {
+            if (prev.closest(".cv-section") === el.closest(".cv-section")) {
               const prevRect = prev.getBoundingClientRect();
               const prevTopRelative = prevRect.top - containerRect.top;
 
@@ -107,11 +121,12 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
         }
 
         if (pushAmount > 0) {
-          const computedMargin = parseFloat(window.getComputedStyle(elementToPush).marginTop) || 0;
+          const computedMargin =
+            parseFloat(window.getComputedStyle(elementToPush).marginTop) || 0;
           const newMargin = computedMargin + pushAmount;
           elementToPush.style.marginTop = `${newMargin}px`;
 
-          const existingEdit = edits.find(e => e.index === pushIndex);
+          const existingEdit = edits.find((e) => e.index === pushIndex);
           if (existingEdit) {
             existingEdit.newMargin = newMargin;
           } else {
@@ -122,11 +137,16 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
     }
 
     const totalHeight = measureContainer.scrollHeight;
-    const pages = Math.max(1, Math.ceil((totalHeight - 5) / visualContentHeight));
-    setPageCount(prev => prev !== pages ? pages : prev);
+    const pages = Math.max(
+      1,
+      Math.ceil((totalHeight - 5) / visualContentHeight),
+    );
+    setPageCount((prev) => (prev !== pages ? pages : prev));
 
     const editsStr = JSON.stringify(edits);
-    setPageSpacers(prev => JSON.stringify(prev) !== editsStr ? edits : prev);
+    setPageSpacers((prev) =>
+      JSON.stringify(prev) !== editsStr ? edits : prev,
+    );
   }, [visualContentHeight, engineContentHeight, marginVPx]);
 
   // Measuring engine: observe content and recalculate on changes
@@ -145,7 +165,11 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
     resizeObserver.observe(contentRef.current);
 
     const mutationObserver = new MutationObserver(scheduleRecalc);
-    mutationObserver.observe(contentRef.current, { childList: true, subtree: true, characterData: true });
+    mutationObserver.observe(contentRef.current, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
 
     return () => {
       clearTimeout(timer);
@@ -157,12 +181,15 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePag
 
   // Clone synchronization: apply spacers to visible page clones
   useEffect(() => {
-    const cloneContainers = document.querySelectorAll('.cv-preview-container .cv-content-offset');
-    cloneContainers.forEach(container => {
-      const breakables = container.querySelectorAll<HTMLElement>('.cv-breakable');
+    const cloneContainers = document.querySelectorAll(
+      ".cv-preview-container .cv-content-offset",
+    );
+    cloneContainers.forEach((container) => {
+      const breakables =
+        container.querySelectorAll<HTMLElement>(".cv-breakable");
 
       // Reset first
-      breakables.forEach(el => el.style.marginTop = '');
+      breakables.forEach((el) => (el.style.marginTop = ""));
 
       // Apply calculated spacers
       pageSpacers.forEach((spacer) => {

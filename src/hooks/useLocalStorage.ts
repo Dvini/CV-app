@@ -1,4 +1,11 @@
-import { useState, useEffect, useCallback, useRef, type Dispatch, type SetStateAction } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 type StorageErrorListener = (key: string) => void;
 
@@ -6,7 +13,7 @@ const STORAGE_LISTENERS: StorageErrorListener[] = [];
 const DEBOUNCE_MS = 300;
 
 function notifyStorageError(key: string): void {
-  STORAGE_LISTENERS.forEach(fn => fn(key));
+  STORAGE_LISTENERS.forEach((fn) => fn(key));
 }
 
 export function onStorageError(listener: StorageErrorListener): () => void {
@@ -17,7 +24,10 @@ export function onStorageError(listener: StorageErrorListener): () => void {
   };
 }
 
-export function useLocalStorage<T>(key: string, defaultValue: T): [T, Dispatch<SetStateAction<T>>, () => void] {
+export function useLocalStorage<T>(
+  key: string,
+  defaultValue: T,
+): [T, Dispatch<SetStateAction<T>>, () => void] {
   const [value, setValue] = useState<T>(() => {
     try {
       const saved = localStorage.getItem(key);
