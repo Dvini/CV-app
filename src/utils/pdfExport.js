@@ -12,7 +12,7 @@ const A4_HEIGHT_MM = 297;
  * @param {string} fileName - The PDF file name (without extension)
  */
 export async function exportToPDF(fileName = 'CV') {
-  const pages = document.querySelectorAll('.cv-preview-container .cv-page-wrapper');
+  const pages = document.querySelectorAll('.cv-page-sheet .cv-preview-container');
   if (pages.length === 0) return;
 
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
