@@ -25,7 +25,7 @@ export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenPr
         </div>
       </button>
       <div className={`panel-body ${isOpen ? 'panel-body--open' : ''}`}>
-        <div className="panel-body-inner">{children}</div>
+        {isOpen && <div className="panel-body-inner">{children}</div>}
       </div>
     </div>
   );
