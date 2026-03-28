@@ -14,6 +14,7 @@ interface SpacerEdit {
 interface UsePaginationOptions {
   showClauseFooter: boolean;
   marginVMm: number;
+  disableTopMarginPush?: boolean;
   deps?: unknown[];
 }
 
@@ -33,6 +34,7 @@ interface UsePaginationOptions {
 export function usePagination({
   showClauseFooter,
   marginVMm,
+  disableTopMarginPush = false,
   deps = [],
 }: UsePaginationOptions) {
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -86,6 +88,7 @@ export function usePagination({
       }
       // Condition 2: Element natively falls exactly in the top margin padding of a new page
       else if (
+        !disableTopMarginPush &&
         startPage > 0 &&
         topRelative >= pageTopLimit &&
         topRelative < pageSafeTop
@@ -147,7 +150,7 @@ export function usePagination({
     setPageSpacers((prev) =>
       JSON.stringify(prev) !== editsStr ? edits : prev,
     );
-  }, [visualContentHeight, engineContentHeight, marginVPx]);
+  }, [visualContentHeight, engineContentHeight, marginVPx, disableTopMarginPush]);
 
   // Measuring engine: observe content and recalculate on changes
   useEffect(() => {

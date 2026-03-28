@@ -23,6 +23,7 @@ const FONT_FAMILY_MAP = {
 export function CVPreview() {
   const { data } = useCVData();
   const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues } = useCVAppearance();
+  const isColumnTemplate = template === 'twocolumn' || template === 'creative';
 
   useEffect(() => {
     if (fontFamily !== 'sans' && fontFamily !== 'serif') {
@@ -46,6 +47,7 @@ export function CVPreview() {
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter: !!showClauseFooter,
     marginVMm: marginV,
+    disableTopMarginPush: isColumnTemplate,
     deps: [template, margins, customMargin, data],
   });
 
@@ -98,7 +100,7 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
-                  {pageIndex > 0 && marginVPx > 0 && (
+                  {pageIndex > 0 && marginVPx > 0 && !isColumnTemplate && (
                     <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
                   )}
                   <div
