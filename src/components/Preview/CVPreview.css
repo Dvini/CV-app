@@ -153,19 +153,12 @@
 }
 
 .cv-header-photo {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
   object-fit: cover;
   border: 2px solid #e2e8f0;
   flex-shrink: 0;
 }
 
-.cv-header-photo--minimalist {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 0.75rem;
-}
+
 
 .cv-header--minimalist {
   text-align: center;
@@ -273,12 +266,8 @@
 }
 
 .cv-sidebar-photo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
   object-fit: cover;
   border: 2px solid #e2e8f0;
-  margin-bottom: 0.75rem;
 }
 
 .cv-sidebar-sections {

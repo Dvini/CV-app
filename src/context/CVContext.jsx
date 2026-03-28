@@ -248,6 +248,32 @@ export function CVProvider({ children }) {
     setCvLanguage('pl');
   };
 
+  const getPhotoStyle = () => {
+    const shape = safeData.personal.photoShape || 'round';
+    const size = safeData.personal.photoSize || 80;
+    
+    let borderRadius = '50%';
+    let aspectRatio = '1 / 1';
+    
+    if (shape === 'square' || shape === 'Kwadratowe') {
+      borderRadius = '8px';
+    } else if (shape === 'rectangle-portrait' || shape === 'Prostokątne (portretowe)') {
+      borderRadius = '8px';
+      aspectRatio = '3 / 4';
+    } else if (shape === 'rectangle-landscape' || shape === 'Prostokątne (poziome)') {
+      borderRadius = '8px';
+      aspectRatio = '4 / 3';
+    }
+    
+    return {
+      width: `${size}px`,
+      height: 'auto',
+      aspectRatio,
+      borderRadius,
+      objectFit: 'cover'
+    };
+  };
+
   // Margin styles
   const getMarginValues = () => {
     const presets = { small: { v: 12, h: 12 }, normal: { v: 20, h: 20 }, large: { v: 25, h: 25 } };
@@ -338,6 +364,7 @@ export function CVProvider({ children }) {
     resetToDefaults,
     getMarginStyle,
     getMarginValues,
+    getPhotoStyle,
   };
 
   return <CVContext.Provider value={value}>{children}</CVContext.Provider>;

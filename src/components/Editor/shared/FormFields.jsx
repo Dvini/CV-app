@@ -21,17 +21,22 @@ export function Textarea({ label, error, ...props }) {
   );
 }
 
-export function Select({ label, options, ...props }) {
+export function Select({ label, options, hideEmptyOption, ...props }) {
   return (
     <div className="field">
       {label && <label className="field-label">{label}</label>}
       <select className="field-select" {...props}>
-        <option value="">— Wybierz —</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
+        {!hideEmptyOption && <option value="">— Wybierz —</option>}
+        {options.map((opt) => {
+          const isObj = typeof opt === 'object';
+          const val = isObj ? opt.value : opt;
+          const lbl = isObj ? opt.label : opt;
+          return (
+            <option key={val} value={val}>
+              {lbl}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

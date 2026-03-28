@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import '../CVPreview.css';
 
 export function TwoColumnTemplate() {
-  const { data, sectionOrder, sectionColumns, getMarginStyle, themeColor } = useCV();
+  const { data, sectionOrder, sectionColumns, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
@@ -17,7 +17,9 @@ export function TwoColumnTemplate() {
         <div className="cv-twocol-side" style={getMarginStyle('left-column', showClauseFooter)}>
           {/* Personal info in sidebar */}
           {data.personal.showPhoto && data.personal.photo && (
-            <img src={data.personal.photo} alt="" className="cv-sidebar-photo" style={{ marginBottom: '1rem' }} />
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+              <img src={data.personal.photo} alt="" className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
+            </div>
           )}
           <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>
           <div className="cv-title cv-title--small" style={{ color: themeColor }}>

@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import '../CVPreview.css';
 
 export function MinimalistTemplate() {
-  const { data, sectionOrder, getMarginStyle, themeColor } = useCV();
+  const { data, sectionOrder, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
@@ -12,7 +12,7 @@ export function MinimalistTemplate() {
       {/* Header */}
       <header className="cv-header cv-header--minimalist">
         {data.personal.showPhoto && data.personal.photo && (
-          <img src={data.personal.photo} alt="" className="cv-header-photo cv-header-photo--minimalist" />
+          <img src={data.personal.photo} alt="" className="cv-header-photo cv-header-photo--minimalist" style={{ ...getPhotoStyle(), marginBottom: '0.75rem' }} />
         )}
         <h1 className="cv-name cv-name--minimalist">
           {data.personal.fullName || 'Imię Nazwisko'}
