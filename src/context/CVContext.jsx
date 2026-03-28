@@ -62,6 +62,7 @@ export function CVProvider({ children }) {
   const [fontSizeText, setFontSizeText] = useLocalStorage('cv_fontSizeText', 1);
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
+  const [showSectionIcons, setShowSectionIcons] = useLocalStorage('cv_showSectionIcons', false);
 
   // Run schema migrations when version is outdated
   useEffect(() => {
@@ -238,6 +239,7 @@ export function CVProvider({ children }) {
       fontSizeHeading,
       fontSizeText,
       cvLanguage,
+      showSectionIcons,
     };
     const blob = new Blob([JSON.stringify(stateToExport, null, 2)], {
       type: 'application/json',
@@ -269,6 +271,7 @@ export function CVProvider({ children }) {
         if (imported.fontSizeHeading) setFontSizeHeading(imported.fontSizeHeading);
         if (imported.fontSizeText) setFontSizeText(imported.fontSizeText);
         if (imported.cvLanguage) setCvLanguage(imported.cvLanguage);
+        if (imported.showSectionIcons !== undefined) setShowSectionIcons(imported.showSectionIcons);
       } catch {
         alert('Wystąpił błąd podczas odczytu pliku. Upewnij się, że to poprawny plik JSON.');
       }
@@ -289,6 +292,7 @@ export function CVProvider({ children }) {
     setFontSizeHeading(1);
     setFontSizeText(1);
     setCvLanguage('pl');
+    setShowSectionIcons(false);
   };
 
   const getPhotoStyle = () => {
@@ -388,6 +392,8 @@ export function CVProvider({ children }) {
     setCvLanguage,
     darkMode,
     setDarkMode,
+    showSectionIcons,
+    setShowSectionIcons,
     // Helpers
     handlePersonalChange,
     handleSkillsChange,

@@ -14,6 +14,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     customMargin, setCustomMargin,
     fontSizeHeading, setFontSizeHeading,
     fontSizeText, setFontSizeText,
+    showSectionIcons, setShowSectionIcons,
   } = useCV();
 
   const templates = [
@@ -53,6 +54,20 @@ export function AppearancePanel({ isOpen, onToggle }) {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Section Icons toggle */}
+        <div className="appearance-group">
+          <label className="appearance-label">Ikony przy sekcjach CV</label>
+          <label className="toggle-wrapper" role="switch" aria-checked={showSectionIcons}>
+            <input
+              type="checkbox"
+              checked={showSectionIcons}
+              onChange={(e) => setShowSectionIcons(e.target.checked)}
+              className="toggle-input"
+            />
+            <span className="toggle-slider" /><span className="toggle-label-text">{showSectionIcons ? 'Włączone' : 'Wyłączone'}</span>
+          </label>
         </div>
 
         {/* Typography */}

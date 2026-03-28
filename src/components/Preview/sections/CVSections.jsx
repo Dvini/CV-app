@@ -1,11 +1,31 @@
 import React from 'react';
 import { useCV } from '../../../context/CVContext';
 import { cvTranslations } from '../../../constants/translations';
+import {
+  User, Briefcase, GraduationCap, BookOpen, Code2, Globe,
+  FolderOpen, Heart, Award, Users, FileText, HandHeart, SquarePen
+} from 'lucide-react';
 import './sections.css';
+
+const SECTION_ICONS = {
+  personal: User,
+  experience: Briefcase,
+  education: GraduationCap,
+  courses: BookOpen,
+  skills: Code2,
+  languages: Globe,
+  projects: FolderOpen,
+  interests: Heart,
+  certificates: Award,
+  references: Users,
+  publications: FileText,
+  volunteer: HandHeart,
+  custom: SquarePen,
+};
 
 /* Shared heading class logic */
 function useHeading() {
-  const { template, themeColor, cvLanguage } = useCV();
+  const { template, themeColor, cvLanguage, showSectionIcons } = useCV();
   const t = cvTranslations[cvLanguage] || cvTranslations['pl'];
 
   const headingClass =
@@ -13,19 +33,30 @@ function useHeading() {
       ? 'cv-heading cv-heading--minimalist cv-breakable'
       : 'cv-heading cv-heading--classic cv-breakable';
 
-  return { headingClass, themeColor, t, template };
+  return { headingClass, themeColor, t, template, showSectionIcons };
+}
+
+function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t, showSectionIcons }) {
+  const title = titleOverride || t[sectionKey] || sectionKey;
+  const Icon = showSectionIcons ? SECTION_ICONS[sectionKey] : null;
+  return (
+    <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">
+      {Icon && <Icon size={14} className="cv-heading-icon" />}
+      {title}
+    </h2>
+  );
 }
 
 /* Personal / Summary */
 export function SummarySection({ columnType }) {
   const { data, template } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.personal.summary) return null;
 
   return (
     <div className="cv-section">
       {template === 'twocolumn' && (
-        <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.summary}</h2>
+        <SectionHeading sectionKey="personal" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       )}
       <p className={`cv-text cv-breakable ${template !== 'twocolumn' ? 'cv-text--mt' : ''}`}>
         {data.personal.summary}
@@ -37,14 +68,14 @@ export function SummarySection({ columnType }) {
 /* Experience */
 export function ExperienceSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.experience.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.experience}</h2>
+      <SectionHeading sectionKey="experience" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.experience.map((exp) => (
           <div key={exp.id} className="cv-item cv-breakable">
@@ -74,14 +105,14 @@ export function ExperienceSection({ columnType }) {
 /* Education */
 export function EducationSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.education.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.education}</h2>
+      <SectionHeading sectionKey="education" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.education.map((edu) => (
           <div key={edu.id} className="cv-item cv-breakable">
@@ -102,14 +133,14 @@ export function EducationSection({ columnType }) {
 /* Courses */
 export function CoursesSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.courses.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.courses}</h2>
+      <SectionHeading sectionKey="courses" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.courses.map((course) => (
           <div key={course.id} className="cv-item cv-breakable">
@@ -131,7 +162,7 @@ export function CoursesSection({ columnType }) {
 /* Skills */
 export function SkillsSection() {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   const skillsArray = data.skills
     .split(',')
     .map((s) => s.trim())
@@ -140,7 +171,7 @@ export function SkillsSection() {
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.skills}</h2>
+      <SectionHeading sectionKey="skills" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <ul className="cv-skills-list">
         {skillsArray.map((skill, i) => (
           <li key={i} className="cv-breakable">{skill}</li>
@@ -153,12 +184,12 @@ export function SkillsSection() {
 /* Languages */
 export function LanguagesSection() {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.languages || data.languages.length === 0) return null;
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.languages}</h2>
+      <SectionHeading sectionKey="languages" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-languages">
         {data.languages.map((lang) => (
           <div key={lang.id} className="cv-lang-row cv-breakable">
@@ -174,14 +205,14 @@ export function LanguagesSection() {
 /* Projects */
 export function ProjectsSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.projects || data.projects.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.projects}</h2>
+      <SectionHeading sectionKey="projects" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.projects.map((proj) => (
           <div key={proj.id} className="cv-item cv-breakable">
@@ -212,7 +243,7 @@ export function ProjectsSection({ columnType }) {
 /* Interests */
 export function InterestsSection() {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   const interestsArray = (data.interests || '')
     .split(',')
     .map((s) => s.trim())
@@ -221,7 +252,7 @@ export function InterestsSection() {
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.interests}</h2>
+      <SectionHeading sectionKey="interests" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <ul className="cv-skills-list">
         {interestsArray.map((interest, i) => (
           <li key={i} className="cv-breakable">{interest}</li>
@@ -246,14 +277,14 @@ export function ClauseSection() {
 /* Certificates */
 export function CertificatesSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.certificates || data.certificates.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.certificates}</h2>
+      <SectionHeading sectionKey="certificates" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.certificates.map((cert) => (
           <div key={cert.id} className="cv-item cv-breakable">
@@ -275,14 +306,14 @@ export function CertificatesSection({ columnType }) {
 /* References */
 export function ReferencesSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.references || data.references.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.references}</h2>
+      <SectionHeading sectionKey="references" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.references.map((ref) => (
           <div key={ref.id} className="cv-item cv-breakable">
@@ -299,14 +330,14 @@ export function ReferencesSection({ columnType }) {
 /* Publications */
 export function PublicationsSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.publications || data.publications.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.publications}</h2>
+      <SectionHeading sectionKey="publications" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.publications.map((pub) => (
           <div key={pub.id} className="cv-item cv-breakable">
@@ -328,14 +359,14 @@ export function PublicationsSection({ columnType }) {
 /* Volunteer */
 export function VolunteerSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.volunteer || data.volunteer.length === 0) return null;
 
   const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.volunteer}</h2>
+      <SectionHeading sectionKey="volunteer" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.volunteer.map((vol) => (
           <div key={vol.id} className="cv-item cv-breakable">
@@ -357,7 +388,7 @@ export function VolunteerSection({ columnType }) {
 /* Custom section */
 export function CustomSection({ columnType }) {
   const { data } = useCV();
-  const { headingClass, themeColor, t } = useHeading();
+  const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.custom || data.custom.length === 0) return null;
 
   const isSide = columnType === 'side';
@@ -365,7 +396,7 @@ export function CustomSection({ columnType }) {
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{sectionTitle}</h2>
+      <SectionHeading sectionKey="custom" titleOverride={sectionTitle} headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
         {data.custom.map((item) => (
           <div key={item.id} className="cv-item cv-breakable">
