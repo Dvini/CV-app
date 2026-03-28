@@ -60,7 +60,7 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
       let targetY = 0;
 
       // Condition 1: Element crosses the bottom margin of the page
-      if (bottomRelative - 1 > pageTextLimit && elRect.height < engineContentHeight) {
+      if (bottomRelative - 1 > pageTextLimit) {
         needsPush = true;
         targetY = (startPage + 1) * visualContentHeight + marginVPx;
       }
@@ -70,22 +70,29 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
         targetY = pageSafeTop;
       }
 
+      // For oversized elements (taller than a page), don't drag the previous
+      // heading along — just ensure the element itself starts at a page boundary
+      const isOversized = elRect.height >= engineContentHeight;
+
       if (needsPush) {
         let elementToPush = el;
         let pushAmount = targetY - topRelative;
         let pushIndex = index;
 
         // Check if previous element is a heading that we should drag along
-        const prev = index > 0 ? breakables[index - 1] : null;
+        // (skip for oversized elements — moving a heading would waste a full page)
+        if (!isOversized) {
+          const prev = index > 0 ? breakables[index - 1] : null;
 
-        if (prev && prev.hasAttribute('data-keep-with-next')) {
-          if (prev.closest('.cv-section') === el.closest('.cv-section')) {
-            const prevRect = prev.getBoundingClientRect();
-            const prevTopRelative = prevRect.top - containerRect.top;
+          if (prev && prev.hasAttribute('data-keep-with-next')) {
+            if (prev.closest('.cv-section') === el.closest('.cv-section')) {
+              const prevRect = prev.getBoundingClientRect();
+              const prevTopRelative = prevRect.top - containerRect.top;
 
-            elementToPush = prev;
-            pushAmount = targetY - prevTopRelative;
-            pushIndex = index - 1;
+              elementToPush = prev;
+              pushAmount = targetY - prevTopRelative;
+              pushIndex = index - 1;
+            }
           }
         }
 
