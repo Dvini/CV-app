@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Palette, Plus } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
@@ -102,14 +102,28 @@ export function AppearancePanel({ isOpen, onToggle }) {
 
         {/* Accent Color */}
         <div className="appearance-group">
-          <label className="appearance-label">Kolor akcentujący</label>
-          <div className="color-picker-row">
+          <label className="appearance-label" id="color-label">Kolor akcentujący</label>
+          <div className="color-picker-row" role="radiogroup" aria-labelledby="color-label" onKeyDown={(e) => {
+            if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+            e.preventDefault();
+            const idx = presetColors.findIndex((c) => c.value === themeColor);
+            if (e.key === 'ArrowRight') {
+              const next = idx < presetColors.length - 1 ? idx + 1 : 0;
+              setThemeColor(presetColors[next].value);
+            } else {
+              const prev = idx > 0 ? idx - 1 : presetColors.length - 1;
+              setThemeColor(presetColors[prev].value);
+            }
+          }}>
             {presetColors.map((color) => (
               <button
                 key={color.value}
                 onClick={() => setThemeColor(color.value)}
                 title={color.name}
+                role="radio"
+                aria-checked={themeColor === color.value}
                 aria-label={color.name}
+                tabIndex={themeColor === color.value ? 0 : -1}
                 className={`color-swatch ${themeColor === color.value ? 'color-swatch--active' : ''}`}
                 style={{ backgroundColor: color.value }}
               />
