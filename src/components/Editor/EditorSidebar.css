@@ -337,8 +337,15 @@
 }
 
 .custom-margin-input {
-  width: 70px !important;
-  text-align: right;
+  width: 80px !important;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.custom-margin-input::-webkit-outer-spin-button,
+.custom-margin-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Layout panel */
