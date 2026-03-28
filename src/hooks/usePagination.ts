@@ -6,6 +6,17 @@ import {
   PAGINATION_DEBOUNCE_MS,
 } from '../constants/layout';
 
+interface SpacerEdit {
+  index: number;
+  newMargin: number;
+}
+
+interface UsePaginationOptions {
+  showClauseFooter: boolean;
+  marginVMm: number;
+  deps?: unknown[];
+}
+
 /**
  * Custom hook that handles A4 page pagination for the CV preview.
  * 
@@ -19,10 +30,10 @@ import {
  * @param {Array} options.deps - Additional dependencies to trigger recalculation
  * @returns {{ contentRef, pageCount, pageSpacers, visualContentHeight }}
  */
-export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
-  const contentRef = useRef(null);
+export function usePagination({ showClauseFooter, marginVMm, deps = [] }: UsePaginationOptions) {
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const [pageCount, setPageCount] = useState(1);
-  const [pageSpacers, setPageSpacers] = useState([]);
+  const [pageSpacers, setPageSpacers] = useState<SpacerEdit[]>([]);
 
   const footerTextHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
   const visualContentHeight = A4_HEIGHT_PX - footerTextHeightPx;
@@ -34,12 +45,12 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
     if (!measureContainer) return;
 
     // Reset all margins in measureContainer FIRST
-    measureContainer.querySelectorAll('.cv-breakable').forEach(el => {
+    measureContainer.querySelectorAll<HTMLElement>('.cv-breakable').forEach(el => {
       el.style.marginTop = '';
     });
 
-    const breakables = Array.from(measureContainer.querySelectorAll('.cv-breakable'));
-    const edits = [];
+    const breakables = Array.from(measureContainer.querySelectorAll<HTMLElement>('.cv-breakable'));
+    const edits: SpacerEdit[] = [];
 
     for (let index = 0; index < breakables.length; index++) {
       const el = breakables[index];
@@ -124,7 +135,7 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
 
     const timer = setTimeout(calculatePages, PAGINATION_DEBOUNCE_MS);
 
-    let rafId = null;
+    let rafId: number | null = null;
     const scheduleRecalc = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(calculatePages);
@@ -148,13 +159,13 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
   useEffect(() => {
     const cloneContainers = document.querySelectorAll('.cv-preview-container .cv-content-offset');
     cloneContainers.forEach(container => {
-      const breakables = container.querySelectorAll('.cv-breakable');
+      const breakables = container.querySelectorAll<HTMLElement>('.cv-breakable');
 
       // Reset first
       breakables.forEach(el => el.style.marginTop = '');
 
       // Apply calculated spacers
-      pageSpacers.forEach(spacer => {
+      pageSpacers.forEach((spacer) => {
         if (breakables[spacer.index]) {
           breakables[spacer.index].style.marginTop = `${spacer.newMargin}px`;
         }

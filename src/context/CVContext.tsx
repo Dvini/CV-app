@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { createContext, useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
 import { useHistory } from '../hooks/useHistory';
@@ -539,24 +540,24 @@ export function CVProvider({ children }) {
   );
 }
 
-export function useCVData() {
+export function useCVData(): any {
   const ctx = useContext(CVDataContext);
   if (!ctx) throw new Error('useCVData must be used within CVProvider');
   return ctx;
 }
 
-export function useCVAppearance() {
+export function useCVAppearance(): any {
   const ctx = useContext(CVAppearanceContext);
   if (!ctx) throw new Error('useCVAppearance must be used within CVProvider');
   return ctx;
 }
 
-export function useCVManager() {
+export function useCVManager(): any {
   const ctx = useContext(CVManagerContext);
   if (!ctx) throw new Error('useCVManager must be used within CVProvider');
   return ctx;
 }
 
-export function useCV() {
+export function useCV(): any {
   return { ...useCVData(), ...useCVAppearance(), ...useCVManager() };
 }

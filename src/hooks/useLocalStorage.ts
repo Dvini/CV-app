@@ -1,13 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, type Dispatch, type SetStateAction } from 'react';
 
-const STORAGE_LISTENERS = [];
+type StorageErrorListener = (key: string) => void;
+
+const STORAGE_LISTENERS: StorageErrorListener[] = [];
 const DEBOUNCE_MS = 300;
 
-function notifyStorageError(key) {
+function notifyStorageError(key: string): void {
   STORAGE_LISTENERS.forEach(fn => fn(key));
 }
 
-export function onStorageError(listener) {
+export function onStorageError(listener: StorageErrorListener): () => void {
   STORAGE_LISTENERS.push(listener);
   return () => {
     const idx = STORAGE_LISTENERS.indexOf(listener);
@@ -15,8 +17,8 @@ export function onStorageError(listener) {
   };
 }
 
-export function useLocalStorage(key, defaultValue) {
-  const [value, setValue] = useState(() => {
+export function useLocalStorage<T>(key: string, defaultValue: T): [T, Dispatch<SetStateAction<T>>, () => void] {
+  const [value, setValue] = useState<T>(() => {
     try {
       const saved = localStorage.getItem(key);
       return saved !== null ? JSON.parse(saved) : defaultValue;
@@ -25,10 +27,10 @@ export function useLocalStorage(key, defaultValue) {
     }
   });
 
-  const timerRef = useRef(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       try {
         localStorage.setItem(key, JSON.stringify(value));
@@ -37,19 +39,21 @@ export function useLocalStorage(key, defaultValue) {
       }
     }, DEBOUNCE_MS);
 
-    return () => clearTimeout(timerRef.current);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [key, value]);
 
   // Flush on unmount
   useEffect(() => {
     return () => {
-      clearTimeout(timerRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
       // We cannot access current value here, but timer cleanup is enough
     };
   }, []);
 
   const remove = useCallback(() => {
-    clearTimeout(timerRef.current);
+    if (timerRef.current) clearTimeout(timerRef.current);
     localStorage.removeItem(key);
     setValue(defaultValue);
   }, [key, defaultValue]);

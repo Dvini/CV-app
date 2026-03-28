@@ -6,16 +6,16 @@ const MAX_HISTORY = 50;
  * Hook that wraps a state setter with undo/redo capability.
  * Works by keeping a stack of past and future states.
  *
- * @param {*} currentValue - The current state value
- * @param {Function} setValue - The state setter (e.g., from useLocalStorage)
+ * @param currentValue - The current state value
+ * @param setValue - The state setter (e.g., from useLocalStorage)
  * @returns {{ undo, redo, canUndo, canRedo, trackChange }}
  */
-export function useHistory(currentValue, setValue) {
-  const [past, setPast] = useState([]);
-  const [future, setFuture] = useState([]);
+export function useHistory<T>(currentValue: T, setValue: (value: T) => void) {
+  const [past, setPast] = useState<T[]>([]);
+  const [future, setFuture] = useState<T[]>([]);
   const skipTrack = useRef(false);
 
-  const trackChange = useCallback((prevValue) => {
+  const trackChange = useCallback((prevValue: T) => {
     if (skipTrack.current) {
       skipTrack.current = false;
       return;
