@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCV } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
+import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
 export function TwoColumnTemplate() {
@@ -27,19 +28,7 @@ export function TwoColumnTemplate() {
           </div>
 
           <div className="cv-contact cv-contact--vertical">
-            {data.personal.email && <span className="cv-contact-break">{data.personal.email}</span>}
-            {data.personal.phone && <span>{data.personal.phone}</span>}
-            {data.personal.location && <span>{data.personal.location}</span>}
-            {data.personal.linkedin && (
-              <a href={data.personal.linkedin.startsWith('http') ? data.personal.linkedin : `https://${data.personal.linkedin}`} target="_blank" rel="noopener noreferrer" className="cv-contact-break">
-                {data.personal.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-              </a>
-            )}
-            {data.personal.github && (
-              <a href={data.personal.github.startsWith('http') ? data.personal.github : `https://${data.personal.github}`} target="_blank" rel="noopener noreferrer" className="cv-contact-break">
-                {data.personal.github.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-              </a>
-            )}
+            <ContactInfo personal={data.personal} linkClassName="cv-contact-break" />
           </div>
 
           <div className="cv-sidebar-sections">

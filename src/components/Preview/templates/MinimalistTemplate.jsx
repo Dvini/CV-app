@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCV } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
+import { ContactInfo } from './shared';
 import '../CVPreview.css';
 
 export function MinimalistTemplate() {
@@ -21,19 +22,7 @@ export function MinimalistTemplate() {
           {data.personal.title}
         </div>
         <div className="cv-contact cv-contact--center">
-          {data.personal.email && <span>{data.personal.email}</span>}
-          {data.personal.phone && <span>{data.personal.phone}</span>}
-          {data.personal.location && <span>{data.personal.location}</span>}
-          {data.personal.linkedin && (
-            <a href={data.personal.linkedin.startsWith('http') ? data.personal.linkedin : `https://${data.personal.linkedin}`} target="_blank" rel="noopener noreferrer">
-              {data.personal.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-            </a>
-          )}
-          {data.personal.github && (
-            <a href={data.personal.github.startsWith('http') ? data.personal.github : `https://${data.personal.github}`} target="_blank" rel="noopener noreferrer">
-              {data.personal.github.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-            </a>
-          )}
+          <ContactInfo personal={data.personal} />
         </div>
       </header>
 
