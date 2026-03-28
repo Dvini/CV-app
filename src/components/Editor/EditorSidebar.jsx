@@ -22,11 +22,19 @@ const MIN_WIDTH = 320;
 const MAX_WIDTH = 700;
 
 export function EditorSidebar() {
-  const [openPanel, setOpenPanel] = useState('personal');
+  const [openPanels, setOpenPanels] = useState(new Set(['personal']));
   const [width, setWidth] = useState(480);
   const sidebarRef = useRef(null);
 
-  const toggle = (id) => setOpenPanel((prev) => (prev === id ? null : id));
+  const toggle = (id) => setOpenPanels((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    return next;
+  });
 
   const handleResizeStart = useCallback((e) => {
     e.preventDefault();
@@ -56,21 +64,21 @@ export function EditorSidebar() {
       <div className="editor-sidebar-scroll">
         <DataSyncPanel />
         <Suspense fallback={null}>
-          <AppearancePanel isOpen={openPanel === 'appearance'} onToggle={() => toggle('appearance')} />
-          <LayoutPanel isOpen={openPanel === 'layout'} onToggle={() => toggle('layout')} />
-          <PersonalPanel isOpen={openPanel === 'personal'} onToggle={() => toggle('personal')} />
-          <ExperiencePanel isOpen={openPanel === 'experience'} onToggle={() => toggle('experience')} />
-          <EducationPanel isOpen={openPanel === 'education'} onToggle={() => toggle('education')} />
-          <CoursesPanel isOpen={openPanel === 'courses'} onToggle={() => toggle('courses')} />
-          <ProjectsPanel isOpen={openPanel === 'projects'} onToggle={() => toggle('projects')} />
-          <LanguagesPanel isOpen={openPanel === 'languages'} onToggle={() => toggle('languages')} />
-          <SkillsPanel isOpen={openPanel === 'skills'} onToggle={() => toggle('skills')} />
-          <InterestsPanel isOpen={openPanel === 'interests'} onToggle={() => toggle('interests')} />
-          <CertificatesPanel isOpen={openPanel === 'certificates'} onToggle={() => toggle('certificates')} />
-          <ReferencesPanel isOpen={openPanel === 'references'} onToggle={() => toggle('references')} />
-          <PublicationsPanel isOpen={openPanel === 'publications'} onToggle={() => toggle('publications')} />
-          <VolunteerPanel isOpen={openPanel === 'volunteer'} onToggle={() => toggle('volunteer')} />
-          <CustomPanel isOpen={openPanel === 'custom'} onToggle={() => toggle('custom')} />
+          <AppearancePanel isOpen={openPanels.has('appearance')} onToggle={() => toggle('appearance')} />
+          <LayoutPanel isOpen={openPanels.has('layout')} onToggle={() => toggle('layout')} />
+          <PersonalPanel isOpen={openPanels.has('personal')} onToggle={() => toggle('personal')} />
+          <ExperiencePanel isOpen={openPanels.has('experience')} onToggle={() => toggle('experience')} />
+          <EducationPanel isOpen={openPanels.has('education')} onToggle={() => toggle('education')} />
+          <CoursesPanel isOpen={openPanels.has('courses')} onToggle={() => toggle('courses')} />
+          <ProjectsPanel isOpen={openPanels.has('projects')} onToggle={() => toggle('projects')} />
+          <LanguagesPanel isOpen={openPanels.has('languages')} onToggle={() => toggle('languages')} />
+          <SkillsPanel isOpen={openPanels.has('skills')} onToggle={() => toggle('skills')} />
+          <InterestsPanel isOpen={openPanels.has('interests')} onToggle={() => toggle('interests')} />
+          <CertificatesPanel isOpen={openPanels.has('certificates')} onToggle={() => toggle('certificates')} />
+          <ReferencesPanel isOpen={openPanels.has('references')} onToggle={() => toggle('references')} />
+          <PublicationsPanel isOpen={openPanels.has('publications')} onToggle={() => toggle('publications')} />
+          <VolunteerPanel isOpen={openPanels.has('volunteer')} onToggle={() => toggle('volunteer')} />
+          <CustomPanel isOpen={openPanels.has('custom')} onToggle={() => toggle('custom')} />
         </Suspense>
       </div>
       <div
