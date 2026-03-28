@@ -4,7 +4,7 @@ import { renderCVSection } from '../sections/CVSections';
 import '../CVPreview.css';
 
 export function ClassicTemplate() {
-  const { data, sectionOrder, getMarginStyle, themeColor } = useCV();
+  const { data, sectionOrder, getMarginStyle, getPhotoStyle, themeColor } = useCV();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
@@ -13,7 +13,7 @@ export function ClassicTemplate() {
       <header className="cv-header">
         <div className="cv-header-content">
           {data.personal.showPhoto && data.personal.photo && (
-            <img src={data.personal.photo} alt="" className="cv-header-photo" />
+            <img src={data.personal.photo} alt="" className="cv-header-photo" style={{ ...getPhotoStyle() }} />
           )}
           <div className="cv-header-text">
             <h1 className="cv-name">{data.personal.fullName || 'Imię Nazwisko'}</h1>

@@ -10,6 +10,8 @@ export const defaultData = {
     website: '',
     photo: null,
     showPhoto: false,
+    photoSize: 80,
+    photoShape: 'round',
     summary:
       'Doświadczony inżynier oprogramowania z ponad 5-letnim stażem w budowaniu skalowalnych aplikacji webowych. Zorientowany na jakość kodu, czystą architekturę oraz efektywną pracę w zespole.',
   },

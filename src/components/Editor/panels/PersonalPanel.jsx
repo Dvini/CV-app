@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { User, Camera, X } from 'lucide-react';
 import { useCV } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
-import { Input, Textarea } from '../shared/FormFields';
+import { Input, Textarea, Select } from '../shared/FormFields';
 
 export function PersonalPanel({ isOpen, onToggle }) {
   const { data, handlePersonalChange } = useCV();
@@ -73,6 +73,40 @@ export function PersonalPanel({ isOpen, onToggle }) {
               >
                 Zmień zdjęcie
               </button>
+            )}
+
+            {p.photo && (
+              <div className="photo-settings" style={{ marginTop: '1rem', width: '100%' }}>
+                <Select
+                  label="Kształt zdjęcia"
+                  name="photoShape"
+                  value={p.photoShape || 'round'}
+                  onChange={handleChange}
+                  hideEmptyOption={true}
+                  options={[
+                    { value: 'round', label: 'Okrągłe' },
+                    { value: 'square', label: 'Kwadratowe' },
+                    { value: 'rectangle-portrait', label: 'Prostokątne (portretowe)' },
+                    { value: 'rectangle-landscape', label: 'Prostokątne (poziome)' }
+                  ]}
+                />
+                
+                <div className="field photo-slider-field" style={{ marginTop: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                    <label className="field-label">Rozmiar</label>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{p.photoSize || 80}px</span>
+                  </div>
+                  <input
+                    type="range"
+                    name="photoSize"
+                    min="40"
+                    max="180"
+                    value={p.photoSize || 80}
+                    onChange={(e) => handlePersonalChange('photoSize', parseInt(e.target.value, 10))}
+                    style={{ width: '100%', cursor: 'pointer' }}
+                  />
+                </div>
+              </div>
             )}
           </div>
         )}
