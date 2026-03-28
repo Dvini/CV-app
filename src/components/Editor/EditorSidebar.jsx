@@ -8,6 +8,7 @@ import { EducationPanel } from './panels/EducationPanel';
 import { CoursesPanel } from './panels/CoursesPanel';
 import { SkillsPanel } from './panels/SkillsPanel';
 import { LanguagesPanel } from './panels/LanguagesPanel';
+import { InterestsPanel } from './panels/InterestsPanel';
 import { ProjectsPanel } from './panels/ProjectsPanel';
 import './EditorSidebar.css';
 
@@ -29,6 +30,7 @@ export function EditorSidebar() {
         <ProjectsPanel isOpen={openPanel === 'projects'} onToggle={() => toggle('projects')} />
         <LanguagesPanel isOpen={openPanel === 'languages'} onToggle={() => toggle('languages')} />
         <SkillsPanel isOpen={openPanel === 'skills'} onToggle={() => toggle('skills')} />
+        <InterestsPanel isOpen={openPanel === 'interests'} onToggle={() => toggle('interests')} />
       </div>
     </aside>
   );

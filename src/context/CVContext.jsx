@@ -44,6 +44,7 @@ export function CVProvider({ children }) {
     courses: data?.courses || defaultData.courses,
     skills: data?.skills ?? defaultData.skills,
     languages: data?.languages || defaultData.languages,
+    interests: data?.interests ?? defaultData.interests,
     projects: data?.projects || defaultData.projects || [],
     clause: data?.clause ?? defaultData.clause,
     showClause: data?.showClause ?? defaultData.showClause,
@@ -52,6 +53,7 @@ export function CVProvider({ children }) {
   const safeSectionOrder = (() => {
     const order = [...(sectionOrder || defaultSectionOrder)];
     if (!order.includes('projects')) order.push('projects');
+    if (!order.includes('interests')) order.push('interests');
     return order;
   })();
 
@@ -70,6 +72,10 @@ export function CVProvider({ children }) {
 
   const handleSkillsChange = (value) => {
     setData((prev) => ({ ...prev, skills: value }));
+  };
+
+  const handleInterestsChange = (value) => {
+    setData((prev) => ({ ...prev, interests: value }));
   };
 
   const handleClauseChange = (value) => {
@@ -304,6 +310,7 @@ export function CVProvider({ children }) {
     // Helpers
     handlePersonalChange,
     handleSkillsChange,
+    handleInterestsChange,
     handleClauseChange,
     toggleClause,
     addItem,

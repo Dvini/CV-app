@@ -7,6 +7,7 @@ export const cvTranslations = {
     skills: 'Umiejętności',
     languages: 'Języki',
     projects: 'Projekty',
+    interests: 'Zainteresowania',
     tech: 'Technologie:',
   },
   en: {
@@ -17,6 +18,7 @@ export const cvTranslations = {
     skills: 'Skills',
     languages: 'Languages',
     projects: 'Projects',
+    interests: 'Interests',
     tech: 'Technologies:',
   },
 };
@@ -29,6 +31,7 @@ export const sectionNamesPl = {
   skills: 'Umiejętności',
   languages: 'Języki',
   projects: 'Projekty',
+  interests: 'Zainteresowania',
 };
 
 export const languageLevels = [

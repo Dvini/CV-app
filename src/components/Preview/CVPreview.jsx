@@ -48,7 +48,8 @@ export function CVPreview() {
       const marginVPx = Math.round(marginV * MM_TO_PX);
       const edits = [];
 
-      breakables.forEach((el, index) => {
+      for (let index = 0; index < breakables.length; index++) {
+        const el = breakables[index];
         const elRect = el.getBoundingClientRect();
         const containerRect = measureContainer.getBoundingClientRect();
         
@@ -60,17 +61,40 @@ export function CVPreview() {
         
         if (bottomRelative - 1 > pageTextLimit && elRect.height < engineContentHeight) {
           const targetY = (startPage + 1) * visualContentHeight + marginVPx;
-          // Read current marginTop in PIXELS
-          const computedMargin = parseFloat(window.getComputedStyle(el).marginTop) || 0;
-          const pushAmount = targetY - topRelative;
+          let elementToPush = el;
+          let pushAmount = targetY - topRelative;
+          let pushIndex = index;
+
+          // Check if previous element is a heading that we should drag along
+          const prev = index > 0 ? breakables[index - 1] : null;
+
+          if (prev && prev.hasAttribute('data-keep-with-next')) {
+            // Ensure they belong to the same parent section wrapper
+            if (prev.closest('.cv-section') === el.closest('.cv-section')) {
+              const prevRect = prev.getBoundingClientRect();
+              const prevTopRelative = prevRect.top - containerRect.top;
+              
+              elementToPush = prev;
+              pushAmount = targetY - prevTopRelative;
+              pushIndex = index - 1;
+            }
+          }
           
           if (pushAmount > 0) {
+            const computedMargin = parseFloat(window.getComputedStyle(elementToPush).marginTop) || 0;
             const newMargin = computedMargin + pushAmount;
-            el.style.marginTop = `${newMargin}px`;
-            edits.push({ index, newMargin });
+            elementToPush.style.marginTop = `${newMargin}px`;
+            
+            // Record the edit
+            const existingEdit = edits.find(e => e.index === pushIndex);
+            if (existingEdit) {
+              existingEdit.newMargin = newMargin;
+            } else {
+              edits.push({ index: pushIndex, newMargin });
+            }
           }
         }
-      });
+      }
 
       const totalHeight = measureContainer.scrollHeight;
       const pages = Math.max(1, Math.ceil((totalHeight - 5) / visualContentHeight));

@@ -16,14 +16,13 @@ export function TwoColumnTemplate() {
         {/* Left (narrow) column */}
         <div className="cv-twocol-side" style={getMarginStyle('left-column', showClauseFooter)}>
           {/* Personal info in sidebar */}
+          {data.personal.showPhoto && data.personal.photo && (
+            <img src={data.personal.photo} alt="" className="cv-sidebar-photo" style={{ marginBottom: '1rem' }} />
+          )}
           <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>
           <div className="cv-title cv-title--small" style={{ color: themeColor }}>
             {data.personal.title}
           </div>
-
-          {data.personal.showPhoto && data.personal.photo && (
-            <img src={data.personal.photo} alt="" className="cv-sidebar-photo" />
-          )}
 
           <div className="cv-contact cv-contact--vertical">
             {data.personal.email && <span className="cv-contact-break">{data.personal.email}</span>}
