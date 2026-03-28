@@ -1,5 +1,6 @@
 import React from 'react';
 import { CVProvider, useCV } from './context/CVContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Header } from './components/Layout/Header';
 import { EditorSidebar } from './components/Editor/EditorSidebar';
 import { CVPreview } from './components/Preview/CVPreview';
@@ -28,8 +29,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CVProvider>
-      <AppContent />
-    </CVProvider>
+    <ErrorBoundary>
+      <CVProvider>
+        <AppContent />
+      </CVProvider>
+    </ErrorBoundary>
   );
 }
