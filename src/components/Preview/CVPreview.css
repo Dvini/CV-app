@@ -289,9 +289,11 @@
 
 /* ===== PRINT ===== */
 @media print {
-  body {
+  html, body, #root, .app-layout {
     background: white !important;
     overflow: visible !important;
+    height: auto !important;
+    display: block !important;
   }
 
   #app-header,
@@ -308,15 +310,18 @@
     padding: 0 !important;
     background: white !important;
     overflow: visible !important;
+    display: block !important;
   }
 
   .preview-scroll {
     padding: 0 !important;
     overflow: visible !important;
+    display: block !important;
   }
 
   .cv-pages-stack {
     gap: 0 !important;
+    display: block !important;
   }
 
   .cv-page-sheet {
@@ -350,11 +355,11 @@
   }
 
   /* Only show the first page sheet with full content, hide duplicates */
-  .cv-page-sheet:not(:first-child) {
+  .cv-page-sheet ~ .cv-page-sheet {
     display: none !important;
   }
 
-  .cv-page-sheet:first-child .cv-preview-container {
+  .cv-measure-container + .cv-page-sheet .cv-preview-container {
     height: auto !important;
     overflow: visible !important;
   }
