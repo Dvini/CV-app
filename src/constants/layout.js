@@ -8,7 +8,6 @@ export const A4_HEIGHT_PX = Math.round(A4_HEIGHT_MM * MM_TO_PX); // ~1123px
 export const MIN_FOOTER_PX = 24;
 export const FOOTER_TEXT_HEIGHT_PX = 36;
 export const PAGINATION_DEBOUNCE_MS = 100;
-export const PAGINATION_OBSERVER_DEBOUNCE_MS = 50;
 
 // Margin presets (mm)
 export const MARGIN_PRESETS = {

@@ -4,7 +4,6 @@ import {
   MM_TO_PX,
   FOOTER_TEXT_HEIGHT_PX,
   PAGINATION_DEBOUNCE_MS,
-  PAGINATION_OBSERVER_DEBOUNCE_MS,
 } from '../constants/layout';
 
 /**
@@ -125,15 +124,22 @@ export function usePagination({ showClauseFooter, marginVMm, deps = [] }) {
 
     const timer = setTimeout(calculatePages, PAGINATION_DEBOUNCE_MS);
 
-    const observer = new ResizeObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
-    observer.observe(contentRef.current);
+    let rafId = null;
+    const scheduleRecalc = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(calculatePages);
+    };
 
-    const mutationObserver = new MutationObserver(() => setTimeout(calculatePages, PAGINATION_OBSERVER_DEBOUNCE_MS));
+    const resizeObserver = new ResizeObserver(scheduleRecalc);
+    resizeObserver.observe(contentRef.current);
+
+    const mutationObserver = new MutationObserver(scheduleRecalc);
     mutationObserver.observe(contentRef.current, { childList: true, subtree: true, characterData: true });
 
     return () => {
       clearTimeout(timer);
-      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
       mutationObserver.disconnect();
     };
   }, [calculatePages, ...deps]);
