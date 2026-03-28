@@ -25,6 +25,7 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
+                width: `calc(100% + ${sideStyle.paddingLeft} + ${sideStyle.paddingRight})`,
                 marginLeft: `calc(-1 * ${sideStyle.paddingLeft})`,
                 marginRight: `calc(-1 * ${sideStyle.paddingRight})`,
                 marginBottom: '1.25rem',

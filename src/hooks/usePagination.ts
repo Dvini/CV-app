@@ -44,8 +44,9 @@ export function usePagination({
   const footerTextHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
   const visualContentHeight = A4_HEIGHT_PX - footerTextHeightPx;
   const marginVPx = Math.round(marginVMm * MM_TO_PX);
+  const effectiveMarginVPx = disableTopMarginPush ? 0 : marginVPx;
   const engineContentHeight =
-    A4_HEIGHT_PX - Math.max(footerTextHeightPx, marginVPx);
+    A4_HEIGHT_PX - Math.max(footerTextHeightPx, effectiveMarginVPx);
 
   const calculatePages = useCallback(() => {
     const measureContainer = contentRef.current;
@@ -76,7 +77,7 @@ export function usePagination({
         startPage * visualContentHeight + engineContentHeight;
 
       const pageTopLimit = startPage * visualContentHeight;
-      const pageSafeTop = startPage * visualContentHeight + marginVPx;
+      const pageSafeTop = startPage * visualContentHeight + effectiveMarginVPx;
 
       let needsPush = false;
       let targetY = 0;
@@ -84,7 +85,7 @@ export function usePagination({
       // Condition 1: Element crosses the bottom margin of the page
       if (bottomRelative - 1 > pageTextLimit) {
         needsPush = true;
-        targetY = (startPage + 1) * visualContentHeight + marginVPx;
+        targetY = (startPage + 1) * visualContentHeight + effectiveMarginVPx;
       }
       // Condition 2: Element natively falls exactly in the top margin padding of a new page
       else if (
@@ -150,7 +151,12 @@ export function usePagination({
     setPageSpacers((prev) =>
       JSON.stringify(prev) !== editsStr ? edits : prev,
     );
-  }, [visualContentHeight, engineContentHeight, marginVPx, disableTopMarginPush]);
+  }, [
+    visualContentHeight,
+    engineContentHeight,
+    effectiveMarginVPx,
+    disableTopMarginPush,
+  ]);
 
   // Measuring engine: observe content and recalculate on changes
   useEffect(() => {
