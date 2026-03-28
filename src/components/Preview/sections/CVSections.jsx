@@ -361,10 +361,11 @@ export function CustomSection({ columnType }) {
   if (!data.custom || data.custom.length === 0) return null;
 
   const isSide = columnType === 'side';
+  const sectionTitle = data.customSectionTitle || t.custom;
 
   return (
     <div className="cv-section">
-      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{t.custom}</h2>
+      <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">{sectionTitle}</h2>
       <div className="cv-items">
         {data.custom.map((item) => (
           <div key={item.id} className="cv-item cv-breakable">

@@ -82,6 +82,7 @@ export const defaultData = {
   publications: [],
   volunteer: [],
   custom: [],
+  customSectionTitle: '',
 };
 
 export const defaultSectionOrder = [

@@ -88,6 +88,7 @@ export function CVProvider({ children }) {
     publications: data?.publications || defaultData.publications,
     volunteer: data?.volunteer || defaultData.volunteer,
     custom: data?.custom || defaultData.custom,
+    customSectionTitle: data?.customSectionTitle ?? defaultData.customSectionTitle,
     clause: data?.clause ?? defaultData.clause,
     showClause: data?.showClause ?? defaultData.showClause,
   }), [data]);

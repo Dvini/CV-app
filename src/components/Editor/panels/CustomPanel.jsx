@@ -5,7 +5,11 @@ import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 
 export function CustomPanel({ isOpen, onToggle }) {
-  const { data, addItem, updateItem, removeItem, moveItem } = useCV();
+  const { data, setData, cvLanguage, addItem, updateItem, removeItem, moveItem } = useCV();
+
+  const handleTitleChange = (e) => {
+    setData((prev) => ({ ...prev, customSectionTitle: e.target.value }));
+  };
 
   const add = () =>
     addItem('custom', {
@@ -18,7 +22,13 @@ export function CustomPanel({ isOpen, onToggle }) {
 
   return (
     <Panel title="Sekcja własna" icon={SquarePen} isOpen={isOpen} onToggle={onToggle}>
-      <p className="field-hint" style={{ marginBottom: '0.75rem' }}>
+      <Input
+        label="Nazwa sekcji w CV"
+        value={data.customSectionTitle || ''}
+        placeholder={cvLanguage === 'en' ? 'Additional' : 'Dodatkowe'}
+        onChange={handleTitleChange}
+      />
+      <p className="field-hint" style={{ marginBottom: '0.75rem', marginTop: '0.5rem' }}>
         Dodaj dowolne wpisy, które nie pasują do pozostałych kategorii.
       </p>
       <div className="items-list">
