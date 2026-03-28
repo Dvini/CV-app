@@ -63,8 +63,7 @@ export function CVProvider({ children }) {
   const [cvLanguage, setCvLanguage] = useLocalStorage('cv_language', 'pl');
   const [darkMode, setDarkMode] = useLocalStorage('cv_darkMode', false);
   const [showSectionIcons, setShowSectionIcons] = useLocalStorage('cv_showSectionIcons', false);
-  const [gradientEnabled, setGradientEnabled] = useLocalStorage('cv_gradientEnabled', false);
-  const [gradientColor, setGradientColor] = useLocalStorage('cv_gradientColor', '#8b5cf6');
+  const [creativeHeaderBg, setCreativeHeaderBg] = useLocalStorage('cv_creativeHeaderBg', DEFAULT_THEME_COLOR);
 
   // --- Profiles ---
   const [profiles, setProfiles] = useLocalStorage('cv_profiles', [{ id: 'default', name: 'Profil 1' }]);
@@ -74,10 +73,10 @@ export function CVProvider({ children }) {
   const getSnapshot = useCallback(() => ({
     data, sectionOrder, sectionColumns, template, margins, customMargin,
     themeColor, fontFamily, fontSizeHeading, fontSizeText, cvLanguage,
-    showSectionIcons, gradientEnabled, gradientColor,
+    showSectionIcons, creativeHeaderBg,
   }), [data, sectionOrder, sectionColumns, template, margins, customMargin,
     themeColor, fontFamily, fontSizeHeading, fontSizeText, cvLanguage,
-    showSectionIcons, gradientEnabled, gradientColor]);
+    showSectionIcons, creativeHeaderBg]);
 
   const loadSnapshot = useCallback((s) => {
     if (!s) return;
@@ -94,12 +93,11 @@ export function CVProvider({ children }) {
     if (s.fontSizeText != null) setFontSizeText(s.fontSizeText);
     if (s.cvLanguage) setCvLanguage(s.cvLanguage);
     if (s.showSectionIcons != null) setShowSectionIcons(s.showSectionIcons);
-    if (s.gradientEnabled != null) setGradientEnabled(s.gradientEnabled);
-    if (s.gradientColor) setGradientColor(s.gradientColor);
+    if (s.creativeHeaderBg) setCreativeHeaderBg(s.creativeHeaderBg);
     switchingRef.current = false;
   }, [setDataRaw, setSectionOrder, setSectionColumns, setTemplate, setMargins,
     setCustomMargin, setThemeColor, setFontFamily, setFontSizeHeading,
-    setFontSizeText, setCvLanguage, setShowSectionIcons, setGradientEnabled, setGradientColor]);
+    setFontSizeText, setCvLanguage, setShowSectionIcons, setCreativeHeaderBg]);
 
   const switchProfile = useCallback((targetId) => {
     if (targetId === activeProfileId) return;
@@ -130,7 +128,7 @@ export function CVProvider({ children }) {
         margins: 'normal', customMargin: DEFAULT_CUSTOM_MARGIN,
         themeColor: DEFAULT_THEME_COLOR, fontFamily: 'sans',
         fontSizeHeading: 1, fontSizeText: 1, cvLanguage: 'pl',
-        showSectionIcons: false, gradientEnabled: false, gradientColor: '#8b5cf6',
+        showSectionIcons: false, creativeHeaderBg: DEFAULT_THEME_COLOR,
       });
     }
     // If duplicating, current state is already correct
@@ -332,8 +330,7 @@ export function CVProvider({ children }) {
       fontSizeText,
       cvLanguage,
       showSectionIcons,
-      gradientEnabled,
-      gradientColor,
+      creativeHeaderBg,
     };
     const blob = new Blob([JSON.stringify(stateToExport, null, 2)], {
       type: 'application/json',
@@ -366,8 +363,7 @@ export function CVProvider({ children }) {
         if (imported.fontSizeText) setFontSizeText(imported.fontSizeText);
         if (imported.cvLanguage) setCvLanguage(imported.cvLanguage);
         if (imported.showSectionIcons !== undefined) setShowSectionIcons(imported.showSectionIcons);
-        if (imported.gradientEnabled !== undefined) setGradientEnabled(imported.gradientEnabled);
-        if (imported.gradientColor) setGradientColor(imported.gradientColor);
+        if (imported.creativeHeaderBg) setCreativeHeaderBg(imported.creativeHeaderBg);
       } catch {
         alert('Wystąpił błąd podczas odczytu pliku. Upewnij się, że to poprawny plik JSON.');
       }
@@ -389,8 +385,7 @@ export function CVProvider({ children }) {
     setFontSizeText(1);
     setCvLanguage('pl');
     setShowSectionIcons(false);
-    setGradientEnabled(false);
-    setGradientColor('#8b5cf6');
+    setCreativeHeaderBg(DEFAULT_THEME_COLOR);
   };
 
   const getPhotoStyle = () => {
@@ -417,13 +412,6 @@ export function CVProvider({ children }) {
       borderRadius,
       objectFit: 'cover'
     };
-  };
-
-  const getAccentBackground = () => {
-    if (gradientEnabled) {
-      return `linear-gradient(135deg, ${themeColor}, ${gradientColor})`;
-    }
-    return themeColor;
   };
 
   // Margin styles
@@ -499,10 +487,8 @@ export function CVProvider({ children }) {
     setDarkMode,
     showSectionIcons,
     setShowSectionIcons,
-    gradientEnabled,
-    setGradientEnabled,
-    gradientColor,
-    setGradientColor,
+    creativeHeaderBg,
+    setCreativeHeaderBg,
     // Helpers
     handlePersonalChange,
     handleSkillsChange,
@@ -523,7 +509,6 @@ export function CVProvider({ children }) {
     getMarginStyle,
     getMarginValues,
     getPhotoStyle,
-    getAccentBackground,
     undo,
     redo,
     canUndo,

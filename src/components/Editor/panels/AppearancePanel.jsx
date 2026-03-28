@@ -15,8 +15,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     fontSizeHeading, setFontSizeHeading,
     fontSizeText, setFontSizeText,
     showSectionIcons, setShowSectionIcons,
-    gradientEnabled, setGradientEnabled,
-    gradientColor, setGradientColor,
+    creativeHeaderBg, setCreativeHeaderBg,
   } = useCV();
 
   const templates = [
@@ -162,22 +161,18 @@ export function AppearancePanel({ isOpen, onToggle }) {
           </div>
         </div>
 
-        {/* Gradient */}
-        <div className="appearance-group">
-          <label className="appearance-label">Gradient (nagłówek/sidebar)</label>
-          <label className="toggle-row" role="switch" aria-checked={gradientEnabled}>
-            <input type="checkbox" checked={gradientEnabled} onChange={(e) => setGradientEnabled(e.target.checked)} className="toggle-checkbox" />
-            <span className="toggle-slider" /><span className="toggle-label">{gradientEnabled ? 'Włączony' : 'Wyłączony'}</span>
-          </label>
-          {gradientEnabled && (
-            <div className="color-picker-row" style={{ marginTop: '0.5rem' }}>
-              <label className="appearance-label" style={{ fontSize: '0.75rem', marginBottom: 0 }}>Drugi kolor:</label>
-              <label className="color-swatch color-swatch--custom color-swatch--active" style={{ backgroundColor: gradientColor }} title="Drugi kolor gradientu" aria-label="Drugi kolor gradientu">
-                <input type="color" value={gradientColor} onChange={(e) => setGradientColor(e.target.value)} className="color-native-input" aria-label="Wybierz drugi kolor gradientu" />
+        {/* Creative header background */}
+        {template === 'creative' && (
+          <div className="appearance-group">
+            <label className="appearance-label">Kolor tła nagłówka</label>
+            <div className="color-picker-row">
+              <label className="color-swatch color-swatch--custom color-swatch--active" style={{ backgroundColor: creativeHeaderBg }} title="Kolor tła nagłówka" aria-label="Kolor tła nagłówka">
+                <input type="color" value={creativeHeaderBg} onChange={(e) => setCreativeHeaderBg(e.target.value)} className="color-native-input" aria-label="Wybierz kolor tła nagłówka" />
               </label>
+              <span className="field-hint" style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}>Tło sekcji danych osobowych</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Margins */}
         <div className="appearance-group">
