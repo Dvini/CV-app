@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
 import { useHistory } from '../hooks/useHistory';
 import {
@@ -65,6 +65,96 @@ export function CVProvider({ children }) {
   const [showSectionIcons, setShowSectionIcons] = useLocalStorage('cv_showSectionIcons', false);
   const [gradientEnabled, setGradientEnabled] = useLocalStorage('cv_gradientEnabled', false);
   const [gradientColor, setGradientColor] = useLocalStorage('cv_gradientColor', '#8b5cf6');
+
+  // --- Profiles ---
+  const [profiles, setProfiles] = useLocalStorage('cv_profiles', [{ id: 'default', name: 'Profil 1' }]);
+  const [activeProfileId, setActiveProfileId] = useLocalStorage('cv_activeProfileId', 'default');
+  const switchingRef = useRef(false);
+
+  const getSnapshot = useCallback(() => ({
+    data, sectionOrder, sectionColumns, template, margins, customMargin,
+    themeColor, fontFamily, fontSizeHeading, fontSizeText, cvLanguage,
+    showSectionIcons, gradientEnabled, gradientColor,
+  }), [data, sectionOrder, sectionColumns, template, margins, customMargin,
+    themeColor, fontFamily, fontSizeHeading, fontSizeText, cvLanguage,
+    showSectionIcons, gradientEnabled, gradientColor]);
+
+  const loadSnapshot = useCallback((s) => {
+    if (!s) return;
+    switchingRef.current = true;
+    if (s.data) setDataRaw(s.data);
+    if (s.sectionOrder) setSectionOrder(s.sectionOrder);
+    if (s.sectionColumns) setSectionColumns(s.sectionColumns);
+    if (s.template) setTemplate(s.template);
+    if (s.margins) setMargins(s.margins);
+    if (s.customMargin) setCustomMargin(s.customMargin);
+    if (s.themeColor) setThemeColor(s.themeColor);
+    if (s.fontFamily) setFontFamily(s.fontFamily);
+    if (s.fontSizeHeading != null) setFontSizeHeading(s.fontSizeHeading);
+    if (s.fontSizeText != null) setFontSizeText(s.fontSizeText);
+    if (s.cvLanguage) setCvLanguage(s.cvLanguage);
+    if (s.showSectionIcons != null) setShowSectionIcons(s.showSectionIcons);
+    if (s.gradientEnabled != null) setGradientEnabled(s.gradientEnabled);
+    if (s.gradientColor) setGradientColor(s.gradientColor);
+    switchingRef.current = false;
+  }, [setDataRaw, setSectionOrder, setSectionColumns, setTemplate, setMargins,
+    setCustomMargin, setThemeColor, setFontFamily, setFontSizeHeading,
+    setFontSizeText, setCvLanguage, setShowSectionIcons, setGradientEnabled, setGradientColor]);
+
+  const switchProfile = useCallback((targetId) => {
+    if (targetId === activeProfileId) return;
+    // Save current profile
+    try {
+      localStorage.setItem(`cv_profile_${activeProfileId}`, JSON.stringify(getSnapshot()));
+    } catch { /* ignore quota errors */ }
+    // Load target
+    const raw = localStorage.getItem(`cv_profile_${targetId}`);
+    if (raw) {
+      try { loadSnapshot(JSON.parse(raw)); } catch { /* ignore parse errors */ }
+    }
+    setActiveProfileId(targetId);
+  }, [activeProfileId, getSnapshot, loadSnapshot, setActiveProfileId]);
+
+  const createProfile = useCallback((name, duplicate = false) => {
+    const id = `profile_${Date.now()}`;
+    // Save current first
+    try {
+      localStorage.setItem(`cv_profile_${activeProfileId}`, JSON.stringify(getSnapshot()));
+    } catch { /* ignore */ }
+    setProfiles((prev) => [...prev, { id, name }]);
+    if (!duplicate) {
+      // Load defaults into the new blank profile
+      loadSnapshot({
+        data: defaultData, sectionOrder: defaultSectionOrder,
+        sectionColumns: defaultSectionColumns, template: 'classic',
+        margins: 'normal', customMargin: DEFAULT_CUSTOM_MARGIN,
+        themeColor: DEFAULT_THEME_COLOR, fontFamily: 'sans',
+        fontSizeHeading: 1, fontSizeText: 1, cvLanguage: 'pl',
+        showSectionIcons: false, gradientEnabled: false, gradientColor: '#8b5cf6',
+      });
+    }
+    // If duplicating, current state is already correct
+    setActiveProfileId(id);
+  }, [activeProfileId, getSnapshot, loadSnapshot, setProfiles, setActiveProfileId]);
+
+  const deleteProfile = useCallback((id) => {
+    if (profiles.length <= 1) return;
+    localStorage.removeItem(`cv_profile_${id}`);
+    const remaining = profiles.filter((p) => p.id !== id);
+    setProfiles(remaining);
+    if (id === activeProfileId) {
+      const nextId = remaining[0].id;
+      const raw = localStorage.getItem(`cv_profile_${nextId}`);
+      if (raw) {
+        try { loadSnapshot(JSON.parse(raw)); } catch { /* ignore */ }
+      }
+      setActiveProfileId(nextId);
+    }
+  }, [profiles, activeProfileId, loadSnapshot, setProfiles, setActiveProfileId]);
+
+  const renameProfile = useCallback((id, name) => {
+    setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, name } : p)));
+  }, [setProfiles]);
 
   // Run schema migrations when version is outdated
   useEffect(() => {
@@ -438,6 +528,12 @@ export function CVProvider({ children }) {
     redo,
     canUndo,
     canRedo,
+    profiles,
+    activeProfileId,
+    switchProfile,
+    createProfile,
+    deleteProfile,
+    renameProfile,
   };
 
   return <CVContext.Provider value={value}>{children}</CVContext.Provider>;
