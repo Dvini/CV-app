@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react';
 import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
+import { useHistory } from '../hooks/useHistory';
 import {
   defaultData,
   defaultSectionOrder,
@@ -32,7 +33,16 @@ export function CVProvider({ children }) {
   const [schemaVersion, setSchemaVersion] = useLocalStorage('cv_schema_version', SCHEMA_VERSION);
 
   // Core CV data
-  const [data, setData] = useLocalStorage('cv_data', defaultData);
+  const [data, setDataRaw] = useLocalStorage('cv_data', defaultData);
+  const { undo, redo, canUndo, canRedo, trackChange } = useHistory(data, setDataRaw);
+
+  // Wrap setData to track changes for undo/redo
+  const setData = useCallback((updater) => {
+    setDataRaw((prev) => {
+      trackChange(prev);
+      return typeof updater === 'function' ? updater(prev) : updater;
+    });
+  }, [setDataRaw, trackChange]);
   const [sectionOrder, setSectionOrder] = useLocalStorage(
     'cv_sectionOrder',
     defaultSectionOrder
@@ -397,6 +407,10 @@ export function CVProvider({ children }) {
     getMarginStyle,
     getMarginValues,
     getPhotoStyle,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   };
 
   return <CVContext.Provider value={value}>{children}</CVContext.Provider>;

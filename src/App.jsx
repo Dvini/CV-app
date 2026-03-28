@@ -7,7 +7,7 @@ import { CVPreview } from './components/Preview/CVPreview';
 import './styles/index.css';
 
 function AppContent() {
-  const { darkMode, storageWarning, dismissWarning } = useCV();
+  const { darkMode, storageWarning, dismissWarning, undo, redo } = useCV();
 
   React.useEffect(() => {
     document.documentElement.setAttribute(
@@ -15,6 +15,25 @@ function AppContent() {
       darkMode ? 'dark' : 'light'
     );
   }, [darkMode]);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo]);
 
   return (
     <>
