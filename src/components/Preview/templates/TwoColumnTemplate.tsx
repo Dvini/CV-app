@@ -21,7 +21,15 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
         <div className="cv-twocol-side" style={sideStyle}>
           {/* Personal info in sidebar */}
           {data.personal.showPhoto && data.personal.photo && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem', marginLeft: `-${sideStyle.paddingLeft}`, marginRight: `-${sideStyle.paddingRight}` }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginLeft: `calc(-1 * ${sideStyle.paddingLeft})`,
+                marginRight: `calc(-1 * ${sideStyle.paddingRight})`,
+                marginBottom: '1.25rem',
+              }}
+            >
               <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
             </div>
           )}
