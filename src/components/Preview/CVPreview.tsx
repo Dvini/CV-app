@@ -47,7 +47,6 @@ export function CVPreview() {
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter: !!showClauseFooter,
     marginVMm: marginV,
-    disableTopMarginPush: isColumnTemplate,
     deps: [template, margins, customMargin, data],
   });
 
@@ -100,16 +99,13 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
-                  {pageIndex > 0 && marginVPx > 0 && !isColumnTemplate && (
-                    <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
-                  )}
-                  {pageIndex > 0 && marginVPx > 0 && isColumnTemplate && (
+                  {pageIndex > 0 && marginVPx > 0 && (
                     <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
                   )}
                   <div
                     className="cv-content-offset"
                     style={{
-                      transform: `translateY(-${pageIndex * visualContentHeight - (isColumnTemplate ? pageIndex * marginVPx : 0)}px)`,
+                      transform: `translateY(-${pageIndex * visualContentHeight}px)`,
                       height: `${pageCount * visualContentHeight}px`,
                       display: 'flex',
                       flexDirection: 'column'

@@ -8,6 +8,7 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { data, sectionOrder, sectionColumns, getPhotoStyle } = useCVData();
   const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
+  const sideStyle = getMarginStyle('left-column', showClauseFooter);
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
   const mainSections = sectionOrder.filter((s) => sectionColumns[s] === 'main');
@@ -16,10 +17,10 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
     <div className="cv-page template-twocolumn">
       <div className="cv-twocol">
         {/* Left (narrow) column */}
-        <div className="cv-twocol-side" style={getMarginStyle('left-column', showClauseFooter)}>
+        <div className="cv-twocol-side" style={sideStyle}>
           {/* Personal info in sidebar */}
           {data.personal.showPhoto && data.personal.photo && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem', marginLeft: `-${sideStyle.paddingLeft}`, marginRight: `-${sideStyle.paddingRight}` }}>
               <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
             </div>
           )}

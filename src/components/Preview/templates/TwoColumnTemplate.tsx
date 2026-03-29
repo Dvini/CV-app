@@ -10,14 +10,6 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
   const sideStyle = getMarginStyle('left-column', showClauseFooter);
-  const hasPhoto = data.personal.showPhoto && data.personal.photo;
-
-  const sideInnerStyle = {
-    paddingTop: hasPhoto ? '0mm' : sideStyle.paddingTop,
-    paddingRight: sideStyle.paddingRight,
-    paddingBottom: sideStyle.paddingBottom,
-    paddingLeft: sideStyle.paddingLeft,
-  };
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
   const mainSections = sectionOrder.filter((s) => sectionColumns[s] === 'main');
@@ -26,14 +18,13 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
     <div className="cv-page template-twocolumn">
       <div className="cv-twocol">
         {/* Left (narrow) column */}
-        <div className="cv-twocol-side">
+        <div className="cv-twocol-side" style={sideStyle}>
           {/* Personal info in sidebar */}
-          {hasPhoto && (
-            <div className="cv-sidebar-photo-wrap" style={{ marginTop: sideStyle.paddingTop, marginBottom: '1.25rem' }}>
+          {data.personal.showPhoto && data.personal.photo && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem', marginLeft: `-${sideStyle.paddingLeft}`, marginRight: `-${sideStyle.paddingRight}` }}>
               <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
             </div>
           )}
-          <div style={sideInnerStyle}>
           <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>
           <div className="cv-title cv-title--small" style={{ color: themeColor }}>
             {data.personal.title}
@@ -45,7 +36,6 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
 
           <div className="cv-sidebar-sections">
             {sideSections.map((section) => renderCVSection(section, 'side'))}
-          </div>
           </div>
         </div>
 
