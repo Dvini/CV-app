@@ -99,7 +99,7 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
-                  {pageIndex > 0 && marginVPx > 0 && (
+                  {pageIndex > 0 && marginVPx > 0 && !isColumnTemplate && (
                     <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
                   )}
                   <div

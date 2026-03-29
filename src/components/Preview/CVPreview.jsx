@@ -38,6 +38,7 @@ export function CVPreview() {
 
   const fontFamilyValue = FONT_FAMILY_MAP[fontFamily] || FONT_FAMILY_MAP.sans;
   const showClauseFooter = data.showClause && data.clause;
+  const isColumnTemplate = template === 'twocolumn' || template === 'creative';
   const { v: marginV, h: marginH } = getMarginValues();
   const marginVPx = Math.round(marginV * MM_TO_PX);
   const footerTextHeightPx = showClauseFooter ? 36 : 0;
@@ -97,7 +98,7 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
-                  {pageIndex > 0 && marginVPx > 0 && (
+                  {pageIndex > 0 && marginVPx > 0 && !isColumnTemplate && (
                     <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
                   )}
                   <div
