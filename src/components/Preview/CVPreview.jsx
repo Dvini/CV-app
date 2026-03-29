@@ -46,6 +46,7 @@ export function CVPreview() {
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter: !!showClauseFooter,
     marginVMm: marginV,
+    isColumnTemplate,
     deps: [template, margins, customMargin, data],
   });
 

@@ -15,6 +15,7 @@ interface UsePaginationOptions {
   showClauseFooter: boolean;
   marginVMm: number;
   disableTopMarginPush?: boolean;
+  isColumnTemplate?: boolean;
   deps?: unknown[];
 }
 
@@ -35,6 +36,7 @@ export function usePagination({
   showClauseFooter,
   marginVMm,
   disableTopMarginPush = false,
+  isColumnTemplate = false,
   deps = [],
 }: UsePaginationOptions) {
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -153,6 +155,60 @@ export function usePagination({
       }
     }
 
+    // Column sync pass: for two-column/creative templates, ensure each column's
+    // first visible element on every continuation page starts at the margin position.
+    // The main spacer loop processes both columns independently and can leave them
+    // starting at different heights on page 2+.
+    if (isColumnTemplate) {
+      const colSelectors = [
+        ".cv-twocol-side, .cv-creative-side",
+        ".cv-twocol-main, .cv-creative-main",
+      ];
+      const containerRect = measureContainer.getBoundingClientRect();
+
+      for (const selector of colSelectors) {
+        const colEl = measureContainer.querySelector(selector);
+        if (!colEl) continue;
+
+        const colBreakables = Array.from(
+          colEl.querySelectorAll<HTMLElement>(".cv-breakable"),
+        );
+
+        for (let p = 1; p <= 20; p++) {
+          const pageStart = p * visualContentHeight;
+          const targetTop = pageStart + effectiveMarginVPx;
+
+          const firstOnPage = colBreakables.find((el) => {
+            const top = el.getBoundingClientRect().top - containerRect.top;
+            return top >= pageStart;
+          });
+
+          if (!firstOnPage) break;
+
+          const currentTop =
+            firstOnPage.getBoundingClientRect().top - containerRect.top;
+          const gap = targetTop - currentTop;
+
+          if (gap > 0) {
+            const computedMargin =
+              parseFloat(window.getComputedStyle(firstOnPage).marginTop) || 0;
+            const newMargin = computedMargin + gap;
+            firstOnPage.style.marginTop = `${newMargin}px`;
+
+            const globalIndex = breakables.indexOf(firstOnPage);
+            if (globalIndex !== -1) {
+              const existingEdit = edits.find((e) => e.index === globalIndex);
+              if (existingEdit) {
+                existingEdit.newMargin = newMargin;
+              } else {
+                edits.push({ index: globalIndex, newMargin });
+              }
+            }
+          }
+        }
+      }
+    }
+
     const totalHeight = measureContainer.scrollHeight;
     const pages = Math.max(
       1,
@@ -169,6 +225,7 @@ export function usePagination({
     engineContentHeight,
     effectiveMarginVPx,
     disableTopMarginPush,
+    isColumnTemplate,
   ]);
 
   // Measuring engine: observe content and recalculate on changes
