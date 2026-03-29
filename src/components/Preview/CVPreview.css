@@ -279,6 +279,12 @@
   border: 2px solid #e2e8f0;
 }
 
+.cv-sidebar-photo-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .cv-sidebar-sections {
   display: flex;
   flex-direction: column;
