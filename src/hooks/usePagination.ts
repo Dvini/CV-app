@@ -64,6 +64,19 @@ export function usePagination({
     );
     const edits: SpacerEdit[] = [];
 
+    // The spacer algorithm is tuned for single-column flow.
+    // For column templates we only paginate by clipping, without injecting spacer margins.
+    if (disableTopMarginPush) {
+      const totalHeight = measureContainer.scrollHeight;
+      const pages = Math.max(
+        1,
+        Math.ceil((totalHeight - 5) / visualContentHeight),
+      );
+      setPageCount((prev) => (prev !== pages ? pages : prev));
+      setPageSpacers((prev) => (prev.length ? [] : prev));
+      return;
+    }
+
     for (let index = 0; index < breakables.length; index++) {
       const el = breakables[index];
       const elRect = el.getBoundingClientRect();
