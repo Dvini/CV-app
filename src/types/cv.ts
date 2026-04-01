@@ -236,6 +236,8 @@ export interface CVAppearanceContextType {
   setDarkMode: (d: boolean) => void;
   showSectionIcons: boolean;
   setShowSectionIcons: (s: boolean) => void;
+  showContactIcons: boolean;
+  setShowContactIcons: (s: boolean) => void;
   creativeHeaderBg: string;
   setCreativeHeaderBg: (c: string) => void;
   getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;

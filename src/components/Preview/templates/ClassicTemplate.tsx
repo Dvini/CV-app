@@ -7,7 +7,7 @@ import '../CVPreview.css';
 
 export const ClassicTemplate = React.memo(function ClassicTemplate() {
   const { data, sectionOrder } = useCVData();
-  const { getMarginStyle, themeColor } = useCVAppearance();
+  const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
@@ -26,7 +26,7 @@ export const ClassicTemplate = React.memo(function ClassicTemplate() {
             <h1 className="cv-name">{data.personal.fullName || 'Imię Nazwisko'}</h1>
             <div className="cv-title" style={{ color: themeColor }}>{data.personal.title}</div>
             <div className="cv-contact">
-              <ContactInfo personal={data.personal} />
+              <ContactInfo personal={data.personal} showIcons={showContactIcons} />
             </div>
           </div>
         </div>

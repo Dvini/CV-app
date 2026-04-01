@@ -49,6 +49,10 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     'cv_showSectionIcons',
     false,
   );
+  const [showContactIcons, setShowContactIcons] = useLocalStorage<boolean>(
+    'cv_showContactIcons',
+    false,
+  );
   const [creativeHeaderBg, setCreativeHeaderBg] = useLocalStorage<string>(
     'cv_creativeHeaderBg',
     DEFAULT_THEME_COLOR,
@@ -121,6 +125,8 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     setDarkMode: setDarkMode as CVAppearanceContextType['setDarkMode'],
     showSectionIcons,
     setShowSectionIcons: setShowSectionIcons as CVAppearanceContextType['setShowSectionIcons'],
+    showContactIcons,
+    setShowContactIcons: setShowContactIcons as CVAppearanceContextType['setShowContactIcons'],
     creativeHeaderBg,
     setCreativeHeaderBg: setCreativeHeaderBg as CVAppearanceContextType['setCreativeHeaderBg'],
     getMarginStyle,

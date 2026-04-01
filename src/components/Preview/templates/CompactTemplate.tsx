@@ -7,7 +7,7 @@ import '../CVPreview.css';
 
 export const CompactTemplate = React.memo(function CompactTemplate() {
   const { data, sectionOrder } = useCVData();
-  const { getMarginStyle, themeColor } = useCVAppearance();
+  const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
@@ -30,7 +30,7 @@ export const CompactTemplate = React.memo(function CompactTemplate() {
           </div>
         </div>
         <div className="cv-contact cv-contact--compact">
-          <ContactInfo personal={data.personal} />
+          <ContactInfo personal={data.personal} showIcons={showContactIcons} />
         </div>
       </header>
 

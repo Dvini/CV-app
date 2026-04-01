@@ -16,6 +16,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     fontSizeHeading, setFontSizeHeading,
     fontSizeText, setFontSizeText,
     showSectionIcons, setShowSectionIcons,
+    showContactIcons, setShowContactIcons,
     creativeHeaderBg, setCreativeHeaderBg,
   } = useCVAppearance();
 
@@ -69,6 +70,20 @@ export function AppearancePanel({ isOpen, onToggle }) {
               className="toggle-checkbox"
             />
             <span className="toggle-slider" /><span className="toggle-label">{showSectionIcons ? 'Włączone' : 'Wyłączone'}</span>
+          </label>
+        </div>
+
+        {/* Contact icons toggle */}
+        <div className="appearance-group">
+          <label className="appearance-label">Ikony danych kontaktowych</label>
+          <label className="toggle-row" role="switch" aria-checked={showContactIcons}>
+            <input
+              type="checkbox"
+              checked={showContactIcons}
+              onChange={(e) => setShowContactIcons(e.target.checked)}
+              className="toggle-checkbox"
+            />
+            <span className="toggle-slider" /><span className="toggle-label">{showContactIcons ? 'Włączone' : 'Wyłączone'}</span>
           </label>
         </div>
 

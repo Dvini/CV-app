@@ -7,7 +7,7 @@ import '../CVPreview.css';
 
 export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
-  const { getMarginStyle, themeColor } = useCVAppearance();
+  const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
   const sideStyle = getMarginStyle('left-column', showClauseFooter);
 
@@ -43,7 +43,7 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
           </div>
 
           <div className="cv-contact cv-contact--vertical">
-            <ContactInfo personal={data.personal} linkClassName="cv-contact-break" />
+            <ContactInfo personal={data.personal} linkClassName="cv-contact-break" showIcons={showContactIcons} />
           </div>
 
           <div className="cv-sidebar-sections">

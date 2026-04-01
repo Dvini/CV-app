@@ -7,7 +7,7 @@ import '../CVPreview.css';
 
 export const CreativeTemplate = React.memo(function CreativeTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
-  const { getMarginStyle, creativeHeaderBg } = useCVAppearance();
+  const { getMarginStyle, creativeHeaderBg, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
@@ -38,7 +38,7 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
               <h1 className="cv-name cv-name--creative">{data.personal.fullName || 'Imię Nazwisko'}</h1>
               <div className="cv-title cv-title--creative">{data.personal.title}</div>
               <div className="cv-contact cv-contact--creative">
-                <ContactInfo personal={data.personal} linkClassName="cv-contact-creative-link" />
+                <ContactInfo personal={data.personal} linkClassName="cv-contact-creative-link" showIcons={showContactIcons} />
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import '../CVPreview.css';
 
 export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
   const { data, sectionOrder } = useCVData();
-  const { getMarginStyle, themeColor } = useCVAppearance();
+  const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
@@ -28,7 +28,7 @@ export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
           {data.personal.title}
         </div>
         <div className="cv-contact cv-contact--center">
-          <ContactInfo personal={data.personal} />
+          <ContactInfo personal={data.personal} showIcons={showContactIcons} />
         </div>
       </header>
 
