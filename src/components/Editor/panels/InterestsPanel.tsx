@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
-export function InterestsPanel({ isOpen, onToggle }) {
+export function InterestsPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const { data, handleInterestsChange } = useCVData();
 
   return (
@@ -20,4 +19,3 @@ export function InterestsPanel({ isOpen, onToggle }) {
     </Panel>
   );
 }
-

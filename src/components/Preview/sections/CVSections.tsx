@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { cvTranslations } from '../../../constants/translations';
@@ -6,9 +5,14 @@ import {
   User, Briefcase, GraduationCap, BookOpen, Code2, Globe,
   FolderOpen, Heart, Award, Users, FileText, HandHeart, SquarePen
 } from 'lucide-react';
+import type { SectionKey } from '../../../types/cv';
 import './sections.css';
 
-const SECTION_ICONS = {
+type ColumnType = 'full' | 'main' | 'side';
+
+type CvTranslation = typeof cvTranslations['pl'];
+
+const SECTION_ICONS: Record<SectionKey, React.FC<{ size?: number; className?: string }>> = {
   personal: User,
   experience: Briefcase,
   education: GraduationCap,
@@ -24,10 +28,10 @@ const SECTION_ICONS = {
   custom: SquarePen,
 };
 
-/* Shared heading class logic */
+/* Shared heading context */
 function useHeading() {
   const { template, themeColor, cvLanguage, showSectionIcons } = useCVAppearance();
-  const t = cvTranslations[cvLanguage] || cvTranslations['pl'];
+  const t: CvTranslation = cvTranslations[cvLanguage] || cvTranslations['pl'];
 
   const headingClass =
     template === 'minimalist'
@@ -37,8 +41,17 @@ function useHeading() {
   return { headingClass, themeColor, t, template, showSectionIcons };
 }
 
-function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t, showSectionIcons }) {
-  const title = titleOverride || t[sectionKey] || sectionKey;
+interface SectionHeadingProps {
+  sectionKey: SectionKey;
+  titleOverride?: string;
+  headingClass: string;
+  themeColor: string;
+  t: CvTranslation;
+  showSectionIcons: boolean;
+}
+
+function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t, showSectionIcons }: SectionHeadingProps) {
+  const title = titleOverride || t[sectionKey as keyof CvTranslation] || sectionKey;
   const Icon = showSectionIcons ? SECTION_ICONS[sectionKey] : null;
   return (
     <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">
@@ -49,7 +62,7 @@ function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t
 }
 
 /* Personal / Summary */
-export function SummarySection({ columnType }) {
+export function SummarySection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons, template } = useHeading();
   if (!data.personal.summary) return null;
@@ -67,7 +80,7 @@ export function SummarySection({ columnType }) {
 }
 
 /* Experience */
-export function ExperienceSection({ columnType }) {
+export function ExperienceSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.experience.length === 0) return null;
@@ -104,7 +117,7 @@ export function ExperienceSection({ columnType }) {
 }
 
 /* Education */
-export function EducationSection({ columnType }) {
+export function EducationSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.education.length === 0) return null;
@@ -132,7 +145,7 @@ export function EducationSection({ columnType }) {
 }
 
 /* Courses */
-export function CoursesSection({ columnType }) {
+export function CoursesSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (data.courses.length === 0) return null;
@@ -204,7 +217,7 @@ export function LanguagesSection() {
 }
 
 /* Projects */
-export function ProjectsSection({ columnType }) {
+export function ProjectsSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.projects || data.projects.length === 0) return null;
@@ -276,7 +289,7 @@ export function ClauseSection() {
 }
 
 /* Certificates */
-export function CertificatesSection({ columnType }) {
+export function CertificatesSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.certificates || data.certificates.length === 0) return null;
@@ -295,7 +308,9 @@ export function CertificatesSection({ columnType }) {
             </div>
             {cert.issuer && <div className="cv-item-subtitle">{cert.issuer}</div>}
             {cert.credentialUrl && (
-              <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="cv-item-link">{cert.credentialUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+              <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="cv-item-link">
+                {cert.credentialUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              </a>
             )}
           </div>
         ))}
@@ -305,12 +320,10 @@ export function CertificatesSection({ columnType }) {
 }
 
 /* References */
-export function ReferencesSection({ columnType }) {
+export function ReferencesSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.references || data.references.length === 0) return null;
-
-  const isSide = columnType === 'side';
 
   return (
     <div className="cv-section">
@@ -329,7 +342,7 @@ export function ReferencesSection({ columnType }) {
 }
 
 /* Publications */
-export function PublicationsSection({ columnType }) {
+export function PublicationsSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.publications || data.publications.length === 0) return null;
@@ -348,7 +361,9 @@ export function PublicationsSection({ columnType }) {
             </div>
             {pub.publisher && <div className="cv-item-subtitle">{pub.publisher}</div>}
             {pub.url && (
-              <a href={pub.url} target="_blank" rel="noopener noreferrer" className="cv-item-link">{pub.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+              <a href={pub.url} target="_blank" rel="noopener noreferrer" className="cv-item-link">
+                {pub.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              </a>
             )}
           </div>
         ))}
@@ -358,7 +373,7 @@ export function PublicationsSection({ columnType }) {
 }
 
 /* Volunteer */
-export function VolunteerSection({ columnType }) {
+export function VolunteerSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.volunteer || data.volunteer.length === 0) return null;
@@ -387,7 +402,7 @@ export function VolunteerSection({ columnType }) {
 }
 
 /* Custom section */
-export function CustomSection({ columnType }) {
+export function CustomSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.custom || data.custom.length === 0) return null;
@@ -415,7 +430,7 @@ export function CustomSection({ columnType }) {
 }
 
 /* Section dispatcher */
-export function renderCVSection(sectionKey, columnType = 'full') {
+export function renderCVSection(sectionKey: SectionKey, columnType: ColumnType = 'full'): React.ReactNode {
   switch (sectionKey) {
     case 'personal': return <SummarySection key={sectionKey} columnType={columnType} />;
     case 'experience': return <ExperienceSection key={sectionKey} columnType={columnType} />;
@@ -433,4 +448,3 @@ export function renderCVSection(sectionKey, columnType = 'full') {
     default: return null;
   }
 }
-

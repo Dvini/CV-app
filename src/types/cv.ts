@@ -186,3 +186,72 @@ export type ArrayFieldName = keyof Pick<
   | "volunteer"
   | "custom"
 >;
+
+// ─── Context shape types ───────────────────────────────────────────────────
+
+export interface CVDataContextType {
+  data: CVData;
+  setData: (updater: CVData | ((prev: CVData) => CVData)) => void;
+  sectionOrder: SectionKey[];
+  setSectionOrder: (order: SectionKey[] | ((prev: SectionKey[]) => SectionKey[])) => void;
+  sectionColumns: SectionColumns;
+  setSectionColumns: (cols: SectionColumns | ((prev: SectionColumns) => SectionColumns)) => void;
+  handlePersonalChange: (field: keyof Personal, value: unknown) => void;
+  handleSkillsChange: (value: string) => void;
+  handleInterestsChange: (value: string) => void;
+  handleClauseChange: (value: string) => void;
+  toggleClause: () => void;
+  addItem: (arrayName: ArrayFieldName, newItem: Record<string, unknown>) => void;
+  updateItem: (arrayName: ArrayFieldName, id: string, field: string, value: unknown) => void;
+  removeItem: (arrayName: ArrayFieldName, id: string) => void;
+  moveItem: (arrayName: ArrayFieldName, index: number, direction: MoveDirection) => void;
+  moveSection: (sectionKey: SectionKey, direction: MoveDirection) => void;
+  toggleColumn: (sectionKey: SectionKey) => void;
+  isFirstInColumn: (sectionKey: SectionKey) => boolean;
+  isLastInColumn: (sectionKey: SectionKey) => boolean;
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+}
+
+export interface CVAppearanceContextType {
+  template: TemplateName;
+  setTemplate: (t: TemplateName) => void;
+  margins: MarginPreset;
+  setMargins: (m: MarginPreset) => void;
+  customMargin: CustomMargin;
+  setCustomMargin: (m: CustomMargin) => void;
+  themeColor: string;
+  setThemeColor: (c: string) => void;
+  fontFamily: FontFamily;
+  setFontFamily: (f: FontFamily) => void;
+  fontSizeHeading: number;
+  setFontSizeHeading: (s: number) => void;
+  fontSizeText: number;
+  setFontSizeText: (s: number) => void;
+  cvLanguage: CVLanguage;
+  setCvLanguage: (l: CVLanguage) => void;
+  darkMode: boolean;
+  setDarkMode: (d: boolean) => void;
+  showSectionIcons: boolean;
+  setShowSectionIcons: (s: boolean) => void;
+  creativeHeaderBg: string;
+  setCreativeHeaderBg: (c: string) => void;
+  getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
+  getMarginValues: () => { v: number; h: number };
+}
+
+export interface CVManagerContextType {
+  storageWarning: string | null;
+  dismissWarning: () => void;
+  exportJSON: () => void;
+  importJSON: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  resetToDefaults: () => void;
+  profiles: Profile[];
+  activeProfileId: string;
+  switchProfile: (id: string) => void;
+  createProfile: (name: string, duplicate?: boolean) => void;
+  deleteProfile: (id: string) => void;
+  renameProfile: (id: string, name: string) => void;
+}

@@ -5,7 +5,7 @@ import { useCVData } from '../../../context/CVContext';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 
-export function SkillsPanel({ isOpen, onToggle }) {
+export function SkillsPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const { data, handleSkillsChange } = useCVData();
 
   return (

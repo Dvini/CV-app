@@ -27,7 +27,7 @@ export function EditorSidebar() {
   const [width, setWidth] = useState(480);
   const sidebarRef = useRef(null);
 
-  const toggle = (id) => setOpenPanels((prev) => {
+  const toggle = (id: string) => setOpenPanels((prev) => {
     const next = new Set(prev);
     if (next.has(id)) {
       next.delete(id);

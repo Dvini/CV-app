@@ -1,15 +1,20 @@
-// @ts-nocheck
 import React from 'react';
+import type { Personal } from '../../../types/cv';
 
-function formatUrl(url) {
+function formatUrl(url: string): string {
   return url.startsWith('http') ? url : `https://${url}`;
 }
 
-function displayUrl(url) {
+function displayUrl(url: string): string {
   return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 }
 
-export function ContactLink({ url, className }) {
+interface ContactLinkProps {
+  url: string;
+  className?: string;
+}
+
+export function ContactLink({ url, className }: ContactLinkProps) {
   if (!url) return null;
   return (
     <a href={formatUrl(url)} target="_blank" rel="noopener noreferrer" className={className}>
@@ -18,7 +23,13 @@ export function ContactLink({ url, className }) {
   );
 }
 
-export function ContactInfo({ personal, className, linkClassName }) {
+interface ContactInfoProps {
+  personal: Personal;
+  className?: string;
+  linkClassName?: string;
+}
+
+export function ContactInfo({ personal, className, linkClassName }: ContactInfoProps) {
   const spanClass = linkClassName || className;
   return (
     <>
@@ -31,4 +42,3 @@ export function ContactInfo({ personal, className, linkClassName }) {
     </>
   );
 }
-

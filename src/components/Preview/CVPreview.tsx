@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { useCVData, useCVAppearance } from '../../context/CVContext';
 import { ClassicTemplate } from './templates/ClassicTemplate';
@@ -7,10 +6,11 @@ import { MinimalistTemplate } from './templates/MinimalistTemplate';
 import { CompactTemplate } from './templates/CompactTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
-import { A4_HEIGHT_PX, MM_TO_PX } from '../../constants/layout';
+import { A4_HEIGHT_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX } from '../../constants/layout';
+import type { TemplateName } from '../../types/cv';
 import './CVPreview.css';
 
-const FONT_FAMILY_MAP = {
+const FONT_FAMILY_MAP: Record<string, string> = {
   sans: 'Inter, system-ui, sans-serif',
   serif: 'Merriweather, Georgia, serif',
   Roboto: 'Roboto, sans-serif',
@@ -19,6 +19,22 @@ const FONT_FAMILY_MAP = {
   Lato: 'Lato, sans-serif',
   'Playfair Display': '"Playfair Display", serif',
 };
+
+function renderTemplate(template: TemplateName): React.ReactNode {
+  switch (template) {
+    case 'twocolumn':
+      return <TwoColumnTemplate />;
+    case 'minimalist':
+      return <MinimalistTemplate />;
+    case 'compact':
+      return <CompactTemplate />;
+    case 'creative':
+      return <CreativeTemplate />;
+    case 'classic':
+    default:
+      return <ClassicTemplate />;
+  }
+}
 
 export function CVPreview() {
   const { data } = useCVData();
@@ -39,39 +55,30 @@ export function CVPreview() {
   }, [fontFamily]);
 
   const fontFamilyValue = FONT_FAMILY_MAP[fontFamily] || FONT_FAMILY_MAP.sans;
-  const showClauseFooter = data.showClause && data.clause;
+  const showClauseFooter = !!(data.showClause && data.clause);
   const { v: marginV, h: marginH } = getMarginValues();
   const marginVPx = Math.round(marginV * MM_TO_PX);
-  const footerTextHeightPx = showClauseFooter ? 36 : 0;
+  // Use the shared constant — single source of truth for footer height
+  const footerHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
 
   const { contentRef, pageCount, visualContentHeight } = usePagination({
-    showClauseFooter: !!showClauseFooter,
+    showClauseFooter,
     marginVMm: marginV,
     isColumnTemplate,
     deps: [template, margins, customMargin, data],
   });
-  const renderTemplate = () => {
-    switch (template) {
-      case 'twocolumn':
-        return <TwoColumnTemplate />;
-      case 'minimalist':
-        return <MinimalistTemplate />;
-      case 'compact':
-        return <CompactTemplate />;
-      case 'creative':
-        return <CreativeTemplate />;
-      case 'classic':
-      default:
-        return <ClassicTemplate />;
-    }
-  };
+
+  const renderedTemplate = renderTemplate(template);
 
   return (
-    <main className="preview-area" style={{
-      '--cv-font-family': fontFamilyValue,
-      '--cv-heading-scale': fontSizeHeading,
-      '--cv-text-scale': fontSizeText
-    }}>
+    <main
+      className="preview-area"
+      style={{
+        '--cv-font-family': fontFamilyValue,
+        '--cv-heading-scale': fontSizeHeading,
+        '--cv-text-scale': fontSizeText,
+      } as React.CSSProperties}
+    >
       <div className="preview-scroll">
         <div className="cv-pages-stack">
           {/* Hidden measuring container */}
@@ -80,7 +87,7 @@ export function CVPreview() {
             ref={contentRef}
             aria-hidden="true"
           >
-            {renderTemplate()}
+            {renderedTemplate}
           </div>
 
           {/* Visible pages */}
@@ -108,20 +115,20 @@ export function CVPreview() {
                       transform: `translateY(-${pageIndex * visualContentHeight}px)`,
                       height: `${pageCount * visualContentHeight}px`,
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
                     }}
                   >
-                    {renderTemplate()}
+                    {renderedTemplate}
                   </div>
                 </div>
 
-                {/* Sibling Footer block */}
+                {/* Footer block */}
                 {showClauseFooter && (
                   <div
                     className="cv-page-footer-bar"
-                    style={{ height: `${footerTextHeightPx}px` }}
+                    style={{ height: `${footerHeightPx}px` }}
                   >
-                    <div 
+                    <div
                       className="cv-page-footer-inner"
                       style={{ margin: `0 ${marginH}mm` }}
                     >
@@ -149,4 +156,3 @@ export function CVPreview() {
     </main>
   );
 }
-

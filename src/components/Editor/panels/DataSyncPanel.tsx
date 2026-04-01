@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef, useState } from 'react';
 import { Database, FileJson, Upload, RotateCcw, Plus, Copy, Trash2, Pencil, Check, X, SpellCheck, Loader, AlertTriangle } from 'lucide-react';
 import { useCVData, useCVAppearance, useCVManager } from '../../../context/CVContext';
@@ -12,21 +11,21 @@ export function DataSyncPanel() {
     exportJSON, importJSON, resetToDefaults,
     profiles, activeProfileId, switchProfile, createProfile, deleteProfile, renameProfile,
   } = useCVManager();
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [editingId, setEditingId] = useState(null);
-  const [editName, setEditName] = useState('');
-  const [spellResults, setSpellResults] = useState(null);
-  const [spellLoading, setSpellLoading] = useState(false);
-  const [spellError, setSpellError] = useState(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState<string>('');
+  const [spellResults, setSpellResults] = useState<Array<{ message: string; context?: string; offset: number; length: number; replacements: string[] }> | null>(null);
+  const [spellLoading, setSpellLoading] = useState<boolean>(false);
+  const [spellError, setSpellError] = useState<string | null>(null);
 
-  const startRename = (profile) => {
+  const startRename = (profile: { id: string; name: string }) => {
     setEditingId(profile.id);
     setEditName(profile.name);
   };
 
   const confirmRename = () => {
-    if (editName.trim()) {
+    if (editName.trim() && editingId) {
       renameProfile(editingId, editName.trim());
     }
     setEditingId(null);

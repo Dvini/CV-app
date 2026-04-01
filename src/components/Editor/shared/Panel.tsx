@@ -1,15 +1,24 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import './Panel.css';
 
-export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenProp, onToggle, children }) {
+interface PanelProps {
+  title: string;
+  icon?: LucideIcon;
+  defaultOpen?: boolean;
+  isOpen?: boolean;
+  onToggle?: () => void;
+  children: React.ReactNode;
+}
+
+export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenProp, onToggle, children }: PanelProps) {
   const [isOpenInternal, setIsOpenInternal] = useState(defaultOpen);
 
-  // Controlled mode if parent passes isOpen; otherwise use internal state
   const isControlled = isOpenProp !== undefined;
   const isOpen = isControlled ? isOpenProp : isOpenInternal;
-  const handleToggle = isControlled ? onToggle : () => setIsOpenInternal((prev) => !prev);
+  const handleToggle = isControlled ? onToggle! : () => setIsOpenInternal((prev) => !prev);
+
   return (
     <div className={`panel ${isOpen ? 'panel--open' : ''}`}>
       <button
@@ -31,4 +40,3 @@ export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenPr
     </div>
   );
 }
-

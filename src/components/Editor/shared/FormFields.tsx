@@ -1,16 +1,31 @@
-// @ts-nocheck
 import React from 'react';
 import { useCVAppearance } from '../../../context/CVContext';
 import './shared.css';
 
-const LANG_MAP = { pl: 'pl', en: 'en' };
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  error?: string;
+};
 
-function useLang() {
+type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  label?: string;
+  error?: string;
+};
+
+type SelectOption = string | { value: string; label: string };
+
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+  label?: string;
+  options: SelectOption[];
+  hideEmptyOption?: boolean;
+};
+
+function useLang(): string {
   const { cvLanguage } = useCVAppearance();
-  return LANG_MAP[cvLanguage] || 'pl';
+  return cvLanguage === 'en' ? 'en' : 'pl';
 }
 
-export function Input({ label, error, ...props }) {
+export function Input({ label, error, ...props }: InputProps) {
   const lang = useLang();
   return (
     <div className="field">
@@ -21,7 +36,7 @@ export function Input({ label, error, ...props }) {
   );
 }
 
-export function Textarea({ label, error, ...props }) {
+export function Textarea({ label, error, ...props }: TextareaProps) {
   const lang = useLang();
   return (
     <div className="field">
@@ -32,7 +47,7 @@ export function Textarea({ label, error, ...props }) {
   );
 }
 
-export function Select({ label, options, hideEmptyOption, ...props }) {
+export function Select({ label, options, hideEmptyOption, ...props }: SelectProps) {
   return (
     <div className="field">
       {label && <label className="field-label">{label}</label>}
@@ -52,4 +67,3 @@ export function Select({ label, options, hideEmptyOption, ...props }) {
     </div>
   );
 }
-

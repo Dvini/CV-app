@@ -1,22 +1,26 @@
-// @ts-nocheck
 import React from 'react';
 import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
+import { getPhotoStyle } from '../../../utils/photoUtils';
 import '../CVPreview.css';
 
 export const ClassicTemplate = React.memo(function ClassicTemplate() {
-  const { data, sectionOrder, getPhotoStyle } = useCVData();
+  const { data, sectionOrder } = useCVData();
   const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   return (
     <div className="cv-page template-classic" style={getMarginStyle('container', showClauseFooter)}>
-      {/* Header */}
       <header className="cv-header">
         <div className="cv-header-content">
           {data.personal.showPhoto && data.personal.photo && (
-            <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-header-photo" style={{ ...getPhotoStyle() }} />
+            <img
+              src={data.personal.photo}
+              alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+              className="cv-header-photo"
+              style={{ ...getPhotoStyle(data.personal) }}
+            />
           )}
           <div className="cv-header-text">
             <h1 className="cv-name">{data.personal.fullName || 'Imię Nazwisko'}</h1>
@@ -28,12 +32,9 @@ export const ClassicTemplate = React.memo(function ClassicTemplate() {
         </div>
       </header>
 
-      {/* Sections */}
       <div className="cv-body">
         {sectionOrder.map((section) => renderCVSection(section, 'full'))}
       </div>
-
     </div>
   );
 });
-

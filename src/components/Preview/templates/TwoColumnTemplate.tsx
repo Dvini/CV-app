@@ -1,12 +1,12 @@
-// @ts-nocheck
 import React from 'react';
 import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { renderCVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
+import { getPhotoStyle } from '../../../utils/photoUtils';
 import '../CVPreview.css';
 
 export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
-  const { data, sectionOrder, sectionColumns, getPhotoStyle } = useCVData();
+  const { data, sectionOrder, sectionColumns } = useCVData();
   const { getMarginStyle, themeColor } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
   const sideStyle = getMarginStyle('left-column', showClauseFooter);
@@ -19,7 +19,6 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
       <div className="cv-twocol">
         {/* Left (narrow) column */}
         <div className="cv-twocol-side" style={sideStyle}>
-          {/* Personal info in sidebar */}
           {data.personal.showPhoto && data.personal.photo && (
             <div
               style={{
@@ -30,7 +29,12 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
                 marginBottom: '1.25rem',
               }}
             >
-              <img src={data.personal.photo} alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`} className="cv-sidebar-photo" style={{ ...getPhotoStyle() }} />
+              <img
+                src={data.personal.photo}
+                alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+                className="cv-sidebar-photo"
+                style={{ ...getPhotoStyle(data.personal) }}
+              />
             </div>
           )}
           <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>
@@ -55,4 +59,3 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
     </div>
   );
 });
-

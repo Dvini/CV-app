@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import { User, Camera, X } from 'lucide-react';
 import { useCVData } from '../../../context/CVContext';
@@ -6,13 +5,13 @@ import { Panel } from '../shared/Panel';
 import { Input, Textarea, Select } from '../shared/FormFields';
 import { compressImage } from '../../../utils/imageUtils';
 
-export function PersonalPanel({ isOpen, onToggle }) {
+export function PersonalPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const { data, handlePersonalChange } = useCVData();
-  const photoInputRef = useRef(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const p = data.personal;
 
-  const handlePhotoUpload = async (e) => {
-    const file = e.target.files[0];
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
     try {
       const compressed = await compressImage(file);
@@ -20,15 +19,15 @@ export function PersonalPanel({ isOpen, onToggle }) {
     } catch {
       alert('Nie udało się załadować zdjęcia. Spróbuj inny plik.');
     }
-    e.target.value = null;
+    e.target.value = null as unknown as string;
   };
 
   const removePhoto = () => {
     handlePersonalChange('photo', null);
   };
 
-  const handleChange = (e) => {
-    handlePersonalChange(e.target.name, e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    handlePersonalChange(e.target.name as keyof typeof data.personal, e.target.value);
   };
 
   return (
