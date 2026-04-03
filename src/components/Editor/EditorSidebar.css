@@ -1,12 +1,28 @@
 .editor-sidebar {
-  width: 480px;
-  min-width: 480px;
+  position: relative;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 1;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.15s;
+  z-index: 2;
+}
+
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle:active {
+  background: var(--accent);
 }
 
 .editor-sidebar-scroll {
@@ -321,8 +337,15 @@
 }
 
 .custom-margin-input {
-  width: 70px !important;
-  text-align: right;
+  width: 80px !important;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.custom-margin-input::-webkit-outer-spin-button,
+.custom-margin-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Layout panel */
@@ -345,6 +368,27 @@
 
 .layout-item:hover {
   border-color: var(--border-hover);
+}
+
+.layout-item--drag-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.layout-item--active {
+  border-color: var(--accent);
+}
+
+.profile-rename-input {
+  width: 100%;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
 }
 
 .layout-item-left {
@@ -508,6 +552,14 @@
 }
 
 /* Panel divider */
+.spell-issue {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.75rem;
+}
+
 .panel-divider {
   border: none;
   border-top: 1px solid var(--border);

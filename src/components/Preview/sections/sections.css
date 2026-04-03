@@ -13,6 +13,14 @@
   margin-bottom: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.cv-heading-icon {
+  flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .cv-heading--classic {
