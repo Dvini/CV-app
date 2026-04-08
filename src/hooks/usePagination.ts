@@ -87,7 +87,10 @@ export function usePagination({
       const topRelative = elRect.top - containerRect.top;
       const bottomRelative = elRect.bottom - containerRect.top;
 
-      const startPage = Math.floor((topRelative + 1) / visualContentHeight);
+      // startPage: which page this element's top edge is currently on.
+      // We intentionally do NOT add epsilon (+1) here — that caused a dead zone
+      // for small margins where elements near the page boundary escaped both conditions.
+      const startPage = Math.floor(topRelative / visualContentHeight);
       const pageTextLimit =
         startPage * visualContentHeight + engineContentHeight;
 
@@ -98,7 +101,7 @@ export function usePagination({
       let targetY = 0;
 
       // Condition 1: Element crosses the bottom margin of the page
-      if (bottomRelative - 1 > pageTextLimit) {
+      if (bottomRelative > pageTextLimit) {
         needsPush = true;
         targetY = (startPage + 1) * visualContentHeight + effectiveMarginVPx;
       }
@@ -111,6 +114,25 @@ export function usePagination({
       ) {
         needsPush = true;
         targetY = pageSafeTop;
+      }
+
+      // Condition 3: Orphaned heading — this element is already on page N+1 but
+      // its preceding heading (data-keep-with-next) is still stranded on page N.
+      // Only check when Condition 1/2 didn't fire (element is in the content area).
+      if (!needsPush && !disableTopMarginPush && startPage > 0) {
+        const prev = index > 0 ? breakables[index - 1] : null;
+        if (prev && prev.hasAttribute("data-keep-with-next")) {
+          const prevRect = prev.getBoundingClientRect();
+          const prevTopRelative = prevRect.top - containerRect.top;
+          const prevPage = Math.floor(prevTopRelative / visualContentHeight);
+
+          // prev is on a different (earlier) page than el → orphaned heading
+          if (prevPage < startPage) {
+            // Push prev to join el on this page
+            targetY = startPage * visualContentHeight + effectiveMarginVPx;
+            needsPush = true;
+          }
+        }
       }
 
       // For oversized elements (taller than a page), don't drag the previous
@@ -128,10 +150,17 @@ export function usePagination({
           const prev = index > 0 ? breakables[index - 1] : null;
 
           if (prev && prev.hasAttribute("data-keep-with-next")) {
-            if (prev.closest(".cv-section") === el.closest(".cv-section")) {
-              const prevRect = prev.getBoundingClientRect();
-              const prevTopRelative = prevRect.top - containerRect.top;
+            const prevRect = prev.getBoundingClientRect();
+            const prevTopRelative = prevRect.top - containerRect.top;
 
+            // For single-column: only drag heading if it's in the same cv-section.
+            // For column templates: always allow it — the heading may be in a
+            // sibling column's DOM node (different .cv-section ancestor).
+            const sameSection =
+              isColumnTemplate ||
+              prev.closest(".cv-section") === el.closest(".cv-section");
+
+            if (sameSection) {
               elementToPush = prev;
               pushAmount = targetY - prevTopRelative;
               pushIndex = index - 1;
@@ -178,6 +207,9 @@ export function usePagination({
           const pageStart = p * visualContentHeight;
           const targetTop = pageStart + effectiveMarginVPx;
 
+          // Only look at elements that are already on page 2+ (top >= pageStart).
+          // Using pageStart - X caused elements still on page 1 to be incorrectly
+          // grabbed and pushed onto page 2, especially visible for margins 0–2mm.
           const firstOnPage = colBreakables.find((el) => {
             const top = el.getBoundingClientRect().top - containerRect.top;
             return top >= pageStart;
@@ -187,6 +219,10 @@ export function usePagination({
 
           const currentTop =
             firstOnPage.getBoundingClientRect().top - containerRect.top;
+
+          // Stop if this element is already on a later page
+          if (currentTop >= pageStart + visualContentHeight) break;
+
           const gap = targetTop - currentTop;
 
           if (gap > 0) {
@@ -208,6 +244,46 @@ export function usePagination({
         }
       }
     }
+
+    // Orphaned-heading fix pass: run after main loop + column sync so that
+    // we can detect headings stranded on a different page than their content.
+    // This handles edge cases that slip through the single-pass main loop,
+    // especially with very small margins (1–2mm).
+    {
+      const containerRect = measureContainer.getBoundingClientRect();
+      for (let i = 0; i < breakables.length - 1; i++) {
+        const heading = breakables[i];
+        if (!heading.hasAttribute("data-keep-with-next")) continue;
+
+        const next = breakables[i + 1];
+        const headingTop = heading.getBoundingClientRect().top - containerRect.top;
+        const nextTop = next.getBoundingClientRect().top - containerRect.top;
+
+        const headingPage = Math.floor(headingTop / visualContentHeight);
+        const nextPage = Math.floor(nextTop / visualContentHeight);
+
+        // Orphaned: heading is on an earlier page than its following element
+        if (headingPage < nextPage) {
+          const targetTop = nextPage * visualContentHeight + effectiveMarginVPx;
+          const gap = targetTop - headingTop;
+
+          if (gap > 0) {
+            const computedMargin =
+              parseFloat(window.getComputedStyle(heading).marginTop) || 0;
+            const newMargin = computedMargin + gap;
+            heading.style.marginTop = `${newMargin}px`;
+
+            const existingEdit = edits.find((e) => e.index === i);
+            if (existingEdit) {
+              existingEdit.newMargin = newMargin;
+            } else {
+              edits.push({ index: i, newMargin });
+            }
+          }
+        }
+      }
+    }
+
 
     const totalHeight = measureContainer.scrollHeight;
     const pages = Math.max(
