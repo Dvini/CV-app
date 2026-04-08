@@ -27,7 +27,11 @@ export function Panel({ title, icon: Icon, defaultOpen = false, isOpen: isOpenPr
         aria-expanded={isOpen}
       >
         <div className="panel-header-left">
-          {Icon && <Icon size={16} className="panel-icon" />}
+          {Icon && (
+            <div className="panel-icon-container">
+              <Icon size={18} className="panel-icon" />
+            </div>
+          )}
           <span className="panel-title">{title}</span>
         </div>
         <div className={`panel-chevron ${isOpen ? 'panel-chevron--open' : ''}`}>

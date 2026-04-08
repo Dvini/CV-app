@@ -155,7 +155,7 @@ export function CVDataProvider({ children, template }: CVDataProviderProps) {
     (arrayName: ArrayFieldName, id: string) => {
       setData((prev) => ({
         ...prev,
-        [arrayName]: (prev[arrayName] as Array<{ id: string }>).filter((item) => item.id !== id),
+        [arrayName]: ((prev[arrayName] as Array<{ id: string }>) || []).filter((item) => item.id !== id),
       }));
     },
     [setData],

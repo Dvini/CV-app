@@ -52,11 +52,11 @@ export const sectionNamesPl = {
 };
 
 export const languageLevels = [
-  "A1 – Początkujący",
-  "A2 – Niższy średnio zaawansowany",
-  "B1 – Średnio zaawansowany",
-  "B2 – Wyższy średnio zaawansowany",
-  "C1 – Zaawansowany",
-  "C2 – Biegły",
+  "A1",
+  "A2",
+  "B1",
+  "B2",
+  "C1",
+  "C2",
   "Natywny",
 ];

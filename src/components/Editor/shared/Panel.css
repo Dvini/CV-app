@@ -1,17 +1,46 @@
+/* ===== PANEL — CSS DESIGN TOKENS ===== */
+:root {
+  --panel-zebra-even: #f8fafc;        /* light: co drugi wiersz lekko szary */
+  --panel-icon-bg: #e8edf5;           /* light: tło ikony */
+  --panel-icon-bg-open: #dae4f8;      /* light: tło ikony gdy otwarty */
+  --panel-header-open-bg: #f0f6ff;    /* light: tło otwartego nagłówka */
+  --panel-header-open-border: #bfd4f7; /* light: lewa krawędź otwartego panelu */
+}
+
+[data-theme='dark'] {
+  --panel-zebra-even: #1f2f45;        /* dark: co drugi wiersz ciemniejszy */
+  --panel-icon-bg: #253347;           /* dark: tło ikony */
+  --panel-icon-bg-open: #1a4070;      /* dark: tło ikony gdy otwarty */
+  --panel-header-open-bg: #1a2f4a;    /* dark: tło otwartego nagłówka */
+  --panel-header-open-border: #3a6fbd; /* dark: lewa krawędź otwartego panelu */
+}
+
+/* ===== PANEL WRAPPER ===== */
 .panel {
   border-bottom: 1px solid var(--border);
 }
 
+/* Zebra — co drugi panel ma inne tło nagłówka */
+.editor-sidebar-scroll .panel:nth-child(even) .panel-header {
+  background: var(--panel-zebra-even);
+}
+
+.editor-sidebar-scroll .panel:nth-child(even) .panel-header:hover {
+  background: var(--surface-hover);
+}
+
+/* ===== PANEL HEADER ===== */
 .panel-header {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1.25rem;
+  padding: 0.75rem 1rem;
   background: transparent;
   border: none;
+  border-left: 3px solid transparent;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-left-color 0.2s;
   font-family: inherit;
   text-align: left;
 }
@@ -20,10 +49,42 @@
   background: var(--surface-hover);
 }
 
+/* Aktywny (otwarty) nagłówek */
+.panel--open > .panel-header {
+  background: var(--panel-header-open-bg);
+  border-left-color: var(--panel-header-open-border);
+}
+
+.panel--open > .panel-header:hover {
+  background: var(--panel-header-open-bg);
+}
+
+/* ===== PANEL HEADER LEFT ===== */
 .panel-header-left {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
+}
+
+/* ===== ICON CONTAINER ===== */
+.panel-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--panel-icon-bg);
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.panel--open .panel-icon-container {
+  background: var(--panel-icon-bg-open);
+}
+
+.panel-header:hover .panel-icon-container {
+  transform: scale(1.05);
 }
 
 .panel-icon {
@@ -31,6 +92,7 @@
   flex-shrink: 0;
 }
 
+/* ===== PANEL TITLE ===== */
 .panel-title {
   font-weight: 700;
   font-size: 0.875rem;
@@ -38,17 +100,19 @@
   letter-spacing: -0.01em;
 }
 
+/* ===== PANEL CHEVRON ===== */
 .panel-chevron {
   color: var(--text-muted);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.2s;
   display: flex;
   align-items: center;
 }
 
-.panel-chevron--open {
-  transform: rotate(0deg);
+.panel--open .panel-chevron {
+  color: var(--accent);
 }
 
+/* ===== PANEL BODY ===== */
 .panel-body {
   display: grid;
   grid-template-rows: 0fr;
