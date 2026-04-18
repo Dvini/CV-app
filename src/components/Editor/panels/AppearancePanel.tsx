@@ -90,8 +90,8 @@ export function AppearancePanel({ isOpen, onToggle }) {
         {/* Typography */}
         <div className="appearance-group">
           <label className="appearance-label">Krój czcionki</label>
-          <select 
-            value={fontFamily} 
+          <select
+            value={fontFamily}
             onChange={(e) => setFontFamily(e.target.value)}
             className="field-input"
             style={{ marginBottom: '1rem', fontFamily: ['sans', 'serif'].includes(fontFamily) ? 'inherit' : fontFamily }}
@@ -109,10 +109,10 @@ export function AppearancePanel({ isOpen, onToggle }) {
             <span>Wielkość nagłówków</span>
             <span>{Math.round(fontSizeHeading * 100)}%</span>
           </label>
-          <input 
-            type="range" 
-            min="0.8" max="1.3" step="0.05" 
-            value={fontSizeHeading} 
+          <input
+            type="range"
+            min="0.8" max="1.8" step="0.05"
+            value={fontSizeHeading}
             onChange={(e) => setFontSizeHeading(Number(e.target.value))}
             className="slider-input"
             aria-label="Wielkość nagłówków"
@@ -123,10 +123,10 @@ export function AppearancePanel({ isOpen, onToggle }) {
             <span>Wielkość tekstów</span>
             <span>{Math.round(fontSizeText * 100)}%</span>
           </label>
-          <input 
-            type="range" 
-            min="0.8" max="1.3" step="0.05" 
-            value={fontSizeText} 
+          <input
+            type="range"
+            min="0.8" max="1.8" step="0.05"
+            value={fontSizeText}
             onChange={(e) => setFontSizeText(Number(e.target.value))}
             className="slider-input"
             aria-label="Wielkość tekstów"
@@ -206,8 +206,8 @@ export function AppearancePanel({ isOpen, onToggle }) {
                 <label className="field-label">Góra / Dół (mm):</label>
                 <input
                   type="number"
-                  min="0"
-                  max="50"
+                  min="1"
+                  max="25"
                   value={customMargin.vertical}
                   onChange={(e) => setCustomMargin((prev) => ({ ...prev, vertical: Number(e.target.value) }))}
                   className="field-input custom-margin-input"
