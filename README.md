@@ -124,11 +124,6 @@ src/
 └── utils/                   # Narzędzia pomocnicze (obsługa zdjęć itp.)
 ```
 
----
-
-## 📄 Licencja
-
-Projekt udostępniony na licencji **MIT**. Możesz dowolnie go modyfikować i rozwijać na własne potrzeby.
 
 ---
 
@@ -263,11 +258,6 @@ src/
 └── utils/                   # Helper utilities (photo handling etc.)
 ```
 
----
-
-## 📄 License
-
-This project is released under the **MIT** licence. You are free to modify and build upon it for your own needs.
 
 ---
 
