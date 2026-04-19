@@ -11,9 +11,9 @@ export const PAGINATION_DEBOUNCE_MS = 100;
 
 // Margin presets (mm)
 export const MARGIN_PRESETS = {
-  small: { v: 12, h: 12 },
-  normal: { v: 20, h: 20 },
-  large: { v: 25, h: 25 },
+  small: { v: 5, h: 5 },
+  normal: { v: 10, h: 10 },
+  large: { v: 15, h: 15 },
 };
 
 // Column widths for two-column layout
