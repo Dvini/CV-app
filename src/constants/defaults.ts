@@ -19,9 +19,20 @@ export const defaultData = {
     {
       id: 'exp-1',
       company: 'Tech Solutions Sp. z o.o.',
-      role: 'Senior Frontend Developer',
-      startDate: '01/2021',
-      endDate: 'Obecnie',
+      positions: [
+        {
+          id: 'pos-1a',
+          title: 'Senior Frontend Developer',
+          startDate: '06/2022',
+          endDate: 'Obecnie',
+        },
+        {
+          id: 'pos-1b',
+          title: 'Frontend Developer',
+          startDate: '01/2021',
+          endDate: '05/2022',
+        },
+      ],
       description:
         'Projektowanie i implementacja nowoczesnych interfejsów użytkownika.\nOptymalizacja wydajności aplikacji oraz mentoring młodszych programistów.',
       skills: 'React, TypeScript, Tailwind CSS, Node.js',
@@ -29,9 +40,14 @@ export const defaultData = {
     {
       id: 'exp-2',
       company: 'Digital Studio',
-      role: 'Web Developer',
-      startDate: '06/2018',
-      endDate: '12/2020',
+      positions: [
+        {
+          id: 'pos-2a',
+          title: 'Web Developer',
+          startDate: '06/2018',
+          endDate: '12/2020',
+        },
+      ],
       description:
         'Tworzenie responsywnych stron internetowych dla klientów korporacyjnych.\nIntegracja z systemami CMS i zewnętrznymi API.',
       skills: 'JavaScript, HTML, CSS, PHP',

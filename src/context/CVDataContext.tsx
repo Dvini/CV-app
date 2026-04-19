@@ -58,12 +58,31 @@ export function CVDataProvider({ children, template }: CVDataProviderProps) {
   );
 
   // Backwards-compat safe data
-  const safeData = useMemo<CVData>(
-    () => ({
+  const safeData = useMemo<CVData>(() => {
+    // Migrate old experience format (role/startDate/endDate) to new positions[] format
+    const rawExperience = data?.experience || (defaultData as CVData).experience;
+    const migratedExperience = (rawExperience as unknown as Array<Record<string, unknown>>).map((exp) => {
+      if (!exp.positions && (exp.role || exp.startDate || exp.endDate)) {
+        return {
+          ...exp,
+          positions: [
+            {
+              id: `${exp.id}-pos-migrated`,
+              title: exp.role || '',
+              startDate: exp.startDate || '',
+              endDate: exp.endDate || '',
+            },
+          ],
+        };
+      }
+      return exp;
+    });
+
+    return {
       ...(defaultData as CVData),
       ...data,
       personal: { ...(defaultData as CVData).personal, ...(data?.personal || {}) },
-      experience: data?.experience || (defaultData as CVData).experience,
+      experience: migratedExperience as unknown as CVData['experience'],
       education: data?.education || (defaultData as CVData).education,
       courses: data?.courses || (defaultData as CVData).courses,
       skills: data?.skills ?? (defaultData as CVData).skills,
@@ -78,9 +97,8 @@ export function CVDataProvider({ children, template }: CVDataProviderProps) {
       customSectionTitle: data?.customSectionTitle ?? (defaultData as CVData).customSectionTitle,
       clause: data?.clause ?? (defaultData as CVData).clause,
       showClause: data?.showClause ?? (defaultData as CVData).showClause,
-    }),
-    [data],
-  );
+    };
+  }, [data]);
 
   const safeSectionOrder = useMemo<SectionKey[]>(() => {
     const order = [...((sectionOrder as SectionKey[]) || defaultSectionOrder)];
@@ -143,7 +161,7 @@ export function CVDataProvider({ children, template }: CVDataProviderProps) {
     (arrayName: ArrayFieldName, id: string, field: string, value: unknown) => {
       setData((prev) => ({
         ...prev,
-        [arrayName]: (prev[arrayName] as Array<Record<string, unknown>>).map((item) =>
+        [arrayName]: (prev[arrayName] as unknown as Array<Record<string, unknown>>).map((item) =>
           item.id === id ? { ...item, [field]: value } : item,
         ),
       }));

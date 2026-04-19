@@ -14,12 +14,17 @@ export interface Personal {
   summary: string;
 }
 
+export interface ExperiencePosition {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+}
+
 export interface ExperienceItem {
   id: string;
   company: string;
-  role: string;
-  startDate: string;
-  endDate: string;
+  positions: ExperiencePosition[];
   description: string;
   skills: string;
 }
