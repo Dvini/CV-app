@@ -14,12 +14,17 @@ export interface Personal {
   summary: string;
 }
 
+export interface ExperiencePosition {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+}
+
 export interface ExperienceItem {
   id: string;
   company: string;
-  role: string;
-  startDate: string;
-  endDate: string;
+  positions: ExperiencePosition[];
   description: string;
   skills: string;
 }
@@ -242,6 +247,22 @@ export interface CVAppearanceContextType {
   setCreativeHeaderBg: (c: string) => void;
   getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
   getMarginValues: () => { v: number; h: number };
+
+  // Two-column layout settings
+  twoColLineWidth: number;
+  setTwoColLineWidth: (w: number) => void;
+  twoColLineColor: string;
+  setTwoColLineColor: (c: string) => void;
+  twoColSidebarWidth: number;
+  setTwoColSidebarWidth: (w: number) => void;
+  twoColGapLeft: number;
+  setTwoColGapLeft: (g: number) => void;
+  twoColGapRight: number;
+  setTwoColGapRight: (g: number) => void;
+  twoColSectionGap: number;
+  setTwoColSectionGap: (g: number) => void;
+  twoColItemGap: number;
+  setTwoColItemGap: (g: number) => void;
 }
 
 export interface CVManagerContextType {

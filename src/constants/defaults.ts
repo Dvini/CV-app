@@ -19,9 +19,20 @@ export const defaultData = {
     {
       id: 'exp-1',
       company: 'Tech Solutions Sp. z o.o.',
-      role: 'Senior Frontend Developer',
-      startDate: '01/2021',
-      endDate: 'Obecnie',
+      positions: [
+        {
+          id: 'pos-1a',
+          title: 'Senior Frontend Developer',
+          startDate: '06/2022',
+          endDate: 'Obecnie',
+        },
+        {
+          id: 'pos-1b',
+          title: 'Frontend Developer',
+          startDate: '01/2021',
+          endDate: '05/2022',
+        },
+      ],
       description:
         'Projektowanie i implementacja nowoczesnych interfejsów użytkownika.\nOptymalizacja wydajności aplikacji oraz mentoring młodszych programistów.',
       skills: 'React, TypeScript, Tailwind CSS, Node.js',
@@ -29,9 +40,14 @@ export const defaultData = {
     {
       id: 'exp-2',
       company: 'Digital Studio',
-      role: 'Web Developer',
-      startDate: '06/2018',
-      endDate: '12/2020',
+      positions: [
+        {
+          id: 'pos-2a',
+          title: 'Web Developer',
+          startDate: '06/2018',
+          endDate: '12/2020',
+        },
+      ],
       description:
         'Tworzenie responsywnych stron internetowych dla klientów korporacyjnych.\nIntegracja z systemami CMS i zewnętrznymi API.',
       skills: 'JavaScript, HTML, CSS, PHP',
@@ -75,7 +91,7 @@ export const defaultData = {
     },
   ],
   clause:
-    'Wyrażam zgodę na przetwarzanie moich danych osobowych dla potrzeb niezbędnych do realizacji procesu rekrutacji zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r.',
+    'Wyrażam zgodę na przetwarzanie moich danych osobowych dla potrzeb niezbędnych do realizacji procesu rekrutacji zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (RODO).',
   showClause: true,
   certificates: [],
   references: [],

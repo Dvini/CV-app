@@ -7,15 +7,28 @@ import '../CVPreview.css';
 
 export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
-  const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
+  const {
+    getMarginStyle, themeColor, showContactIcons,
+    twoColLineWidth, twoColLineColor, twoColSidebarWidth,
+    twoColSectionGap, twoColItemGap,
+  } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
   const sideStyle = getMarginStyle('left-column', showClauseFooter);
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
   const mainSections = sectionOrder.filter((s) => sectionColumns[s] === 'main');
 
+  const cssVars = {
+    '--tc-sidebar-w': `${twoColSidebarWidth}%`,
+    '--tc-main-w': `${100 - twoColSidebarWidth}%`,
+    '--tc-line-width': `${twoColLineWidth}px`,
+    '--tc-line-color': twoColLineColor,
+    '--tc-section-gap': `${twoColSectionGap}rem`,
+    '--tc-item-gap': `${twoColItemGap}rem`,
+  } as React.CSSProperties;
+
   return (
-    <div className="cv-page template-twocolumn">
+    <div className="cv-page template-twocolumn" style={cssVars}>
       <div className="cv-twocol">
         {/* Left (narrow) column */}
         <div className="cv-twocol-side" style={sideStyle}>

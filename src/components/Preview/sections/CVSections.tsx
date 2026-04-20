@@ -91,26 +91,40 @@ export function ExperienceSection({ columnType }: { columnType?: ColumnType }) {
     <div className="cv-section">
       <SectionHeading sectionKey="experience" headingClass={headingClass} themeColor={themeColor} t={t} showSectionIcons={showSectionIcons} />
       <div className="cv-items">
-        {data.experience.map((exp) => (
-          <div key={exp.id} className="cv-item cv-breakable">
-            <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
-              <h3 className="cv-item-title">{exp.role}</h3>
-              <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
-                {exp.startDate} – {exp.endDate}
-              </span>
+        {data.experience.map((exp) => {
+          const positions = exp.positions || [];
+          return (
+            <div key={exp.id} className="cv-item cv-breakable">
+              {/* Company name */}
+              <div className="cv-item-subtitle cv-company-name">{exp.company}</div>
+
+              {/* Positions list */}
+              {positions.length > 0 && (
+                <div className={`cv-positions ${positions.length > 1 ? 'cv-positions--multi' : ''}`}>
+                  {positions.map((pos) => (
+                    <div key={pos.id} className={`cv-position-row ${isSide ? 'cv-position-row--stacked' : ''}`}>
+                      <h3 className="cv-item-title">{pos.title}</h3>
+                      <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
+                        {pos.startDate} – {pos.endDate}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Shared description */}
+              {exp.description && (
+                <p className="cv-text cv-text--pre">{exp.description}</p>
+              )}
+              {exp.skills && (
+                <p className="cv-tech">
+                  <span className="cv-tech-label">{t.tech} </span>
+                  {exp.skills}
+                </p>
+              )}
             </div>
-            <div className="cv-item-subtitle">{exp.company}</div>
-            {exp.description && (
-              <p className="cv-text cv-text--pre">{exp.description}</p>
-            )}
-            {exp.skills && (
-              <p className="cv-tech">
-                <span className="cv-tech-label">{t.tech} </span>
-                {exp.skills}
-              </p>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

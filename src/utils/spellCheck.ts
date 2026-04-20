@@ -16,7 +16,9 @@ export function extractTexts(data) {
   add('Podsumowanie', p.summary);
 
   (data.experience || []).forEach((item, i) => {
-    add(`Doświadczenie #${i + 1} — stanowisko`, item.position);
+    (item.positions || []).forEach((pos, j) => {
+      add(`Doświadczenie #${i + 1} — stanowisko #${j + 1}`, pos.title);
+    });
     add(`Doświadczenie #${i + 1} — firma`, item.company);
     add(`Doświadczenie #${i + 1} — opis`, item.description);
   });

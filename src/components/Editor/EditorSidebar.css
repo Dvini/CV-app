@@ -151,6 +151,65 @@
   margin: 0 0.125rem;
 }
 
+/* Position sub-cards (inside experience items) */
+.positions-group {
+  margin-bottom: 0.75rem;
+}
+
+.positions-group > .field-label {
+  margin-bottom: 0.5rem;
+}
+
+.position-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: color-mix(in srgb, var(--surface) 60%, var(--sidebar-bg));
+  transition: border-color 0.15s;
+}
+
+.position-card:hover {
+  border-color: var(--border-hover);
+}
+
+.position-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.position-card-label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.add-position-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.4rem 0.75rem;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+
+.add-position-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-alpha);
+}
+
 /* Buttons */
 .btn-secondary {
   display: flex;

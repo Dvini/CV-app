@@ -196,3 +196,43 @@
   border-left: 2px solid #e2e8f0;
   margin-bottom: 0.75rem;
 }
+
+/* ===== Experience positions ===== */
+
+.cv-company-name {
+  font-weight: 700;
+  font-size: calc(0.875rem * var(--cv-heading-scale, 1));
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.cv-positions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-bottom: 0.375rem;
+}
+
+.cv-positions--multi {
+  padding-left: 0.625rem;
+  border-left: 2px solid #cbd5e1;
+}
+
+.cv-position-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.cv-position-row--stacked {
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.cv-position-row .cv-item-title {
+  font-size: calc(0.8125rem * var(--cv-heading-scale, 1));
+  font-weight: 600;
+}
+
