@@ -58,6 +58,15 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     DEFAULT_THEME_COLOR,
   );
 
+  // Two-column layout settings
+  const [twoColLineWidth, setTwoColLineWidth] = useLocalStorage<number>('cv_twoColLineWidth', 1);
+  const [twoColLineColor, setTwoColLineColor] = useLocalStorage<string>('cv_twoColLineColor', '#e2e8f0');
+  const [twoColSidebarWidth, setTwoColSidebarWidth] = useLocalStorage<number>('cv_twoColSidebarWidth', 33);
+  const [twoColGapLeft, setTwoColGapLeft] = useLocalStorage<number>('cv_twoColGapLeft', COLUMN_INNER_GAP_LEFT);
+  const [twoColGapRight, setTwoColGapRight] = useLocalStorage<number>('cv_twoColGapRight', COLUMN_INNER_GAP_RIGHT);
+  const [twoColSectionGap, setTwoColSectionGap] = useLocalStorage<number>('cv_twoColSectionGap', 0.5);
+  const [twoColItemGap, setTwoColItemGap] = useLocalStorage<number>('cv_twoColItemGap', 0.2);
+
   const getMarginValues = useCallback((): { v: number; h: number } => {
     if (margins === 'custom')
       return { v: customMargin.vertical || 15, h: customMargin.horizontal || 15 };
@@ -77,20 +86,22 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
       }
 
       if (variant === 'left-column') {
+        const gapL = template === 'twocolumn' ? twoColGapLeft : COLUMN_INNER_GAP_LEFT;
         return {
           paddingTop: `${v}mm`,
-          paddingRight: `${COLUMN_INNER_GAP_LEFT}mm`,
+          paddingRight: `${gapL}mm`,
           paddingBottom: omitBottom ? '0mm' : `${v}mm`,
           paddingLeft: `${h}mm`,
         };
       }
 
       if (variant === 'right-column') {
+        const gapR = template === 'twocolumn' ? twoColGapRight : COLUMN_INNER_GAP_RIGHT;
         return {
           paddingTop: `${v}mm`,
           paddingRight: `${h}mm`,
           paddingBottom: omitBottom ? '0mm' : `${v}mm`,
-          paddingLeft: `${COLUMN_INNER_GAP_RIGHT}mm`,
+          paddingLeft: `${gapR}mm`,
         };
       }
 
@@ -101,7 +112,7 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
         paddingLeft: `${h}mm`,
       };
     },
-    [margins, customMargin],
+    [margins, customMargin, template, twoColGapLeft, twoColGapRight],
   );
 
   const value: CVAppearanceContextType = {
@@ -129,6 +140,20 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     setShowContactIcons: setShowContactIcons as CVAppearanceContextType['setShowContactIcons'],
     creativeHeaderBg,
     setCreativeHeaderBg: setCreativeHeaderBg as CVAppearanceContextType['setCreativeHeaderBg'],
+    twoColLineWidth,
+    setTwoColLineWidth: setTwoColLineWidth as CVAppearanceContextType['setTwoColLineWidth'],
+    twoColLineColor,
+    setTwoColLineColor: setTwoColLineColor as CVAppearanceContextType['setTwoColLineColor'],
+    twoColSidebarWidth,
+    setTwoColSidebarWidth: setTwoColSidebarWidth as CVAppearanceContextType['setTwoColSidebarWidth'],
+    twoColGapLeft,
+    setTwoColGapLeft: setTwoColGapLeft as CVAppearanceContextType['setTwoColGapLeft'],
+    twoColGapRight,
+    setTwoColGapRight: setTwoColGapRight as CVAppearanceContextType['setTwoColGapRight'],
+    twoColSectionGap,
+    setTwoColSectionGap: setTwoColSectionGap as CVAppearanceContextType['setTwoColSectionGap'],
+    twoColItemGap,
+    setTwoColItemGap: setTwoColItemGap as CVAppearanceContextType['setTwoColItemGap'],
     getMarginStyle,
     getMarginValues,
   };

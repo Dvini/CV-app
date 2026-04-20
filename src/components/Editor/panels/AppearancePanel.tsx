@@ -18,6 +18,13 @@ export function AppearancePanel({ isOpen, onToggle }) {
     showSectionIcons, setShowSectionIcons,
     showContactIcons, setShowContactIcons,
     creativeHeaderBg, setCreativeHeaderBg,
+    twoColLineWidth, setTwoColLineWidth,
+    twoColLineColor, setTwoColLineColor,
+    twoColSidebarWidth, setTwoColSidebarWidth,
+    twoColGapLeft, setTwoColGapLeft,
+    twoColGapRight, setTwoColGapRight,
+    twoColSectionGap, setTwoColSectionGap,
+    twoColItemGap, setTwoColItemGap,
   } = useCVAppearance();
 
   const templates = [
@@ -187,6 +194,93 @@ export function AppearancePanel({ isOpen, onToggle }) {
               </label>
               <span className="field-hint" style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}>Tło sekcji danych osobowych</span>
             </div>
+          </div>
+        )}
+
+        {/* Two-column layout options */}
+        {template === 'twocolumn' && (
+          <div className="appearance-group">
+            <label className="appearance-label" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', marginBottom: '0.75rem', fontWeight: 600 }}>
+              Opcje układu 2-kolumnowego
+            </label>
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Grubość pionowej linii</span>
+              <span>{twoColLineWidth}px</span>
+            </label>
+            <input
+              type="range" min="0" max="5" step="1"
+              value={twoColLineWidth}
+              onChange={(e) => setTwoColLineWidth(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            />
+
+            <label className="appearance-label">Kolor pionowej linii</label>
+            <div className="color-picker-row" style={{ marginBottom: '0.75rem' }}>
+              <label
+                className="color-swatch color-swatch--custom color-swatch--active"
+                style={{ backgroundColor: twoColLineColor }}
+                title="Kolor linii"
+              >
+                <input type="color" value={twoColLineColor} onChange={(e) => setTwoColLineColor(e.target.value)} className="color-native-input" />
+              </label>
+              <span className="field-hint" style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}>{twoColLineColor}</span>
+            </div>
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Szerokość lewej kolumny</span>
+              <span>{twoColSidebarWidth}% / {100 - twoColSidebarWidth}%</span>
+            </label>
+            <input
+              type="range" min="20" max="50" step="1"
+              value={twoColSidebarWidth}
+              onChange={(e) => setTwoColSidebarWidth(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            />
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Odsunięcie tekstu (lewa kol.)</span>
+              <span>{twoColGapLeft} mm</span>
+            </label>
+            <input
+              type="range" min="0" max="20" step="1"
+              value={twoColGapLeft}
+              onChange={(e) => setTwoColGapLeft(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            />
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Odsunięcie tekstu (prawa kol.)</span>
+              <span>{twoColGapRight} mm</span>
+            </label>
+            <input
+              type="range" min="0" max="25" step="1"
+              value={twoColGapRight}
+              onChange={(e) => setTwoColGapRight(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            />
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Odstęp między sekcjami (boczny)</span>
+              <span>{twoColSectionGap} rem</span>
+            </label>
+            <input
+              type="range" min="0" max="2" step="0.1"
+              value={twoColSectionGap}
+              onChange={(e) => setTwoColSectionGap(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            />
+
+            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Odstęp między elementami (boczny)</span>
+              <span>{twoColItemGap} rem</span>
+            </label>
+            <input
+              type="range" min="0" max="1" step="0.05"
+              value={twoColItemGap}
+              onChange={(e) => setTwoColItemGap(Number(e.target.value))}
+              className="slider-input" style={{ width: '100%' }}
+            />
           </div>
         )}
 

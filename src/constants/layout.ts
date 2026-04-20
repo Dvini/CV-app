@@ -37,5 +37,5 @@ export const DEFAULT_CUSTOM_MARGIN = { vertical: 15, horizontal: 15 };
 export const DEFAULT_THEME_COLOR = '#2563eb';
 
 // Inner column gaps (mm) for two-column layout
-export const COLUMN_INNER_GAP_LEFT = 6;
+export const COLUMN_INNER_GAP_LEFT = 3;
 export const COLUMN_INNER_GAP_RIGHT = 8;

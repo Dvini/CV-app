@@ -247,6 +247,22 @@ export interface CVAppearanceContextType {
   setCreativeHeaderBg: (c: string) => void;
   getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
   getMarginValues: () => { v: number; h: number };
+
+  // Two-column layout settings
+  twoColLineWidth: number;
+  setTwoColLineWidth: (w: number) => void;
+  twoColLineColor: string;
+  setTwoColLineColor: (c: string) => void;
+  twoColSidebarWidth: number;
+  setTwoColSidebarWidth: (w: number) => void;
+  twoColGapLeft: number;
+  setTwoColGapLeft: (g: number) => void;
+  twoColGapRight: number;
+  setTwoColGapRight: (g: number) => void;
+  twoColSectionGap: number;
+  setTwoColSectionGap: (g: number) => void;
+  twoColItemGap: number;
+  setTwoColItemGap: (g: number) => void;
 }
 
 export interface CVManagerContextType {
