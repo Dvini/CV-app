@@ -57,6 +57,12 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     'cv_creativeHeaderBg',
     DEFAULT_THEME_COLOR,
   );
+  const [creativeHeaderImage, setCreativeHeaderImage] = useLocalStorage<string | null>(
+    'cv_creativeHeaderImage',
+    null,
+  );
+  const [sectionGap, setSectionGap] = useLocalStorage<number>('cv_sectionGap', 1.25);
+  const [itemGap, setItemGap] = useLocalStorage<number>('cv_itemGap', 0.5);
 
   // Two-column layout settings
   const [twoColLineWidth, setTwoColLineWidth] = useLocalStorage<number>('cv_twoColLineWidth', 1);
@@ -140,6 +146,12 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     setShowContactIcons: setShowContactIcons as CVAppearanceContextType['setShowContactIcons'],
     creativeHeaderBg,
     setCreativeHeaderBg: setCreativeHeaderBg as CVAppearanceContextType['setCreativeHeaderBg'],
+    creativeHeaderImage,
+    setCreativeHeaderImage: setCreativeHeaderImage as CVAppearanceContextType['setCreativeHeaderImage'],
+    sectionGap,
+    setSectionGap: setSectionGap as CVAppearanceContextType['setSectionGap'],
+    itemGap,
+    setItemGap: setItemGap as CVAppearanceContextType['setItemGap'],
     twoColLineWidth,
     setTwoColLineWidth: setTwoColLineWidth as CVAppearanceContextType['setTwoColLineWidth'],
     twoColLineColor,

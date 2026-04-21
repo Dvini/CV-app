@@ -7,7 +7,10 @@ import '../CVPreview.css';
 
 export const CreativeTemplate = React.memo(function CreativeTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
-  const { getMarginStyle, creativeHeaderBg, showContactIcons } = useCVAppearance();
+  const {
+    getMarginStyle, creativeHeaderBg, creativeHeaderImage, showContactIcons,
+    twoColSidebarWidth, twoColSectionGap, twoColItemGap,
+  } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
   const sideSections = sectionOrder.filter((s) => sectionColumns[s] === 'side');
@@ -15,13 +18,32 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
 
   const containerStyle = getMarginStyle('container', true);
 
+  const cssVars = {
+    '--tc-sidebar-w': `${twoColSidebarWidth}%`,
+    '--tc-main-w': `${100 - twoColSidebarWidth}%`,
+    '--tc-section-gap': `${twoColSectionGap}rem`,
+    '--tc-item-gap': `${twoColItemGap}rem`,
+  } as React.CSSProperties;
+
+  const headerStyle: React.CSSProperties = {
+    background: creativeHeaderImage 
+      ? `url(${creativeHeaderImage}) center/cover no-repeat` 
+      : creativeHeaderBg,
+    position: 'relative',
+  };
+
   return (
-    <div className="cv-page template-creative">
+    <div className="cv-page template-creative" style={cssVars}>
       {/* Colored header band */}
-      <header className="cv-header--creative" style={{ background: creativeHeaderBg }}>
+      <header className="cv-header--creative" style={headerStyle}>
+        {creativeHeaderImage && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)' }} />
+        )}
         <div
           className="cv-header-creative-inner"
           style={{
+            position: 'relative',
+            zIndex: 1,
             padding: `${containerStyle.paddingTop} ${containerStyle.paddingRight} 1rem ${containerStyle.paddingLeft}`,
           }}
         >
@@ -48,7 +70,7 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
       {/* Two-column body */}
       <div className="cv-creative-body">
         <div
-          className="cv-creative-side"
+          className="cv-creative-side cv-sidebar-sections"
           style={{
             paddingLeft: getMarginStyle('container', showClauseFooter).paddingLeft,
             paddingTop: '1rem',

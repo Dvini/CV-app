@@ -38,7 +38,7 @@ function renderTemplate(template: TemplateName): React.ReactNode {
 
 export function CVPreview() {
   const { data } = useCVData();
-  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues } = useCVAppearance();
+  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap } = useCVAppearance();
   const isColumnTemplate = template === 'twocolumn' || template === 'creative';
 
   useEffect(() => {
@@ -77,6 +77,8 @@ export function CVPreview() {
         '--cv-font-family': fontFamilyValue,
         '--cv-heading-scale': fontSizeHeading,
         '--cv-text-scale': fontSizeText,
+        '--cv-section-gap': `${sectionGap}rem`,
+        '--cv-item-gap': `${itemGap}rem`,
       } as React.CSSProperties}
     >
       <div className="preview-scroll">

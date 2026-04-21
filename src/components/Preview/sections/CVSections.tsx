@@ -12,6 +12,12 @@ type ColumnType = 'full' | 'main' | 'side';
 
 type CvTranslation = typeof cvTranslations['pl'];
 
+const formatDate = (date: string | undefined, t: CvTranslation) => {
+  if (!date) return '';
+  const d = date.trim().toLowerCase();
+  if (d === 'obecnie' || d === 'present') return t.present || date;
+  return date;
+};
 const SECTION_ICONS: Record<SectionKey, React.FC<{ size?: number; className?: string }>> = {
   personal: User,
   experience: Briefcase,
@@ -105,7 +111,7 @@ export function ExperienceSection({ columnType }: { columnType?: ColumnType }) {
                     <div key={pos.id} className={`cv-position-row ${isSide ? 'cv-position-row--stacked' : ''}`}>
                       <h3 className="cv-item-title">{pos.title}</h3>
                       <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
-                        {pos.startDate} – {pos.endDate}
+                        {formatDate(pos.startDate, t)} – {formatDate(pos.endDate, t)}
                       </span>
                     </div>
                   ))}
@@ -147,7 +153,7 @@ export function EducationSection({ columnType }: { columnType?: ColumnType }) {
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{edu.degree}</h3>
               <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
-                {edu.startDate} – {edu.endDate}
+                {formatDate(edu.startDate, t)} – {formatDate(edu.endDate, t)}
               </span>
             </div>
             <div className="cv-item-subtitle">{edu.school}</div>
@@ -175,8 +181,8 @@ export function CoursesSection({ columnType }: { columnType?: ColumnType }) {
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{course.name}</h3>
               <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
-                {course.startDate}
-                {course.endDate ? ` – ${course.endDate}` : ''}
+                {formatDate(course.startDate, t)}
+                {course.endDate ? ` – ${formatDate(course.endDate, t)}` : ''}
               </span>
             </div>
             <div className="cv-item-subtitle">{course.organizer}</div>
@@ -318,7 +324,7 @@ export function CertificatesSection({ columnType }: { columnType?: ColumnType })
           <div key={cert.id} className="cv-item cv-breakable">
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{cert.name}</h3>
-              {cert.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{cert.date}</span>}
+              {cert.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{formatDate(cert.date, t)}</span>}
             </div>
             {cert.issuer && <div className="cv-item-subtitle">{cert.issuer}</div>}
             {cert.credentialUrl && (
@@ -371,7 +377,7 @@ export function PublicationsSection({ columnType }: { columnType?: ColumnType })
           <div key={pub.id} className="cv-item cv-breakable">
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{pub.title}</h3>
-              {pub.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{pub.date}</span>}
+              {pub.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{formatDate(pub.date, t)}</span>}
             </div>
             {pub.publisher && <div className="cv-item-subtitle">{pub.publisher}</div>}
             {pub.url && (
@@ -403,7 +409,7 @@ export function VolunteerSection({ columnType }: { columnType?: ColumnType }) {
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{vol.role}</h3>
               <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>
-                {vol.startDate}{vol.endDate ? ` – ${vol.endDate}` : ''}
+                {formatDate(vol.startDate, t)}{vol.endDate ? ` – ${formatDate(vol.endDate, t)}` : ''}
               </span>
             </div>
             {vol.organization && <div className="cv-item-subtitle">{vol.organization}</div>}
@@ -432,7 +438,7 @@ export function CustomSection({ columnType }: { columnType?: ColumnType }) {
           <div key={item.id} className="cv-item cv-breakable">
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{item.title}</h3>
-              {item.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{item.date}</span>}
+              {item.date && <span className={`cv-item-date ${isSide ? 'cv-item-date--stacked' : ''}`}>{formatDate(item.date, t)}</span>}
             </div>
             {item.subtitle && <div className="cv-item-subtitle">{item.subtitle}</div>}
             {item.description && <p className="cv-text cv-text--pre">{item.description}</p>}

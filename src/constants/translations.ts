@@ -15,6 +15,7 @@ export const cvTranslations = {
     volunteer: "Wolontariat",
     custom: "Dodatkowe",
     tech: "Technologie:",
+    present: "Obecnie",
   },
   en: {
     personal: "Profile",
@@ -32,6 +33,7 @@ export const cvTranslations = {
     volunteer: "Volunteer",
     custom: "Additional",
     tech: "Technologies:",
+    present: "Present",
   },
 };
 

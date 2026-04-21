@@ -402,12 +402,12 @@
 }
 
 .cv-creative-side {
-  width: 35%;
+  width: var(--tc-sidebar-w, 35%);
   box-sizing: border-box;
 }
 
 .cv-creative-main {
-  width: 65%;
+  width: var(--tc-main-w, 65%);
   box-sizing: border-box;
 }
 

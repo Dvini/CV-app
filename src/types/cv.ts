@@ -245,6 +245,12 @@ export interface CVAppearanceContextType {
   setShowContactIcons: (s: boolean) => void;
   creativeHeaderBg: string;
   setCreativeHeaderBg: (c: string) => void;
+  creativeHeaderImage: string | null;
+  setCreativeHeaderImage: (c: string | null) => void;
+  sectionGap: number;
+  setSectionGap: (g: number) => void;
+  itemGap: number;
+  setItemGap: (g: number) => void;
   getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
   getMarginValues: () => { v: number; h: number };
 
