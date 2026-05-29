@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { Download, Moon, Sun, FileText, Edit3, Loader } from 'lucide-react';
+import { Download, Moon, Sun, FileText, Edit3 } from 'lucide-react';
 import { useCVData, useCVAppearance } from '../../context/CVContext';
 import './Header.css';
 
@@ -8,21 +8,16 @@ export function Header() {
   const { data } = useCVData();
   const { themeColor, darkMode, setDarkMode } = useCVAppearance();
   const [mobileView, setMobileView] = useState('editor');
-  const [exporting, setExporting] = useState(false);
 
-  const handleExport = async () => {
-    setExporting(true);
-    try {
-      const { exportToPDF } = await import('../../utils/pdfExport');
-      const name = data.personal.fullName
-        ? `CV_${data.personal.fullName.replace(/\s+/g, '_')}`
-        : 'CV';
-      await exportToPDF(name);
-    } catch {
-      alert('Nie udało się wygenerować PDF. Spróbuj ponownie.');
-    } finally {
-      setExporting(false);
-    }
+  const handleExport = () => {
+    const name = data.personal.fullName
+      ? `CV_${data.personal.fullName.replace(/\s+/g, '_')}`
+      : 'CV';
+    // Set document title so browser suggests it as the filename in the Save dialog
+    const prev = document.title;
+    document.title = name;
+    window.print();
+    setTimeout(() => { document.title = prev; }, 1000);
   };
 
   return (
@@ -47,10 +42,9 @@ export function Header() {
           <button
             className="header-cta"
             onClick={handleExport}
-            disabled={exporting}
           >
-            {exporting ? <Loader size={16} className="spin" /> : <Download size={16} />}
-            <span>{exporting ? 'Generowanie...' : 'Pobierz PDF'}</span>
+            <Download size={16} />
+            <span>Pobierz PDF</span>
           </button>
         </div>
       </header>

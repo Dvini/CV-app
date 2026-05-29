@@ -1,41 +1,22 @@
-// @ts-nocheck
-import html2canvas from 'html2canvas-pro';
-import { jsPDF } from 'jspdf';
-import { A4_HEIGHT_PX } from '../constants/layout';
-
-const A4_WIDTH_MM = 210;
-const A4_HEIGHT_MM = 297;
-
 /**
- * Exports the CV preview pages to a PDF file.
- * Captures each visible page clone element and adds it as a PDF page.
+ * Exports the CV to a PDF using the browser's native print dialog.
+ * This preserves real text (selectable, searchable) and clickable hyperlinks.
  *
- * @param {string} fileName - The PDF file name (without extension)
+ * The @media print styles in CVPreview.css already handle hiding the UI chrome
+ * (header, sidebar, labels) and formatting pages correctly for A4 output.
+ *
+ * @param {string} fileName - Suggested PDF file name (shown in print dialog; browser may override)
  */
 export async function exportToPDF(fileName = 'CV') {
-  const pages = document.querySelectorAll('.cv-page-sheet .cv-preview-container');
-  if (pages.length === 0) return;
+  // Set the document title so the browser suggests it as the PDF filename
+  const previousTitle = document.title;
+  document.title = fileName;
 
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  window.print();
 
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
-
-    const canvas = await html2canvas(page, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-      width: page.offsetWidth,
-      height: A4_HEIGHT_PX,
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-    if (i > 0) pdf.addPage();
-    pdf.addImage(imgData, 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
-  }
-
-  pdf.save(`${fileName}.pdf`);
+  // Restore the original title after a short delay (print dialog is async)
+  setTimeout(() => {
+    document.title = previousTitle;
+  }, 1000);
 }
 
