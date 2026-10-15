@@ -163,3 +163,68 @@ test('corrupted storage does not crash the app', async ({ page }) => {
   await expect(page.locator('.layout-item', { hasText: 'Profil 1' })).toHaveCount(1);
   expect(errors).toEqual([]);
 });
+
+test.describe('narrow screens', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('show only the selected half, fitted to the screen width', async ({ page }) => {
+    await page.goto('/'); // the preview starts hidden here, so don't wait for it like open() does
+    const editor = page.locator('#app-sidebar');
+    const preview = page.locator('.preview-area');
+
+    await expect(editor).toBeVisible();
+    await expect(preview).toBeHidden();
+    // The layout clips overflow, so a too-wide editor would cut off its fields rather than scroll
+    expect((await editor.boundingBox())!.width).toBeLessThanOrEqual(390);
+
+    await page.getByRole('button', { name: 'Podgląd' }).click();
+    await expect(preview).toBeVisible();
+    await expect(editor).toBeHidden();
+    await expect(page.getByRole('button', { name: 'Podgląd' })).toHaveAttribute('aria-pressed', 'true');
+
+    await page.getByRole('button', { name: 'Edytor' }).click();
+    await expect(editor).toBeVisible();
+  });
+});
+
+test('form fields and sliders are labelled', async ({ page }) => {
+  await open(page);
+  await page.getByLabel('Imię i nazwisko').fill('Etykieta Test');
+  await expect(previewName(page)).toHaveText('Etykieta Test');
+
+  await openPanel(page, 'Wygląd CV');
+  await page.locator('button.btn-option', { hasText: 'Nowoczesny (2 kolumny)' }).click();
+  await page.getByLabel('Szerokość lewej kolumny').fill('40');
+  await expect(sidebarWidthLabel(page)).toHaveText('40% / 60%');
+  await expect(page.getByRole('group', { name: 'Szablon' }).getByRole('button', { pressed: true }))
+    .toHaveText('Nowoczesny (2 kolumny)');
+});
+
+test('editor width and open panels are remembered', async ({ page }) => {
+  await open(page);
+  const handle = page.getByRole('separator', { name: 'Szerokość panelu edytora' });
+  await handle.focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await expect(handle).toHaveAttribute('aria-valuenow', '512');
+  await page.keyboard.press('Home');
+  await expect(handle).toHaveAttribute('aria-valuenow', '320');
+  await expect(page.locator('#app-sidebar')).toHaveCSS('width', '320px');
+
+  await openPanel(page, 'Wygląd CV');
+  await page.reload();
+  await expect(handle).toHaveAttribute('aria-valuenow', '320');
+  await expect(page.locator('button.panel-header', { hasText: 'Wygląd CV' })).toHaveAttribute('aria-expanded', 'true');
+});
+
+test('creative template offers column switches', async ({ page }) => {
+  await open(page);
+  await openPanel(page, 'Wygląd CV');
+  await page.locator('button.btn-option', { hasText: 'Kreatywny' }).click();
+  await openPanel(page, 'Układ sekcji');
+  const toggle = page.getByRole('button', { name: 'Zmień kolumnę dla Doświadczenie zawodowe' });
+  await expect(toggle).toHaveText('Prawa kol.');
+  await toggle.click();
+  await expect(toggle).toHaveText('Lewa kol.');
+  await expect(page.locator('.cv-page-sheet').first().locator('.cv-creative-side')).toContainText('Tech Solutions');
+});

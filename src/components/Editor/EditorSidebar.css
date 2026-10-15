@@ -1,5 +1,7 @@
 .editor-sidebar {
   position: relative;
+  width: var(--sidebar-width, 480px);
+  min-width: var(--sidebar-width, 480px);
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
   display: flex;
@@ -21,6 +23,7 @@
 }
 
 .sidebar-resize-handle:hover,
+.sidebar-resize-handle:focus-visible,
 .sidebar-resize-handle:active {
   background: var(--accent);
 }
@@ -632,5 +635,9 @@
     min-width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-resize-handle {
+    display: none;
   }
 }

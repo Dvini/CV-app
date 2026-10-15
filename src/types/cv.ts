@@ -178,6 +178,8 @@ export type MarginVariant = "container" | "left-column" | "right-column";
 
 export type MoveDirection = "up" | "down";
 
+export type MobileView = "editor" | "preview";
+
 export type ArrayFieldName = keyof Pick<
   CVData,
   | "experience"

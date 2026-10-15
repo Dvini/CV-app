@@ -1,5 +1,6 @@
-import React, { lazy, Suspense, useState, useCallback, useRef } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { DataSyncPanel } from './panels/DataSyncPanel';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import './EditorSidebar.css';
 
 const AppearancePanel = lazy(() => import('./panels/AppearancePanel').then(m => ({ default: m.AppearancePanel })));
@@ -20,73 +21,99 @@ const CustomPanel = lazy(() => import('./panels/CustomPanel').then(m => ({ defau
 
 const MIN_WIDTH = 320;
 const MAX_WIDTH = 700;
+const DEFAULT_WIDTH = 480;
+const KEYBOARD_STEP = 16;
 
-export function EditorSidebar() {
-  const [openPanels, setOpenPanels] = useState<Set<string>>(() => new Set(['personal']));
-  const [width, setWidth] = useState(480);
-  const sidebarRef = useRef<HTMLElement>(null);
+const clampWidth = (width: number) => Math.round(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, width)));
 
-  const toggle = (id: string) => setOpenPanels((prev) => {
-    const next = new Set(prev);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
-    return next;
-  });
+const normalizeWidth = (v: unknown) =>
+  typeof v === 'number' && Number.isFinite(v) ? clampWidth(v) : undefined;
 
-  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+const normalizeOpenPanels = (v: unknown) =>
+  Array.isArray(v) ? v.filter((id): id is string => typeof id === 'string') : undefined;
+
+export function EditorSidebar({ className }: { className?: string }) {
+  // Editor layout preferences, remembered across visits
+  const [openPanels, setOpenPanels] = useLocalStorage<string[]>('cv_openPanels', ['personal'], normalizeOpenPanels);
+  const [width, setWidth] = useLocalStorage<number>('cv_sidebarWidth', DEFAULT_WIDTH, normalizeWidth);
+
+  const isOpen = (id: string) => openPanels.includes(id);
+  const toggle = (id: string) =>
+    setOpenPanels((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
+  const panelProps = (id: string) => ({ isOpen: isOpen(id), onToggle: () => toggle(id) });
+
+  // Pointer events cover mouse, pen and touch; capture keeps the drag going outside the handle
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
+    const handle = e.currentTarget;
     const startX = e.clientX;
     const startWidth = width;
+    handle.setPointerCapture(e.pointerId);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
 
-    const onMouseMove = (e: MouseEvent) => {
-      const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + (e.clientX - startX)));
-      setWidth(newWidth);
-    };
-
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+    const onPointerMove = (ev: PointerEvent) => setWidth(clampWidth(startWidth + (ev.clientX - startX)));
+    const onPointerUp = () => {
+      handle.removeEventListener('pointermove', onPointerMove);
+      handle.removeEventListener('pointerup', onPointerUp);
+      handle.removeEventListener('pointercancel', onPointerUp);
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     };
+    handle.addEventListener('pointermove', onPointerMove);
+    handle.addEventListener('pointerup', onPointerUp);
+    handle.addEventListener('pointercancel', onPointerUp);
+  };
 
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }, [width]);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const next = {
+      ArrowLeft: width - KEYBOARD_STEP,
+      ArrowRight: width + KEYBOARD_STEP,
+      Home: MIN_WIDTH,
+      End: MAX_WIDTH,
+    }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    setWidth(clampWidth(next));
+  };
 
   return (
-    <aside className="editor-sidebar" id="app-sidebar" ref={sidebarRef} style={{ width: `${width}px`, minWidth: `${width}px` }}>
+    <aside
+      className={`editor-sidebar${className ? ` ${className}` : ''}`}
+      id="app-sidebar"
+      style={{ '--sidebar-width': `${width}px` } as React.CSSProperties}
+    >
       <div className="editor-sidebar-scroll">
         <DataSyncPanel />
         <Suspense fallback={null}>
-          <AppearancePanel isOpen={openPanels.has('appearance')} onToggle={() => toggle('appearance')} />
-          <LayoutPanel isOpen={openPanels.has('layout')} onToggle={() => toggle('layout')} />
-          <PersonalPanel isOpen={openPanels.has('personal')} onToggle={() => toggle('personal')} />
-          <ExperiencePanel isOpen={openPanels.has('experience')} onToggle={() => toggle('experience')} />
-          <EducationPanel isOpen={openPanels.has('education')} onToggle={() => toggle('education')} />
-          <CoursesPanel isOpen={openPanels.has('courses')} onToggle={() => toggle('courses')} />
-          <ProjectsPanel isOpen={openPanels.has('projects')} onToggle={() => toggle('projects')} />
-          <LanguagesPanel isOpen={openPanels.has('languages')} onToggle={() => toggle('languages')} />
-          <SkillsPanel isOpen={openPanels.has('skills')} onToggle={() => toggle('skills')} />
-          <InterestsPanel isOpen={openPanels.has('interests')} onToggle={() => toggle('interests')} />
-          <CertificatesPanel isOpen={openPanels.has('certificates')} onToggle={() => toggle('certificates')} />
-          <ReferencesPanel isOpen={openPanels.has('references')} onToggle={() => toggle('references')} />
-          <PublicationsPanel isOpen={openPanels.has('publications')} onToggle={() => toggle('publications')} />
-          <VolunteerPanel isOpen={openPanels.has('volunteer')} onToggle={() => toggle('volunteer')} />
-          <CustomPanel isOpen={openPanels.has('custom')} onToggle={() => toggle('custom')} />
+          <AppearancePanel {...panelProps('appearance')} />
+          <LayoutPanel {...panelProps('layout')} />
+          <PersonalPanel {...panelProps('personal')} />
+          <ExperiencePanel {...panelProps('experience')} />
+          <EducationPanel {...panelProps('education')} />
+          <CoursesPanel {...panelProps('courses')} />
+          <ProjectsPanel {...panelProps('projects')} />
+          <LanguagesPanel {...panelProps('languages')} />
+          <SkillsPanel {...panelProps('skills')} />
+          <InterestsPanel {...panelProps('interests')} />
+          <CertificatesPanel {...panelProps('certificates')} />
+          <ReferencesPanel {...panelProps('references')} />
+          <PublicationsPanel {...panelProps('publications')} />
+          <VolunteerPanel {...panelProps('volunteer')} />
+          <CustomPanel {...panelProps('custom')} />
         </Suspense>
       </div>
       <div
         className="sidebar-resize-handle"
-        onMouseDown={handleResizeStart}
+        onPointerDown={handlePointerDown}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         role="separator"
         aria-orientation="vertical"
-        aria-label="Resize sidebar"
+        aria-label="Szerokość panelu edytora"
+        aria-valuemin={MIN_WIDTH}
+        aria-valuemax={MAX_WIDTH}
+        aria-valuenow={width}
       />
     </aside>
   );

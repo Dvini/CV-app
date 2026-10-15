@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
 import { Download, Moon, Sun, FileText, Edit3 } from 'lucide-react';
 import { useCVData, useCVAppearance } from '../../context/hooks';
 import { exportToPDF, getPDFFileName } from '../../utils/pdfExport';
+import type { MobileView } from '../../types/cv';
 import './Header.css';
 
-export function Header() {
+interface HeaderProps {
+  /** Which half of the app is shown on narrow screens */
+  mobileView: MobileView;
+  onMobileViewChange: (view: MobileView) => void;
+}
+
+export function Header({ mobileView, onMobileViewChange }: HeaderProps) {
   const { data } = useCVData();
   const { darkMode, setDarkMode } = useCVAppearance();
-  const [mobileView, setMobileView] = useState('editor');
 
   const handleExport = () => exportToPDF(getPDFFileName(data.personal.fullName));
 
@@ -41,25 +46,19 @@ export function Header() {
       </header>
 
       {/* Mobile navigation */}
-      <nav className="mobile-nav">
+      <nav className="mobile-nav" aria-label="Widok">
         <button
           className={`mobile-nav-btn ${mobileView === 'editor' ? 'mobile-nav-btn--active' : ''}`}
-          onClick={() => {
-            setMobileView('editor');
-            document.getElementById('app-sidebar')?.classList.remove('hidden-mobile');
-            document.querySelector('.preview-area')?.classList.add('hidden-mobile');
-          }}
+          aria-pressed={mobileView === 'editor'}
+          onClick={() => onMobileViewChange('editor')}
         >
           <Edit3 size={16} />
           Edytor
         </button>
         <button
           className={`mobile-nav-btn ${mobileView === 'preview' ? 'mobile-nav-btn--active' : ''}`}
-          onClick={() => {
-            setMobileView('preview');
-            document.getElementById('app-sidebar')?.classList.add('hidden-mobile');
-            document.querySelector('.preview-area')?.classList.remove('hidden-mobile');
-          }}
+          aria-pressed={mobileView === 'preview'}
+          onClick={() => onMobileViewChange('preview')}
         >
           <FileText size={16} />
           Podgląd

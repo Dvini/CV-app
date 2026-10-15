@@ -36,7 +36,7 @@ function renderTemplate(template: TemplateName): React.ReactNode {
   }
 }
 
-export function CVPreview() {
+export function CVPreview({ className }: { className?: string }) {
   const { data } = useCVData();
   const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap } = useCVAppearance();
   const hasColumns = isColumnTemplate(template);
@@ -74,7 +74,7 @@ export function CVPreview() {
 
   return (
     <main
-      className="preview-area"
+      className={`preview-area${className ? ` ${className}` : ''}`}
       style={{
         '--cv-font-family': fontFamilyValue,
         '--cv-heading-scale': fontSizeHeading,

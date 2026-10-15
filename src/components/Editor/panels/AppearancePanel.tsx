@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useId, useRef, useState, useEffect } from 'react';
 import { Palette, Plus, Image as ImageIcon, X } from 'lucide-react';
 import { useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
+import { RangeField } from '../shared/FormFields';
 import { presetColors } from '../../../constants/colors';
 import { compressImage } from '../../../utils/imageUtils';
 import { FONT_SCALE_MIN, FONT_SCALE_MAX, FONT_SCALE_STEP, isColumnTemplate } from '../../../constants/layout';
@@ -9,6 +10,12 @@ import type { FontFamily, MarginPreset, TemplateName } from '../../../types/cv';
 
 export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const headerImageInputRef = useRef<HTMLInputElement>(null);
+  const languageLabelId = useId();
+  const templateLabelId = useId();
+  const fontFamilyId = useId();
+  const marginsLabelId = useId();
+  const marginVerticalId = useId();
+  const marginHorizontalId = useId();
   const {
     cvLanguage, setCvLanguage,
     template, setTemplate,
@@ -89,19 +96,19 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
       <div className="appearance-sections">
         {/* Language */}
         <div className="appearance-group">
-          <label className="appearance-label">Język dokumentu (CV)</label>
-          <div className="btn-group btn-group--2">
-            <button onClick={() => setCvLanguage('pl')} className={`btn-option ${cvLanguage === 'pl' ? 'btn-option--active' : ''}`}>Polski</button>
-            <button onClick={() => setCvLanguage('en')} className={`btn-option ${cvLanguage === 'en' ? 'btn-option--active' : ''}`}>Angielski</button>
+          <span className="appearance-label" id={languageLabelId}>Język dokumentu (CV)</span>
+          <div className="btn-group btn-group--2" role="group" aria-labelledby={languageLabelId}>
+            <button onClick={() => setCvLanguage('pl')} aria-pressed={cvLanguage === 'pl'} className={`btn-option ${cvLanguage === 'pl' ? 'btn-option--active' : ''}`}>Polski</button>
+            <button onClick={() => setCvLanguage('en')} aria-pressed={cvLanguage === 'en'} className={`btn-option ${cvLanguage === 'en' ? 'btn-option--active' : ''}`}>Angielski</button>
           </div>
         </div>
 
         {/* Template */}
         <div className="appearance-group">
-          <label className="appearance-label">Szablon</label>
-          <div className="btn-group btn-group--1">
+          <span className="appearance-label" id={templateLabelId}>Szablon</span>
+          <div className="btn-group btn-group--1" role="group" aria-labelledby={templateLabelId}>
             {templates.map((t) => (
-              <button key={t.key} onClick={() => setTemplate(t.key)} className={`btn-option ${template === t.key ? 'btn-option--active' : ''}`}>
+              <button key={t.key} onClick={() => setTemplate(t.key)} aria-pressed={template === t.key} className={`btn-option ${template === t.key ? 'btn-option--active' : ''}`}>
                 {t.label}
               </button>
             ))}
@@ -138,8 +145,9 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
 
         {/* Typography */}
         <div className="appearance-group">
-          <label className="appearance-label">Krój czcionki</label>
+          <label className="appearance-label" htmlFor={fontFamilyId}>Krój czcionki</label>
           <select
+            id={fontFamilyId}
             value={fontFamily}
             onChange={(e) => setFontFamily(e.target.value as FontFamily)}
             className="field-input"
@@ -154,32 +162,20 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
             <option value="Playfair Display">Playfair Display</option>
           </select>
 
-          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Wielkość nagłówków</span>
-            <span>{Math.round(fontSizeHeading * 100)}%</span>
-          </label>
-          <input
-            type="range"
+          <RangeField
+            label="Wielkość nagłówków"
+            valueText={`${Math.round(fontSizeHeading * 100)}%`}
             min={FONT_SCALE_MIN} max={FONT_SCALE_MAX} step={FONT_SCALE_STEP}
             value={fontSizeHeading}
-            onChange={(e) => setFontSizeHeading(Number(e.target.value))}
-            className="slider-input"
-            aria-label="Wielkość nagłówków"
-            style={{ width: '100%', marginBottom: '1rem' }}
+            onChange={setFontSizeHeading}
+            marginBottom="1rem"
           />
-
-          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Wielkość tekstów</span>
-            <span>{Math.round(fontSizeText * 100)}%</span>
-          </label>
-          <input
-            type="range"
+          <RangeField
+            label="Wielkość tekstów"
+            valueText={`${Math.round(fontSizeText * 100)}%`}
             min={FONT_SCALE_MIN} max={FONT_SCALE_MAX} step={FONT_SCALE_STEP}
             value={fontSizeText}
-            onChange={(e) => setFontSizeText(Number(e.target.value))}
-            className="slider-input"
-            aria-label="Wielkość tekstów"
-            style={{ width: '100%' }}
+            onChange={setFontSizeText}
           />
         </div>
 
@@ -243,6 +239,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
                     onClick={() => setCreativeHeaderImage(null)}
                     style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                     title="Usuń zdjęcie tła"
+                    aria-label="Usuń zdjęcie tła"
                   >
                     <X size={14} />
                   </button>
@@ -270,7 +267,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
               <div style={{ fontSize: '0.8125rem', marginBottom: '0.5rem', fontWeight: 500 }}>Jednolity kolor</div>
               <div className="color-picker-row">
                 <label className="color-swatch color-swatch--custom color-swatch--active" style={{ backgroundColor: creativeHeaderBg }} title="Kolor tła nagłówka">
-                  <input type="color" value={creativeHeaderBg} onChange={(e) => setCreativeHeaderBg(e.target.value)} className="color-native-input" />
+                  <input type="color" value={creativeHeaderBg} onChange={(e) => setCreativeHeaderBg(e.target.value)} className="color-native-input" aria-label="Kolor tła nagłówka" />
                 </label>
                 <span className="field-hint" style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}>{creativeHeaderBg}</span>
               </div>
@@ -284,26 +281,20 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
             Odstępy w dokumencie
           </label>
 
-          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{isColumnTemplate(template) ? 'Odstęp między sekcjami (kol. główna)' : 'Odstęp między sekcjami'}</span>
-            <span>{sectionGap} rem</span>
-          </label>
-          <input
-            type="range" min="0.5" max="3" step="0.1"
+          <RangeField
+            label={isColumnTemplate(template) ? 'Odstęp między sekcjami (kol. główna)' : 'Odstęp między sekcjami'}
+            valueText={`${sectionGap} rem`}
+            min={0.5} max={3} step={0.1}
             value={sectionGap}
-            onChange={(e) => setSectionGap(Number(e.target.value))}
-            className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+            onChange={setSectionGap}
+            marginBottom="0.75rem"
           />
-
-          <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{isColumnTemplate(template) ? 'Odstęp między elementami (kol. główna)' : 'Odstęp między elementami'}</span>
-            <span>{itemGap} rem</span>
-          </label>
-          <input
-            type="range" min="0.2" max="2" step="0.1"
+          <RangeField
+            label={isColumnTemplate(template) ? 'Odstęp między elementami (kol. główna)' : 'Odstęp między elementami'}
+            valueText={`${itemGap} rem`}
+            min={0.2} max={2} step={0.1}
             value={itemGap}
-            onChange={(e) => setItemGap(Number(e.target.value))}
-            className="slider-input" style={{ width: '100%' }}
+            onChange={setItemGap}
           />
         </div>
 
@@ -316,15 +307,13 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
 
             {template !== 'creative' && (
               <>
-                <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Grubość pionowej linii</span>
-                  <span>{twoColLineWidth}px</span>
-                </label>
-                <input
-                  type="range" min="0" max="5" step="1"
+                <RangeField
+                  label="Grubość pionowej linii"
+                  valueText={`${twoColLineWidth}px`}
+                  min={0} max={5} step={1}
                   value={twoColLineWidth}
-                  onChange={(e) => setTwoColLineWidth(Number(e.target.value))}
-                  className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+                  onChange={setTwoColLineWidth}
+                  marginBottom="0.75rem"
                 />
 
                 <label className="appearance-label">Kolor pionowej linii</label>
@@ -334,80 +323,67 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
                     style={{ backgroundColor: twoColLineColor }}
                     title="Kolor linii"
                   >
-                    <input type="color" value={twoColLineColor} onChange={(e) => setTwoColLineColor(e.target.value)} className="color-native-input" />
+                    <input type="color" value={twoColLineColor} onChange={(e) => setTwoColLineColor(e.target.value)} className="color-native-input" aria-label="Kolor pionowej linii" />
                   </label>
                   <span className="field-hint" style={{ marginLeft: '0.5rem', fontSize: '0.75rem' }}>{twoColLineColor}</span>
                 </div>
               </>
             )}
 
-            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Szerokość lewej kolumny</span>
-              <span>{twoColSidebarWidth}% / {100 - twoColSidebarWidth}%</span>
-            </label>
-            <input
-              type="range" min="20" max="50" step="1"
+            <RangeField
+              label="Szerokość lewej kolumny"
+              valueText={`${twoColSidebarWidth}% / ${100 - twoColSidebarWidth}%`}
+              min={20} max={50} step={1}
               value={twoColSidebarWidth}
-              onChange={(e) => setTwoColSidebarWidth(Number(e.target.value))}
-              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+              onChange={setTwoColSidebarWidth}
+              marginBottom="0.75rem"
             />
 
             {template !== 'creative' && (
               <>
-                <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Odsunięcie tekstu (lewa kol.)</span>
-                  <span>{twoColGapLeft} mm</span>
-                </label>
-                <input
-                  type="range" min="0" max="20" step="1"
+                <RangeField
+                  label="Odsunięcie tekstu (lewa kol.)"
+                  valueText={`${twoColGapLeft} mm`}
+                  min={0} max={20} step={1}
                   value={twoColGapLeft}
-                  onChange={(e) => setTwoColGapLeft(Number(e.target.value))}
-                  className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+                  onChange={setTwoColGapLeft}
+                  marginBottom="0.75rem"
                 />
-
-                <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Odsunięcie tekstu (prawa kol.)</span>
-                  <span>{twoColGapRight} mm</span>
-                </label>
-                <input
-                  type="range" min="0" max="25" step="1"
+                <RangeField
+                  label="Odsunięcie tekstu (prawa kol.)"
+                  valueText={`${twoColGapRight} mm`}
+                  min={0} max={25} step={1}
                   value={twoColGapRight}
-                  onChange={(e) => setTwoColGapRight(Number(e.target.value))}
-                  className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+                  onChange={setTwoColGapRight}
+                  marginBottom="0.75rem"
                 />
               </>
             )}
 
-            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Odstęp między sekcjami (lewa kolumna)</span>
-              <span>{twoColSectionGap} rem</span>
-            </label>
-            <input
-              type="range" min="0" max="2" step="0.1"
+            <RangeField
+              label="Odstęp między sekcjami (lewa kolumna)"
+              valueText={`${twoColSectionGap} rem`}
+              min={0} max={2} step={0.1}
               value={twoColSectionGap}
-              onChange={(e) => setTwoColSectionGap(Number(e.target.value))}
-              className="slider-input" style={{ width: '100%', marginBottom: '0.75rem' }}
+              onChange={setTwoColSectionGap}
+              marginBottom="0.75rem"
             />
-
-            <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Odstęp między elementami (lewa kolumna)</span>
-              <span>{twoColItemGap} rem</span>
-            </label>
-            <input
-              type="range" min="0" max="1" step="0.05"
+            <RangeField
+              label="Odstęp między elementami (lewa kolumna)"
+              valueText={`${twoColItemGap} rem`}
+              min={0} max={1} step={0.05}
               value={twoColItemGap}
-              onChange={(e) => setTwoColItemGap(Number(e.target.value))}
-              className="slider-input" style={{ width: '100%' }}
+              onChange={setTwoColItemGap}
             />
           </div>
         )}
 
         {/* Margins */}
         <div className="appearance-group">
-          <label className="appearance-label">Marginesy dokumentu</label>
-          <div className="btn-group btn-group--2">
+          <span className="appearance-label" id={marginsLabelId}>Marginesy dokumentu</span>
+          <div className="btn-group btn-group--2" role="group" aria-labelledby={marginsLabelId}>
             {marginOptions.map((m) => (
-              <button key={m.key} onClick={() => setMargins(m.key)} className={`btn-option btn-option--sm ${margins === m.key ? 'btn-option--active' : ''}`}>
+              <button key={m.key} onClick={() => setMargins(m.key)} aria-pressed={margins === m.key} className={`btn-option btn-option--sm ${margins === m.key ? 'btn-option--active' : ''}`}>
                 {m.label}
               </button>
             ))}
@@ -415,8 +391,9 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
           {margins === 'custom' && (
             <div className="custom-margins">
               <div className="custom-margin-row">
-                <label className="field-label">Góra / Dół (mm):</label>
+                <label className="field-label" htmlFor={marginVerticalId}>Góra / Dół (mm):</label>
                 <input
+                  id={marginVerticalId}
                   type="number"
                   min="1"
                   max="25"
@@ -426,8 +403,9 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
                 />
               </div>
               <div className="custom-margin-row">
-                <label className="field-label">Lewy / Prawy (mm):</label>
+                <label className="field-label" htmlFor={marginHorizontalId}>Lewy / Prawy (mm):</label>
                 <input
+                  id={marginHorizontalId}
                   type="number"
                   min="0"
                   max="50"
