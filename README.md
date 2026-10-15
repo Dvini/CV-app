@@ -99,6 +99,8 @@ Aplikacja obsługuje kompleksowy zestaw sekcji:
 
 Aplikacja będzie dostępna pod adresem `http://localhost:5173`.
 
+**Pozostałe skrypty:** `npm test` (testy Vitest), `npm run lint` (ESLint), `npm run typecheck` (TypeScript), `npm run build` (sprawdzenie typów + build produkcyjny).
+
 ---
 
 ## 📁 Struktura Projektu
@@ -232,6 +234,8 @@ The application supports a complete set of sections:
    ```
 
 The app will be available at `http://localhost:5173`.
+
+**Other scripts:** `npm test` (Vitest tests), `npm run lint` (ESLint), `npm run typecheck` (TypeScript), `npm run build` (type check + production build).
 
 ---
 
