@@ -1,3 +1,5 @@
+import type { TemplateName } from '../types/cv';
+
 // A4 page dimensions
 export const A4_HEIGHT_MM = 297;
 export const A4_WIDTH_MM = 210;
@@ -34,3 +36,8 @@ export const DEFAULT_THEME_COLOR = '#2563eb';
 // Inner column gaps (mm) for two-column layout
 export const COLUMN_INNER_GAP_LEFT = 3;
 export const COLUMN_INNER_GAP_RIGHT = 8;
+
+/** Templates that split sections into a side and a main column. */
+export function isColumnTemplate(template: TemplateName): boolean {
+  return template === 'twocolumn' || template === 'creative';
+}

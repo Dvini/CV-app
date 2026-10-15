@@ -6,7 +6,7 @@ import { MinimalistTemplate } from './templates/MinimalistTemplate';
 import { CompactTemplate } from './templates/CompactTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
-import { A4_HEIGHT_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX } from '../../constants/layout';
+import { A4_HEIGHT_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX, isColumnTemplate } from '../../constants/layout';
 import type { TemplateName } from '../../types/cv';
 import './CVPreview.css';
 
@@ -39,7 +39,7 @@ function renderTemplate(template: TemplateName): React.ReactNode {
 export function CVPreview() {
   const { data } = useCVData();
   const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap } = useCVAppearance();
-  const isColumnTemplate = template === 'twocolumn' || template === 'creative';
+  const hasColumns = isColumnTemplate(template);
 
   useEffect(() => {
     if (fontFamily !== 'sans' && fontFamily !== 'serif') {
@@ -66,7 +66,7 @@ export function CVPreview() {
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter,
     marginVMm: marginV,
-    isColumnTemplate,
+    isColumnTemplate: hasColumns,
     recalcToken,
   });
 
@@ -110,7 +110,7 @@ export function CVPreview() {
                   className="cv-page-content-clip"
                   style={{ height: `${visualContentHeight}px` }}
                 >
-                  {pageIndex > 0 && marginVPx > 0 && !isColumnTemplate && (
+                  {pageIndex > 0 && marginVPx > 0 && !hasColumns && (
                     <div className="cv-page-top-margin" style={{ height: `${marginVPx}px` }} />
                   )}
                   <div

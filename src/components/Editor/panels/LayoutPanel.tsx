@@ -4,6 +4,7 @@ import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { sectionNamesPl } from '../../../constants/translations';
 import type { SectionKey } from '../../../types/cv';
+import { isColumnTemplate } from '../../../constants/layout';
 
 export function LayoutPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const {
@@ -85,7 +86,7 @@ export function LayoutPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: (
               </span>
             </div>
             <div className="layout-item-right">
-              {template === 'twocolumn' && (
+              {isColumnTemplate(template) && (
                 <button
                   onClick={() => toggleColumn(section)}
                   className="btn-column-toggle"

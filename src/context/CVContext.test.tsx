@@ -55,6 +55,28 @@ describe('undo', () => {
   });
 });
 
+describe('section layout', () => {
+  it.each(['twocolumn', 'creative'] as const)('moves sections within their own column in %s', (template) => {
+    const { result } = renderHook(useCV, { wrapper });
+    act(() => result.current.look.setTemplate(template));
+    // Default order: personal, experience, education (side), courses, ...
+    expect(result.current.cv.isFirstInColumn('education')).toBe(true);
+
+    act(() => result.current.cv.moveSection('courses', 'up'));
+    const order = result.current.cv.sectionOrder;
+    // Swapped with the previous main-column section, skipping the side-column "education"
+    expect(order.indexOf('courses')).toBeLessThan(order.indexOf('experience'));
+    expect(order.indexOf('education')).toBe(DEFAULT_SNAPSHOT.sectionOrder.indexOf('education'));
+  });
+
+  it('moves sections across the whole list in single-column templates', () => {
+    const { result } = renderHook(useCV, { wrapper });
+    act(() => result.current.cv.moveSection('courses', 'up'));
+    const order = result.current.cv.sectionOrder;
+    expect(order.indexOf('courses')).toBeLessThan(order.indexOf('education'));
+  });
+});
+
 describe('storage', () => {
   it('migrates legacy appearance keys and removes them once the combined key is saved', () => {
     vi.useFakeTimers();

@@ -4,7 +4,7 @@ import { useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { presetColors } from '../../../constants/colors';
 import { compressImage } from '../../../utils/imageUtils';
-import { FONT_SCALE_MIN, FONT_SCALE_MAX, FONT_SCALE_STEP } from '../../../constants/layout';
+import { FONT_SCALE_MIN, FONT_SCALE_MAX, FONT_SCALE_STEP, isColumnTemplate } from '../../../constants/layout';
 import type { FontFamily, MarginPreset, TemplateName } from '../../../types/cv';
 
 export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
@@ -285,7 +285,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
           </label>
 
           <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{['twocolumn', 'creative'].includes(template) ? 'Odstęp między sekcjami (kol. główna)' : 'Odstęp między sekcjami'}</span>
+            <span>{isColumnTemplate(template) ? 'Odstęp między sekcjami (kol. główna)' : 'Odstęp między sekcjami'}</span>
             <span>{sectionGap} rem</span>
           </label>
           <input
@@ -296,7 +296,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
           />
 
           <label className="appearance-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{['twocolumn', 'creative'].includes(template) ? 'Odstęp między elementami (kol. główna)' : 'Odstęp między elementami'}</span>
+            <span>{isColumnTemplate(template) ? 'Odstęp między elementami (kol. główna)' : 'Odstęp między elementami'}</span>
             <span>{itemGap} rem</span>
           </label>
           <input
@@ -308,7 +308,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
         </div>
 
         {/* Two-column layout options */}
-        {['twocolumn', 'creative'].includes(template) && (
+        {isColumnTemplate(template) && (
           <div className="appearance-group">
             <label className="appearance-label" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', marginBottom: '0.75rem', fontWeight: 600 }}>
               Opcje układu 2-kolumnowego

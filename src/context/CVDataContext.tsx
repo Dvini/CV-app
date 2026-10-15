@@ -4,6 +4,7 @@
  */
 import React, { useMemo, useCallback } from 'react';
 import { CVDataContext } from './hooks';
+import { isColumnTemplate } from '../constants/layout';
 import type { CVDocument, UpdateDocument } from '../state/cvDocument';
 import type {
   CVData,
@@ -29,14 +30,14 @@ interface CVDataProviderProps {
   history: HistoryControls;
 }
 
-/** Sections that reorder together with `key`: its own column in the two-column template, otherwise all. */
+/** Sections that reorder together with `key`: its own column in column templates, otherwise all. */
 function siblingsOf(
   key: SectionKey,
   order: SectionKey[],
   columns: SectionColumns,
   template: TemplateName,
 ): SectionKey[] {
-  if (template !== 'twocolumn') return order;
+  if (!isColumnTemplate(template)) return order;
   return order.filter((s) => columns[s] === columns[key]);
 }
 
