@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useCVData, useCVAppearance } from '../../context/hooks';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
@@ -61,11 +61,13 @@ export function CVPreview() {
   // Use the shared constant — single source of truth for footer height
   const footerHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
 
+  // Margin changes only touch style attributes, which the DOM observers don't see
+  const recalcToken = useMemo(() => ({ template, margins, customMargin, data }), [template, margins, customMargin, data]);
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter,
     marginVMm: marginV,
     isColumnTemplate,
-    deps: [template, margins, customMargin, data],
+    recalcToken,
   });
 
   const renderedTemplate = renderTemplate(template);

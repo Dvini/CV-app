@@ -233,31 +233,25 @@
     "text": "Projekt 4example.com/projekt-4Funkcja 1:",
     "top": 779,
     "bottom": 910
-   },
-   {
-    "text": "Wolontariat",
-    "top": 936,
-    "bottom": 961
-   },
-   {
-    "text": "Wolontariusz 12018 – 2019Fundacja Pomocy",
-    "top": 971,
-    "bottom": 1104,
-    "cut": true
    }
   ]
  },
  {
   "items": [
    {
+    "text": "Wolontariat",
+    "top": 19,
+    "bottom": 44
+   },
+   {
     "text": "Wolontariusz 12018 – 2019Fundacja Pomocy",
-    "top": -116,
-    "bottom": 17
+    "top": 54,
+    "bottom": 187
    },
    {
     "text": "Wolontariusz 22018 – 2019Fundacja Pomocy",
-    "top": 39,
-    "bottom": 173
+    "top": 209,
+    "bottom": 342
    }
   ]
  }

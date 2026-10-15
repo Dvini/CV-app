@@ -36,6 +36,9 @@ for (const { name, setup, screenshot } of cases) {
     await waitForStablePagination(page);
 
     const layout = await captureLayout(page);
+    // No fixture block is taller than a page, so none may be split across pages
+    const cutBlocks = layout.flatMap((p) => p.items.filter((item) => item.cut).map((item) => item.text));
+    expect(cutBlocks).toEqual([]);
     expect(JSON.stringify(layout, null, 1)).toMatchSnapshot(`${name}.json`);
 
     if (screenshot) {
