@@ -2,7 +2,8 @@
  * CVProfileContext — manages CV profiles, import/export, and data sync.
  */
 import React, { useState, useCallback, useEffect } from 'react';
-import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { onStorageError } from '../hooks/usePersistedValue';
 import { CVManagerContext } from './hooks';
 import { DEFAULT_SNAPSHOT } from '../constants/defaults';
 import { normalizeProfiles, parseSnapshot, parseSnapshotJSON } from '../utils/cvSchema';

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import {
-  APPEARANCE_STORAGE_KEYS,
-  DATA_STORAGE_KEYS,
+  LEGACY_APPEARANCE_STORAGE_KEYS,
+  DOCUMENT_STORAGE_KEYS,
   defaultData,
 } from '../src/constants/defaults';
 import type { AppearanceSettings, CVData } from '../src/types/cv';
@@ -67,11 +67,14 @@ export interface CVSetup {
   appearance?: Partial<AppearanceSettings>;
 }
 
-/** Seeds localStorage before the app's first script runs. */
+/**
+ * Seeds localStorage before the app's first script runs. Appearance is written in the
+ * legacy per-setting format on purpose, so every test also exercises the migration.
+ */
 export async function seedCV(page: Page, { data = defaultData, appearance = {} }: CVSetup) {
-  const entries: [string, string][] = [[DATA_STORAGE_KEYS.data, JSON.stringify(data)]];
+  const entries: [string, string][] = [[DOCUMENT_STORAGE_KEYS.data, JSON.stringify(data)]];
   for (const [key, value] of Object.entries(appearance)) {
-    entries.push([APPEARANCE_STORAGE_KEYS[key as keyof AppearanceSettings], JSON.stringify(value)]);
+    entries.push([LEGACY_APPEARANCE_STORAGE_KEYS[key as keyof AppearanceSettings], JSON.stringify(value)]);
   }
   await page.addInitScript((items) => {
     localStorage.clear();

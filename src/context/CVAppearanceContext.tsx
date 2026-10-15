@@ -1,7 +1,9 @@
 /**
- * CVAppearanceContext — manages template, colors, fonts, and margin settings.
+ * CVAppearanceContext — exposes template, colors, fonts, and margin settings.
+ * Settings live in the CV document owned by CVProvider; dark mode is an editor
+ * preference stored separately.
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CVAppearanceContext } from './hooks';
 import {
@@ -9,12 +11,7 @@ import {
   COLUMN_INNER_GAP_LEFT,
   COLUMN_INNER_GAP_RIGHT,
 } from '../constants/layout';
-import {
-  APPEARANCE_KEYS,
-  APPEARANCE_STORAGE_KEYS as KEYS,
-  defaultAppearance as DEFAULTS,
-} from '../constants/defaults';
-import { APPEARANCE_NORMALIZERS } from '../utils/cvSchema';
+import type { UpdateDocument } from '../state/cvDocument';
 import type {
   AppearanceSettings,
   MarginVariant,
@@ -23,76 +20,48 @@ import type {
 
 interface CVAppearanceProviderProps {
   children: React.ReactNode;
+  appearance: AppearanceSettings;
+  updateDocument: UpdateDocument;
 }
 
-type AppearanceSetters = {
-  [K in keyof AppearanceSettings]: (value: AppearanceSettings[K]) => void;
-};
-
-/** One persisted appearance setting; invalid stored values fall back to the default. */
-function useAppearanceSetting<K extends keyof AppearanceSettings>(key: K) {
-  return useLocalStorage<AppearanceSettings[K]>(KEYS[key], DEFAULTS[key], APPEARANCE_NORMALIZERS[key]);
-}
-
-export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
-  const [template, setTemplate] = useAppearanceSetting('template');
-  const [margins, setMargins] = useAppearanceSetting('margins');
-  const [customMargin, setCustomMargin] = useAppearanceSetting('customMargin');
-  const [themeColor, setThemeColor] = useAppearanceSetting('themeColor');
-  const [fontFamily, setFontFamily] = useAppearanceSetting('fontFamily');
-  const [fontSizeHeading, setFontSizeHeading] = useAppearanceSetting('fontSizeHeading');
-  const [fontSizeText, setFontSizeText] = useAppearanceSetting('fontSizeText');
-  const [cvLanguage, setCvLanguage] = useAppearanceSetting('cvLanguage');
+export function CVAppearanceProvider({ children, appearance, updateDocument }: CVAppearanceProviderProps) {
   const [darkMode, setDarkMode] = useLocalStorage<boolean>('cv_darkMode', false);
-  const [showSectionIcons, setShowSectionIcons] = useAppearanceSetting('showSectionIcons');
-  const [showContactIcons, setShowContactIcons] = useAppearanceSetting('showContactIcons');
-  const [creativeHeaderBg, setCreativeHeaderBg] = useAppearanceSetting('creativeHeaderBg');
-  const [creativeHeaderImage, setCreativeHeaderImage] = useAppearanceSetting('creativeHeaderImage');
-  const [sectionGap, setSectionGap] = useAppearanceSetting('sectionGap');
-  const [itemGap, setItemGap] = useAppearanceSetting('itemGap');
+  const { margins, customMargin, template, twoColGapLeft, twoColGapRight } = appearance;
 
-  // Two-column layout settings
-  const [twoColLineWidth, setTwoColLineWidth] = useAppearanceSetting('twoColLineWidth');
-  const [twoColLineColor, setTwoColLineColor] = useAppearanceSetting('twoColLineColor');
-  const [twoColSidebarWidth, setTwoColSidebarWidth] = useAppearanceSetting('twoColSidebarWidth');
-  const [twoColGapLeft, setTwoColGapLeft] = useAppearanceSetting('twoColGapLeft');
-  const [twoColGapRight, setTwoColGapRight] = useAppearanceSetting('twoColGapRight');
-  const [twoColSectionGap, setTwoColSectionGap] = useAppearanceSetting('twoColSectionGap');
-  const [twoColItemGap, setTwoColItemGap] = useAppearanceSetting('twoColItemGap');
-
-  // Typed as a mapped type so adding a field to AppearanceSettings without a setter fails to compile.
-  // useState setters are stable, so this map never goes stale.
-  const setters: AppearanceSetters = {
-    template: setTemplate,
-    margins: setMargins,
-    customMargin: setCustomMargin,
-    themeColor: setThemeColor,
-    fontFamily: setFontFamily,
-    fontSizeHeading: setFontSizeHeading,
-    fontSizeText: setFontSizeText,
-    cvLanguage: setCvLanguage,
-    showSectionIcons: setShowSectionIcons,
-    showContactIcons: setShowContactIcons,
-    creativeHeaderBg: setCreativeHeaderBg,
-    creativeHeaderImage: setCreativeHeaderImage,
-    sectionGap: setSectionGap,
-    itemGap: setItemGap,
-    twoColLineWidth: setTwoColLineWidth,
-    twoColLineColor: setTwoColLineColor,
-    twoColSidebarWidth: setTwoColSidebarWidth,
-    twoColGapLeft: setTwoColGapLeft,
-    twoColGapRight: setTwoColGapRight,
-    twoColSectionGap: setTwoColSectionGap,
-    twoColItemGap: setTwoColItemGap,
-  };
-
-  const applyAppearance = (patch: Partial<AppearanceSettings>) => {
-    for (const key of APPEARANCE_KEYS) {
-      if (patch[key] !== undefined) {
-        (setters[key] as (value: unknown) => void)(patch[key]);
-      }
-    }
-  };
+  const setters = useMemo(() => {
+    // Grouped per setting, so dragging a slider or a color picker undoes in one step
+    const set =
+      <K extends keyof AppearanceSettings>(key: K) =>
+      (value: AppearanceSettings[K]) =>
+        updateDocument(
+          (doc) =>
+            doc.appearance[key] === value ? doc : { ...doc, appearance: { ...doc.appearance, [key]: value } },
+          `appearance.${key}`,
+        );
+    return {
+      setTemplate: set('template'),
+      setMargins: set('margins'),
+      setCustomMargin: set('customMargin'),
+      setThemeColor: set('themeColor'),
+      setFontFamily: set('fontFamily'),
+      setFontSizeHeading: set('fontSizeHeading'),
+      setFontSizeText: set('fontSizeText'),
+      setCvLanguage: set('cvLanguage'),
+      setShowSectionIcons: set('showSectionIcons'),
+      setShowContactIcons: set('showContactIcons'),
+      setCreativeHeaderBg: set('creativeHeaderBg'),
+      setCreativeHeaderImage: set('creativeHeaderImage'),
+      setSectionGap: set('sectionGap'),
+      setItemGap: set('itemGap'),
+      setTwoColLineWidth: set('twoColLineWidth'),
+      setTwoColLineColor: set('twoColLineColor'),
+      setTwoColSidebarWidth: set('twoColSidebarWidth'),
+      setTwoColGapLeft: set('twoColGapLeft'),
+      setTwoColGapRight: set('twoColGapRight'),
+      setTwoColSectionGap: set('twoColSectionGap'),
+      setTwoColItemGap: set('twoColItemGap'),
+    };
+  }, [updateDocument]);
 
   const getMarginValues = useCallback((): { v: number; h: number } => {
     if (margins === 'custom')
@@ -142,55 +111,17 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
     [margins, customMargin, template, twoColGapLeft, twoColGapRight],
   );
 
-  const value: CVAppearanceContextType = {
-    template,
-    margins,
-    customMargin,
-    themeColor,
-    fontFamily,
-    fontSizeHeading,
-    fontSizeText,
-    cvLanguage,
-    showSectionIcons,
-    showContactIcons,
-    creativeHeaderBg,
-    creativeHeaderImage,
-    sectionGap,
-    itemGap,
-    twoColLineWidth,
-    twoColLineColor,
-    twoColSidebarWidth,
-    twoColGapLeft,
-    twoColGapRight,
-    twoColSectionGap,
-    twoColItemGap,
-    setTemplate,
-    setMargins,
-    setCustomMargin,
-    setThemeColor,
-    setFontFamily,
-    setFontSizeHeading,
-    setFontSizeText,
-    setCvLanguage,
-    setShowSectionIcons,
-    setShowContactIcons,
-    setCreativeHeaderBg,
-    setCreativeHeaderImage,
-    setSectionGap,
-    setItemGap,
-    setTwoColLineWidth,
-    setTwoColLineColor,
-    setTwoColSidebarWidth,
-    setTwoColGapLeft,
-    setTwoColGapRight,
-    setTwoColSectionGap,
-    setTwoColItemGap,
-    darkMode,
-    setDarkMode,
-    applyAppearance,
-    getMarginStyle,
-    getMarginValues,
-  };
+  const value = useMemo<CVAppearanceContextType>(
+    () => ({
+      ...appearance,
+      ...setters,
+      darkMode,
+      setDarkMode,
+      getMarginStyle,
+      getMarginValues,
+    }),
+    [appearance, setters, darkMode, setDarkMode, getMarginStyle, getMarginValues],
+  );
 
   return (
     <CVAppearanceContext.Provider value={value}>{children}</CVAppearanceContext.Provider>

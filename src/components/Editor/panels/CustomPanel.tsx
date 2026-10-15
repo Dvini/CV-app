@@ -18,7 +18,7 @@ export function CustomPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: (
   const { cvLanguage } = useCVAppearance();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setData((prev) => ({ ...prev, customSectionTitle: e.target.value }));
+    setData((prev) => ({ ...prev, customSectionTitle: e.target.value }), 'customSectionTitle');
   };
 
   return (

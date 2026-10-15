@@ -1,21 +1,10 @@
 /**
- * CVDataContext — manages core CV data, section order, and all CRUD operations.
+ * CVDataContext — exposes CV content, section order, and all CRUD operations.
+ * State lives in the CV document owned by CVProvider.
  */
 import React, { useMemo, useCallback } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CVDataContext } from './hooks';
-import { useHistory } from '../hooks/useHistory';
-import {
-  defaultData,
-  defaultSectionOrder,
-  defaultSectionColumns,
-  DATA_STORAGE_KEYS,
-} from '../constants/defaults';
-import {
-  normalizeCVData,
-  normalizeSectionOrder,
-  normalizeSectionColumns,
-} from '../utils/cvSchema';
+import type { CVDocument, UpdateDocument } from '../state/cvDocument';
 import type {
   CVData,
   SectionKey,
@@ -26,223 +15,209 @@ import type {
   TemplateName,
 } from '../types/cv';
 
+export interface HistoryControls {
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+}
 
 interface CVDataProviderProps {
   children: React.ReactNode;
-  template: TemplateName;
+  document: CVDocument;
+  updateDocument: UpdateDocument;
+  history: HistoryControls;
 }
 
-export function CVDataProvider({ children, template }: CVDataProviderProps) {
-  const [data, setDataRaw] = useLocalStorage<CVData>(DATA_STORAGE_KEYS.data, defaultData);
-  const { undo, redo, canUndo, canRedo, trackChange, clearHistory } = useHistory(data, setDataRaw);
+/** Sections that reorder together with `key`: its own column in the two-column template, otherwise all. */
+function siblingsOf(
+  key: SectionKey,
+  order: SectionKey[],
+  columns: SectionColumns,
+  template: TemplateName,
+): SectionKey[] {
+  if (template !== 'twocolumn') return order;
+  return order.filter((s) => columns[s] === columns[key]);
+}
+
+export function CVDataProvider({ children, document, updateDocument, history }: CVDataProviderProps) {
+  const { data, sectionOrder, sectionColumns } = document;
+  const { template } = document.appearance;
+
+  const updateData = useCallback(
+    (update: (data: CVData) => CVData, group?: string) =>
+      updateDocument((doc) => {
+        const next = update(doc.data);
+        return next === doc.data ? doc : { ...doc, data: next };
+      }, group),
+    [updateDocument],
+  );
 
   const setData = useCallback(
-    (updater: CVData | ((prev: CVData) => CVData)) => {
-      setDataRaw((prev) => {
-        trackChange(prev);
-        // Mutation helpers assume well-formed data, so never hand them raw stored data
-        const current = normalizeCVData(prev);
-        return typeof updater === 'function' ? updater(current) : updater;
-      });
-    },
-    [setDataRaw, trackChange],
+    (updater: CVData | ((prev: CVData) => CVData), group?: string) =>
+      updateData((prev) => (typeof updater === 'function' ? updater(prev) : updater), group),
+    [updateData],
   );
 
-  const replaceData = useCallback(
-    (next: CVData) => {
-      setDataRaw(next);
-      clearHistory();
-    },
-    [setDataRaw, clearHistory],
+  const setSectionOrder = useCallback(
+    (order: SectionKey[] | ((prev: SectionKey[]) => SectionKey[])) =>
+      updateDocument((doc) => ({
+        ...doc,
+        sectionOrder: typeof order === 'function' ? order(doc.sectionOrder) : order,
+      })),
+    [updateDocument],
   );
 
-  const [sectionOrder, setSectionOrder] = useLocalStorage<SectionKey[]>(
-    DATA_STORAGE_KEYS.sectionOrder,
-    defaultSectionOrder,
-  );
-  const [sectionColumns, setSectionColumns] = useLocalStorage<SectionColumns>(
-    DATA_STORAGE_KEYS.sectionColumns,
-    defaultSectionColumns,
+  const setSectionColumns = useCallback(
+    (columns: SectionColumns | ((prev: SectionColumns) => SectionColumns)) =>
+      updateDocument((doc) => ({
+        ...doc,
+        sectionColumns: typeof columns === 'function' ? columns(doc.sectionColumns) : columns,
+      })),
+    [updateDocument],
   );
 
-  // Stored data may come from an older app version or be corrupted — normalize before use
-  const safeData = useMemo(() => normalizeCVData(data), [data]);
-  const safeSectionOrder = useMemo(() => normalizeSectionOrder(sectionOrder), [sectionOrder]);
-  const safeSectionColumns = useMemo(() => normalizeSectionColumns(sectionColumns), [sectionColumns]);
-
-  // — Mutation helpers —
+  // — Mutation helpers — (text edits are grouped per field so typing undoes in one step)
   const handlePersonalChange = useCallback(
-    (field: keyof CVData['personal'], value: unknown) => {
-      setData((prev) => ({
-        ...prev,
-        personal: { ...prev.personal, [field]: value },
-      }));
-    },
-    [setData],
+    (field: keyof CVData['personal'], value: unknown) =>
+      updateData((prev) => ({ ...prev, personal: { ...prev.personal, [field]: value } }), `personal.${field}`),
+    [updateData],
   );
 
   const handleSkillsChange = useCallback(
-    (value: string) => setData((prev) => ({ ...prev, skills: value })),
-    [setData],
+    (value: string) => updateData((prev) => ({ ...prev, skills: value }), 'skills'),
+    [updateData],
   );
 
   const handleInterestsChange = useCallback(
-    (value: string) => setData((prev) => ({ ...prev, interests: value })),
-    [setData],
+    (value: string) => updateData((prev) => ({ ...prev, interests: value }), 'interests'),
+    [updateData],
   );
 
   const handleClauseChange = useCallback(
-    (value: string) => setData((prev) => ({ ...prev, clause: value })),
-    [setData],
+    (value: string) => updateData((prev) => ({ ...prev, clause: value }), 'clause'),
+    [updateData],
   );
 
   const toggleClause = useCallback(
-    () => setData((prev) => ({ ...prev, showClause: !prev.showClause })),
-    [setData],
+    () => updateData((prev) => ({ ...prev, showClause: !prev.showClause })),
+    [updateData],
   );
 
   const addItem = useCallback(
-    (arrayName: ArrayFieldName, newItem: Record<string, unknown>) => {
-      setData((prev) => ({
+    (arrayName: ArrayFieldName, newItem: Record<string, unknown>) =>
+      updateData((prev) => ({
         ...prev,
-        [arrayName]: [...((prev[arrayName] as unknown[]) || []), newItem],
-      }));
-    },
-    [setData],
+        [arrayName]: [...(prev[arrayName] as unknown[]), newItem],
+      })),
+    [updateData],
   );
 
   const updateItem = useCallback(
-    (arrayName: ArrayFieldName, id: string, field: string, value: unknown) => {
-      setData((prev) => ({
-        ...prev,
-        [arrayName]: (prev[arrayName] as unknown as Array<Record<string, unknown>>).map((item) =>
-          item.id === id ? { ...item, [field]: value } : item,
-        ),
-      }));
-    },
-    [setData],
+    (arrayName: ArrayFieldName, id: string, field: string, value: unknown) =>
+      updateData(
+        (prev) => ({
+          ...prev,
+          [arrayName]: (prev[arrayName] as unknown as Array<Record<string, unknown>>).map((item) =>
+            item.id === id ? { ...item, [field]: value } : item,
+          ),
+        }),
+        `${arrayName}.${id}.${field}`,
+      ),
+    [updateData],
   );
 
   const removeItem = useCallback(
-    (arrayName: ArrayFieldName, id: string) => {
-      setData((prev) => ({
+    (arrayName: ArrayFieldName, id: string) =>
+      updateData((prev) => ({
         ...prev,
-        [arrayName]: ((prev[arrayName] as Array<{ id: string }>) || []).filter((item) => item.id !== id),
-      }));
-    },
-    [setData],
+        [arrayName]: (prev[arrayName] as Array<{ id: string }>).filter((item) => item.id !== id),
+      })),
+    [updateData],
   );
 
   const moveItem = useCallback(
-    (arrayName: ArrayFieldName, index: number, direction: MoveDirection) => {
-      setData((prev) => {
-        const newArray = [...(prev[arrayName] as unknown[])];
-        if (direction === 'up' && index > 0) {
-          [newArray[index - 1], newArray[index]] = [newArray[index], newArray[index - 1]];
-        } else if (direction === 'down' && index < newArray.length - 1) {
-          [newArray[index + 1], newArray[index]] = [newArray[index], newArray[index + 1]];
-        }
-        return { ...prev, [arrayName]: newArray };
-      });
-    },
-    [setData],
-  );
-
-  const swapInGlobalOrder = useCallback(
-    (key1: SectionKey, key2: SectionKey) => {
-      setSectionOrder((prev) => {
-        const newOrder = [...(prev as SectionKey[])];
-        const idx1 = newOrder.indexOf(key1);
-        const idx2 = newOrder.indexOf(key2);
-        if (idx1 !== -1 && idx2 !== -1) {
-          newOrder[idx1] = key2;
-          newOrder[idx2] = key1;
-        }
-        return newOrder;
-      });
-    },
-    [setSectionOrder],
+    (arrayName: ArrayFieldName, index: number, direction: MoveDirection) =>
+      updateData((prev) => {
+        const target = direction === 'up' ? index - 1 : index + 1;
+        const items = [...(prev[arrayName] as unknown[])];
+        if (target < 0 || target >= items.length) return prev;
+        [items[index], items[target]] = [items[target], items[index]];
+        return { ...prev, [arrayName]: items };
+      }),
+    [updateData],
   );
 
   const moveSection = useCallback(
-    (sectionKey: SectionKey, direction: MoveDirection) => {
-      const currentColumn =
-        template === 'twocolumn' ? safeSectionColumns[sectionKey] : 'all';
-      const relevantList =
-        currentColumn === 'all'
-          ? [...safeSectionOrder]
-          : safeSectionOrder.filter((s) => safeSectionColumns[s] === currentColumn);
-      const currentIndex = relevantList.indexOf(sectionKey);
-
-      if (direction === 'up' && currentIndex > 0) {
-        swapInGlobalOrder(sectionKey, relevantList[currentIndex - 1]);
-      } else if (direction === 'down' && currentIndex < relevantList.length - 1) {
-        swapInGlobalOrder(sectionKey, relevantList[currentIndex + 1]);
-      }
-    },
-    [template, safeSectionOrder, safeSectionColumns, swapInGlobalOrder],
+    (sectionKey: SectionKey, direction: MoveDirection) =>
+      updateDocument((doc) => {
+        const siblings = siblingsOf(sectionKey, doc.sectionOrder, doc.sectionColumns, doc.appearance.template);
+        const index = siblings.indexOf(sectionKey);
+        const other = siblings[direction === 'up' ? index - 1 : index + 1];
+        if (index === -1 || !other) return doc;
+        // Swap the two sections in the global order
+        const order = doc.sectionOrder.map((s) => (s === sectionKey ? other : s === other ? sectionKey : s));
+        return { ...doc, sectionOrder: order };
+      }),
+    [updateDocument],
   );
 
   const toggleColumn = useCallback(
-    (sectionKey: SectionKey) => {
-      setSectionColumns((prev) => ({
-        ...(prev as SectionColumns),
-        [sectionKey]: (prev as SectionColumns)[sectionKey] === 'main' ? 'side' : 'main',
-      }));
-    },
-    [setSectionColumns],
+    (sectionKey: SectionKey) =>
+      updateDocument((doc) => ({
+        ...doc,
+        sectionColumns: {
+          ...doc.sectionColumns,
+          [sectionKey]: doc.sectionColumns[sectionKey] === 'main' ? 'side' : 'main',
+        },
+      })),
+    [updateDocument],
   );
 
   const isFirstInColumn = useCallback(
-    (sectionKey: SectionKey): boolean => {
-      const col = template === 'twocolumn' ? safeSectionColumns[sectionKey] : 'all';
-      const list =
-        col === 'all'
-          ? safeSectionOrder
-          : safeSectionOrder.filter((s) => safeSectionColumns[s] === col);
-      return list.indexOf(sectionKey) === 0;
-    },
-    [template, safeSectionOrder, safeSectionColumns],
+    (sectionKey: SectionKey): boolean =>
+      siblingsOf(sectionKey, sectionOrder, sectionColumns, template)[0] === sectionKey,
+    [sectionOrder, sectionColumns, template],
   );
 
   const isLastInColumn = useCallback(
     (sectionKey: SectionKey): boolean => {
-      const col = template === 'twocolumn' ? safeSectionColumns[sectionKey] : 'all';
-      const list =
-        col === 'all'
-          ? safeSectionOrder
-          : safeSectionOrder.filter((s) => safeSectionColumns[s] === col);
-      return list.indexOf(sectionKey) === list.length - 1;
+      const siblings = siblingsOf(sectionKey, sectionOrder, sectionColumns, template);
+      return siblings[siblings.length - 1] === sectionKey;
     },
-    [template, safeSectionOrder, safeSectionColumns],
+    [sectionOrder, sectionColumns, template],
   );
 
-  const value: CVDataContextType = {
-    data: safeData,
-    setData,
-    replaceData,
-    sectionOrder: safeSectionOrder,
-    setSectionOrder: setSectionOrder as CVDataContextType['setSectionOrder'],
-    sectionColumns: safeSectionColumns,
-    setSectionColumns: setSectionColumns as CVDataContextType['setSectionColumns'],
-    handlePersonalChange,
-    handleSkillsChange,
-    handleInterestsChange,
-    handleClauseChange,
-    toggleClause,
-    addItem,
-    updateItem,
-    removeItem,
-    moveItem,
-    moveSection,
-    toggleColumn,
-    isFirstInColumn,
-    isLastInColumn,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-  };
+  const value = useMemo<CVDataContextType>(
+    () => ({
+      data,
+      setData,
+      sectionOrder,
+      setSectionOrder,
+      sectionColumns,
+      setSectionColumns,
+      handlePersonalChange,
+      handleSkillsChange,
+      handleInterestsChange,
+      handleClauseChange,
+      toggleClause,
+      addItem,
+      updateItem,
+      removeItem,
+      moveItem,
+      moveSection,
+      toggleColumn,
+      isFirstInColumn,
+      isLastInColumn,
+      ...history,
+    }),
+    [
+      data, setData, sectionOrder, setSectionOrder, sectionColumns, setSectionColumns,
+      handlePersonalChange, handleSkillsChange, handleInterestsChange, handleClauseChange,
+      toggleClause, addItem, updateItem, removeItem, moveItem, moveSection, toggleColumn,
+      isFirstInColumn, isLastInColumn, history,
+    ],
+  );
 
   return <CVDataContext.Provider value={value}>{children}</CVDataContext.Provider>;
 }

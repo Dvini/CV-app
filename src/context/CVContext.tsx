@@ -1,80 +1,67 @@
 /**
- * CVContext — orchestrator that composes all three sub-contexts.
+ * CVProvider — owns the CV document (content, layout, appearance) and its undo
+ * history, persists it, and exposes it through the three sub-contexts.
  *
  * Components read state through the hooks in ./hooks:
  *   useCVData, useCVAppearance, useCVManager
  */
-import React, { useCallback } from 'react';
-import { CVDataProvider } from './CVDataContext';
+import React, { useCallback, useMemo, useReducer } from 'react';
+import { CVDataProvider, type HistoryControls } from './CVDataContext';
 import { CVAppearanceProvider } from './CVAppearanceContext';
 import { CVProfileProvider } from './CVProfileContext';
-import { useCVData, useCVAppearance } from './hooks';
-import { APPEARANCE_KEYS } from '../constants/defaults';
-import type { AppearanceSettings, ProfileSnapshot, TemplateName } from '../types/cv';
-
-/**
- * Orchestrator provider — wires up snapshot callbacks between sub-contexts.
- *
- * The snapshot pattern bridges CVAppearanceProvider and CVDataProvider
- * with CVProfileProvider, allowing profile switching to save and restore
- * the full application state.
- */
-function CVOrchestrator({ children }: { children: React.ReactNode }) {
-  // Access both sub-contexts from within the tree
-  const dataCtx = useCVData();
-  const appearanceCtx = useCVAppearance();
-
-  const getSnapshot = useCallback((): ProfileSnapshot => {
-    const appearance = {} as Record<keyof AppearanceSettings, unknown>;
-    for (const key of APPEARANCE_KEYS) appearance[key] = appearanceCtx[key];
-    return {
-      ...(appearance as AppearanceSettings),
-      data: dataCtx.data,
-      sectionOrder: dataCtx.sectionOrder,
-      sectionColumns: dataCtx.sectionColumns,
-    };
-  }, [dataCtx, appearanceCtx]);
-
-  /** Fields missing from the snapshot (e.g. older files) keep their current value. */
-  const loadSnapshot = useCallback(
-    (s: Partial<ProfileSnapshot>) => {
-      if (s.data) dataCtx.replaceData(s.data);
-      if (s.sectionOrder) dataCtx.setSectionOrder(s.sectionOrder);
-      if (s.sectionColumns) dataCtx.setSectionColumns(s.sectionColumns);
-      appearanceCtx.applyAppearance(s);
-    },
-    [dataCtx, appearanceCtx],
-  );
-
-  return (
-    <CVProfileProvider getSnapshot={getSnapshot} loadSnapshot={loadSnapshot}>
-      {children}
-    </CVProfileProvider>
-  );
-}
+import { usePersistedValue } from '../hooks/usePersistedValue';
+import { DOCUMENT_STORAGE_KEYS } from '../constants/defaults';
+import { createHistory, historyReducer } from '../state/history';
+import {
+  applySnapshot,
+  documentToSnapshot,
+  loadDocument,
+  removeLegacyAppearanceKeys,
+  type CVDocument,
+  type UpdateDocument,
+} from '../state/cvDocument';
+import type { ProfileSnapshot } from '../types/cv';
 
 export function CVProvider({ children }: { children: React.ReactNode }) {
-  // CVAppearanceProvider exposes template so CVDataProvider can read it for
-  // section column logic — we thread it via an inner wrapper.
+  const [history, dispatch] = useReducer(historyReducer<CVDocument>, undefined, () =>
+    createHistory(loadDocument()),
+  );
+  const doc = history.present;
+
+  usePersistedValue(DOCUMENT_STORAGE_KEYS.data, doc.data);
+  usePersistedValue(DOCUMENT_STORAGE_KEYS.sectionOrder, doc.sectionOrder);
+  usePersistedValue(DOCUMENT_STORAGE_KEYS.sectionColumns, doc.sectionColumns);
+  // Once appearance is saved under its single key, the per-setting keys of older versions are obsolete
+  usePersistedValue(DOCUMENT_STORAGE_KEYS.appearance, doc.appearance, removeLegacyAppearanceKeys);
+
+  const updateDocument = useCallback<UpdateDocument>(
+    (update, group) => dispatch({ type: 'update', update, group, time: Date.now() }),
+    [],
+  );
+  const undo = useCallback(() => dispatch({ type: 'undo' }), []);
+  const redo = useCallback(() => dispatch({ type: 'redo' }), []);
+  const canUndo = history.past.length > 0;
+  const canRedo = history.future.length > 0;
+  const historyControls = useMemo<HistoryControls>(
+    () => ({ undo, redo, canUndo, canRedo }),
+    [undo, redo, canUndo, canRedo],
+  );
+
+  const getSnapshot = useCallback(() => documentToSnapshot(doc), [doc]);
+
+  /** Loads a profile/import/reset; fields missing from the snapshot keep their current value. */
+  const loadSnapshot = useCallback(
+    (snapshot: Partial<ProfileSnapshot>) => dispatch({ type: 'reset', present: applySnapshot(doc, snapshot) }),
+    [doc],
+  );
+
   return (
-    <CVAppearanceProvider>
-      <CVAppearanceConsumerForData>
-        {(template) => (
-          <CVDataProvider template={template}>
-            <CVOrchestrator>{children}</CVOrchestrator>
-          </CVDataProvider>
-        )}
-      </CVAppearanceConsumerForData>
+    <CVAppearanceProvider appearance={doc.appearance} updateDocument={updateDocument}>
+      <CVDataProvider document={doc} updateDocument={updateDocument} history={historyControls}>
+        <CVProfileProvider getSnapshot={getSnapshot} loadSnapshot={loadSnapshot}>
+          {children}
+        </CVProfileProvider>
+      </CVDataProvider>
     </CVAppearanceProvider>
   );
-}
-
-/** Helper: reads template from CVAppearanceContext and passes it as prop. */
-function CVAppearanceConsumerForData({
-  children,
-}: {
-  children: (template: TemplateName) => React.ReactNode;
-}) {
-  const { template } = useCVAppearance();
-  return <>{children(template)}</>;
 }

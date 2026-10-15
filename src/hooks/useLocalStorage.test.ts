@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { onStorageError, useLocalStorage } from './useLocalStorage';
+import { useLocalStorage } from './useLocalStorage';
+import { onStorageError } from './usePersistedValue';
 
 const KEY = 'test_key';
 
@@ -32,6 +33,14 @@ describe('useLocalStorage', () => {
     localStorage.setItem(KEY, '{broken');
     const { result } = renderHook(() => useLocalStorage(KEY, 'default'));
     expect(result.current[0]).toBe('default');
+  });
+
+  it('does not write back the value it just read', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    renderHook(() => useLocalStorage(KEY, 'default'));
+    act(() => vi.advanceTimersByTime(1000));
+    window.dispatchEvent(new Event('pagehide'));
+    expect(setItem).not.toHaveBeenCalled();
   });
 
   it('writes changes after the debounce delay', () => {

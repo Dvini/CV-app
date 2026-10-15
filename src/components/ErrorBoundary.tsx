@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  APPEARANCE_KEYS,
-  APPEARANCE_STORAGE_KEYS,
-  DATA_STORAGE_KEYS,
-} from '../constants/defaults';
+import { ACTIVE_CV_STORAGE_KEYS, readStoredSnapshot } from '../state/cvDocument';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -14,29 +10,12 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-/** Keys holding the active CV — removing them resets it without touching other profiles. */
-const ACTIVE_CV_KEYS = [
-  ...Object.values(DATA_STORAGE_KEYS),
-  ...APPEARANCE_KEYS.map((key) => APPEARANCE_STORAGE_KEYS[key]),
-];
-
-function readStored(key: string): unknown {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw === null ? undefined : JSON.parse(raw);
-  } catch {
-    return undefined;
-  }
-}
-
 /**
  * Downloads the active CV in the JSON import format (so it can be re-imported, which
  * also repairs malformed fields), plus every raw `cv_*` entry for manual recovery.
  */
 function downloadBackup() {
-  const backup: Record<string, unknown> = {};
-  for (const key of APPEARANCE_KEYS) backup[key] = readStored(APPEARANCE_STORAGE_KEYS[key]);
-  for (const [field, key] of Object.entries(DATA_STORAGE_KEYS)) backup[field] = readStored(key);
+  const backup = readStoredSnapshot();
 
   const raw: Record<string, string | null> = {};
   for (let i = 0; i < localStorage.length; i++) {
@@ -58,7 +37,8 @@ function resetActiveCV() {
   if (!window.confirm('Usunąć dane bieżącego CV? Pozostałe profile zostaną zachowane. Najpierw warto pobrać kopię.')) {
     return;
   }
-  ACTIVE_CV_KEYS.forEach((key) => localStorage.removeItem(key));
+  // Removing only the active CV's keys keeps the other profiles
+  ACTIVE_CV_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
   window.location.reload();
 }
 

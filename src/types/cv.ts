@@ -230,9 +230,11 @@ export interface ProfileSnapshot extends AppearanceSettings {
 
 export interface CVDataContextType {
   data: CVData;
-  setData: (updater: CVData | ((prev: CVData) => CVData)) => void;
-  /** Replaces data without recording undo history and clears the history. */
-  replaceData: (data: CVData) => void;
+  /**
+   * @param group - Consecutive quick updates with the same group become one undo step
+   *   (e.g. a field name while typing).
+   */
+  setData: (updater: CVData | ((prev: CVData) => CVData), group?: string) => void;
   sectionOrder: SectionKey[];
   setSectionOrder: (order: SectionKey[] | ((prev: SectionKey[]) => SectionKey[])) => void;
   sectionColumns: SectionColumns;
@@ -285,8 +287,6 @@ export interface CVAppearanceContextType extends AppearanceSettings {
   darkMode: boolean;
   setDarkMode: (d: boolean) => void;
 
-  /** Applies every appearance field present in `patch`; missing fields are left unchanged. */
-  applyAppearance: (patch: Partial<AppearanceSettings>) => void;
   getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
   getMarginValues: () => { v: number; h: number };
 }

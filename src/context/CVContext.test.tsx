@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import React from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CVProvider } from './CVContext';
 import { useCVAppearance, useCVData, useCVManager } from './hooks';
 import { DEFAULT_SNAPSHOT } from '../constants/defaults';
@@ -18,6 +18,67 @@ const jsonFile = (content: unknown) =>
 
 beforeEach(() => {
   localStorage.clear();
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
+
+describe('undo', () => {
+  it('covers appearance and section order, not just content', () => {
+    const { result } = renderHook(useCV, { wrapper });
+    const initialOrder = result.current.cv.sectionOrder;
+
+    act(() => result.current.look.setTemplate('creative'));
+    act(() => result.current.cv.moveSection('experience', 'down'));
+    expect(result.current.cv.sectionOrder).not.toEqual(initialOrder);
+
+    act(() => result.current.cv.undo());
+    expect(result.current.cv.sectionOrder).toEqual(initialOrder);
+    act(() => result.current.cv.undo());
+    expect(result.current.look.template).toBe('classic');
+  });
+
+  it('undoes typing in one field as a single step', () => {
+    vi.useFakeTimers(); // freezes Date.now, so all keystrokes fall in one coalescing window
+    const { result } = renderHook(useCV, { wrapper });
+    for (const name of ['A', 'An', 'Ann']) {
+      act(() => result.current.cv.handlePersonalChange('fullName', name));
+    }
+    act(() => result.current.cv.handlePersonalChange('title', 'Dev'));
+
+    act(() => result.current.cv.undo());
+    expect(result.current.cv.data.personal.fullName).toBe('Ann');
+    act(() => result.current.cv.undo());
+    expect(result.current.cv.data.personal.fullName).toBe(DEFAULT_SNAPSHOT.data.personal.fullName);
+    expect(result.current.cv.canUndo).toBe(false);
+  });
+});
+
+describe('storage', () => {
+  it('migrates legacy appearance keys and removes them once the combined key is saved', () => {
+    vi.useFakeTimers();
+    localStorage.setItem('cv_template', '"compact"');
+    localStorage.setItem('cv_twoColSidebarWidth', '40');
+    const { result } = renderHook(useCV, { wrapper });
+    expect(result.current.look.template).toBe('compact');
+    expect(result.current.look.twoColSidebarWidth).toBe(40);
+
+    act(() => result.current.look.setThemeColor('#000000'));
+    act(() => vi.advanceTimersByTime(300));
+
+    const saved = JSON.parse(localStorage.getItem('cv_appearance')!);
+    expect(saved).toMatchObject({ template: 'compact', twoColSidebarWidth: 40, themeColor: '#000000' });
+    expect(localStorage.getItem('cv_template')).toBeNull();
+    expect(localStorage.getItem('cv_twoColSidebarWidth')).toBeNull();
+  });
+
+  it('does not write anything on startup', () => {
+    vi.useFakeTimers();
+    renderHook(useCV, { wrapper });
+    act(() => vi.advanceTimersByTime(1000));
+    expect(localStorage.length).toBe(0);
+  });
 });
 
 describe('profiles', () => {

@@ -173,8 +173,11 @@ export const defaultAppearance: AppearanceSettings = {
 
 export const APPEARANCE_KEYS = Object.keys(defaultAppearance) as (keyof AppearanceSettings)[];
 
-/** localStorage key of each appearance setting (names kept compatible with saved data). */
-export const APPEARANCE_STORAGE_KEYS: Record<keyof AppearanceSettings, string> = {
+/**
+ * Where each appearance setting was stored before they were merged into
+ * DOCUMENT_STORAGE_KEYS.appearance. Read once to migrate older data, then removed.
+ */
+export const LEGACY_APPEARANCE_STORAGE_KEYS: Record<keyof AppearanceSettings, string> = {
   template: 'cv_template',
   margins: 'cv_margins',
   customMargin: 'cv_customMargin',
@@ -198,11 +201,12 @@ export const APPEARANCE_STORAGE_KEYS: Record<keyof AppearanceSettings, string> =
   twoColItemGap: 'cv_twoColItemGap',
 };
 
-/** localStorage keys holding the active CV's content (besides appearance). */
-export const DATA_STORAGE_KEYS = {
+/** localStorage keys holding the active CV, one per document slice. */
+export const DOCUMENT_STORAGE_KEYS = {
   data: 'cv_data',
   sectionOrder: 'cv_sectionOrder',
   sectionColumns: 'cv_sectionColumns',
+  appearance: 'cv_appearance',
 } as const;
 
 export const DEFAULT_SNAPSHOT: ProfileSnapshot = {

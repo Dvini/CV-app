@@ -201,7 +201,7 @@ function customMargin(v: unknown): CustomMargin | undefined {
   return vertical !== undefined && horizontal !== undefined ? { vertical, horizontal } : undefined;
 }
 
-export const APPEARANCE_NORMALIZERS: {
+const APPEARANCE_NORMALIZERS: {
   [K in keyof AppearanceSettings]: (v: unknown) => AppearanceSettings[K] | undefined;
 } = {
   template: (v) => oneOf(v, TEMPLATES),
