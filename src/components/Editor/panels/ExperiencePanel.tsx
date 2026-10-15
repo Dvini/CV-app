@@ -1,6 +1,6 @@
 import React from 'react';
 import { Briefcase, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea } from '../shared/FormFields';
 import type { ExperienceItem, ExperiencePosition } from '../../../types/cv';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCVAppearance } from '../../../context/CVContext';
+import { useCVAppearance } from '../../../context/hooks';
 import './shared.css';
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {

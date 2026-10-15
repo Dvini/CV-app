@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import { Wrench } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 

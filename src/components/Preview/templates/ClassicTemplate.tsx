@@ -1,6 +1,6 @@
 import React from 'react';
-import { useCVData, useCVAppearance } from '../../../context/CVContext';
-import { renderCVSection } from '../sections/CVSections';
+import { useCVData, useCVAppearance } from '../../../context/hooks';
+import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
 import '../CVPreview.css';
@@ -33,7 +33,7 @@ export const ClassicTemplate = React.memo(function ClassicTemplate() {
       </header>
 
       <div className="cv-body">
-        {sectionOrder.map((section) => renderCVSection(section, 'full'))}
+        {sectionOrder.map((section) => <CVSection key={section} sectionKey={section} columnType="full" />)}
       </div>
     </div>
   );

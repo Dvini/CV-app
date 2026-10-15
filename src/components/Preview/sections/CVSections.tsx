@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCVData, useCVAppearance } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { cvTranslations } from '../../../constants/translations';
 import { formatUrl, displayUrl } from '../../../utils/url';
 import {
@@ -69,7 +69,7 @@ function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t
 }
 
 /* Personal / Summary */
-export function SummarySection({ columnType }: { columnType?: ColumnType }) {
+export function SummarySection() {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons, template } = useHeading();
   if (!data.personal.summary) return null;
@@ -297,18 +297,6 @@ export function InterestsSection() {
   );
 }
 
-/* Clause */
-export function ClauseSection() {
-  const { data } = useCVData();
-  if (!data.showClause || !data.clause) return null;
-
-  return (
-    <div className="cv-clause">
-      <p>{data.clause}</p>
-    </div>
-  );
-}
-
 /* Certificates */
 export function CertificatesSection({ columnType }: { columnType?: ColumnType }) {
   const { data } = useCVData();
@@ -341,7 +329,7 @@ export function CertificatesSection({ columnType }: { columnType?: ColumnType })
 }
 
 /* References */
-export function ReferencesSection({ columnType }: { columnType?: ColumnType }) {
+export function ReferencesSection() {
   const { data } = useCVData();
   const { headingClass, themeColor, t, showSectionIcons } = useHeading();
   if (!data.references || data.references.length === 0) return null;
@@ -451,21 +439,21 @@ export function CustomSection({ columnType }: { columnType?: ColumnType }) {
 }
 
 /* Section dispatcher */
-export function renderCVSection(sectionKey: SectionKey, columnType: ColumnType = 'full'): React.ReactNode {
+export function CVSection({ sectionKey, columnType = 'full' }: { sectionKey: SectionKey; columnType?: ColumnType }) {
   switch (sectionKey) {
-    case 'personal': return <SummarySection key={sectionKey} columnType={columnType} />;
-    case 'experience': return <ExperienceSection key={sectionKey} columnType={columnType} />;
-    case 'education': return <EducationSection key={sectionKey} columnType={columnType} />;
-    case 'courses': return <CoursesSection key={sectionKey} columnType={columnType} />;
-    case 'skills': return <SkillsSection key={sectionKey} />;
-    case 'languages': return <LanguagesSection key={sectionKey} />;
-    case 'projects': return <ProjectsSection key={sectionKey} columnType={columnType} />;
-    case 'interests': return <InterestsSection key={sectionKey} />;
-    case 'certificates': return <CertificatesSection key={sectionKey} columnType={columnType} />;
-    case 'references': return <ReferencesSection key={sectionKey} columnType={columnType} />;
-    case 'publications': return <PublicationsSection key={sectionKey} columnType={columnType} />;
-    case 'volunteer': return <VolunteerSection key={sectionKey} columnType={columnType} />;
-    case 'custom': return <CustomSection key={sectionKey} columnType={columnType} />;
+    case 'personal': return <SummarySection />;
+    case 'experience': return <ExperienceSection columnType={columnType} />;
+    case 'education': return <EducationSection columnType={columnType} />;
+    case 'courses': return <CoursesSection columnType={columnType} />;
+    case 'skills': return <SkillsSection />;
+    case 'languages': return <LanguagesSection />;
+    case 'projects': return <ProjectsSection columnType={columnType} />;
+    case 'interests': return <InterestsSection />;
+    case 'certificates': return <CertificatesSection columnType={columnType} />;
+    case 'references': return <ReferencesSection />;
+    case 'publications': return <PublicationsSection columnType={columnType} />;
+    case 'volunteer': return <VolunteerSection columnType={columnType} />;
+    case 'custom': return <CustomSection columnType={columnType} />;
     default: return null;
   }
 }

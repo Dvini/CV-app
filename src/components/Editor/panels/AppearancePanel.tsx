@@ -1,12 +1,13 @@
-// @ts-nocheck
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Palette, Plus, Image as ImageIcon, X } from 'lucide-react';
-import { useCVAppearance } from '../../../context/CVContext';
+import { useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { presetColors } from '../../../constants/colors';
 import { compressImage } from '../../../utils/imageUtils';
+import { FONT_SCALE_MIN, FONT_SCALE_MAX, FONT_SCALE_STEP } from '../../../constants/layout';
+import type { FontFamily, MarginPreset, TemplateName } from '../../../types/cv';
 
-export function AppearancePanel({ isOpen, onToggle }) {
+export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const headerImageInputRef = useRef<HTMLInputElement>(null);
   const {
     cvLanguage, setCvLanguage,
@@ -56,7 +57,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     };
   }, [template, margins, customMargin, fontSizeHeading, fontSizeText, cvLanguage, sectionGap, itemGap]);
 
-  const templates = [
+  const templates: { key: TemplateName; label: string }[] = [
     { key: 'classic', label: 'Klasyczny (1 kolumna)' },
     { key: 'twocolumn', label: 'Nowoczesny (2 kolumny)' },
     { key: 'minimalist', label: 'Minimalistyczny' },
@@ -64,7 +65,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
     { key: 'creative', label: 'Kreatywny (2 kolumny)' },
   ];
 
-  const marginOptions = [
+  const marginOptions: { key: MarginPreset; label: string }[] = [
     { key: 'small', label: 'Małe' },
     { key: 'normal', label: 'Normalne' },
     { key: 'large', label: 'Duże' },
@@ -140,7 +141,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
           <label className="appearance-label">Krój czcionki</label>
           <select
             value={fontFamily}
-            onChange={(e) => setFontFamily(e.target.value)}
+            onChange={(e) => setFontFamily(e.target.value as FontFamily)}
             className="field-input"
             style={{ marginBottom: '1rem', fontFamily: ['sans', 'serif'].includes(fontFamily) ? 'inherit' : fontFamily }}
           >
@@ -159,7 +160,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
           </label>
           <input
             type="range"
-            min="0.8" max="1.8" step="0.05"
+            min={FONT_SCALE_MIN} max={FONT_SCALE_MAX} step={FONT_SCALE_STEP}
             value={fontSizeHeading}
             onChange={(e) => setFontSizeHeading(Number(e.target.value))}
             className="slider-input"
@@ -173,7 +174,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
           </label>
           <input
             type="range"
-            min="0.8" max="1.8" step="0.05"
+            min={FONT_SCALE_MIN} max={FONT_SCALE_MAX} step={FONT_SCALE_STEP}
             value={fontSizeText}
             onChange={(e) => setFontSizeText(Number(e.target.value))}
             className="slider-input"
@@ -420,7 +421,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
                   min="1"
                   max="25"
                   value={customMargin.vertical}
-                  onChange={(e) => setCustomMargin((prev) => ({ ...prev, vertical: Number(e.target.value) }))}
+                  onChange={(e) => setCustomMargin({ ...customMargin, vertical: Number(e.target.value) })}
                   className="field-input custom-margin-input"
                 />
               </div>
@@ -431,7 +432,7 @@ export function AppearancePanel({ isOpen, onToggle }) {
                   min="0"
                   max="50"
                   value={customMargin.horizontal}
-                  onChange={(e) => setCustomMargin((prev) => ({ ...prev, horizontal: Number(e.target.value) }))}
+                  onChange={(e) => setCustomMargin({ ...customMargin, horizontal: Number(e.target.value) })}
                   className="field-input custom-margin-input"
                 />
               </div>

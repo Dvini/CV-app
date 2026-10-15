@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useCVData, useCVAppearance } from '../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../context/hooks';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
 import { MinimalistTemplate } from './templates/MinimalistTemplate';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 

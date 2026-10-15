@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import { User, Camera, X } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { Input, Textarea, Select } from '../shared/FormFields';
 import { compressImage } from '../../../utils/imageUtils';
+import { PHOTO_DEFAULT_SIZE, PHOTO_MIN_SIZE, PHOTO_MAX_SIZE } from '../../../constants/layout';
 
 export function PersonalPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const { data, handlePersonalChange } = useCVData();
@@ -99,14 +100,14 @@ export function PersonalPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle:
                 <div className="field photo-slider-field" style={{ marginTop: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
                     <label className="field-label">Rozmiar</label>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{p.photoSize || 80}px</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{p.photoSize || PHOTO_DEFAULT_SIZE}px</span>
                   </div>
                   <input
                     type="range"
                     name="photoSize"
-                    min="40"
-                    max="180"
-                    value={p.photoSize || 80}
+                    min={PHOTO_MIN_SIZE}
+                    max={PHOTO_MAX_SIZE}
+                    value={p.photoSize || PHOTO_DEFAULT_SIZE}
                     onChange={(e) => handlePersonalChange('photoSize', parseInt(e.target.value, 10))}
                     aria-label="Rozmiar zdjęcia"
                     style={{ width: '100%', cursor: 'pointer' }}

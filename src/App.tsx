@@ -1,5 +1,6 @@
 import React from 'react';
-import { CVProvider, useCVData, useCVAppearance, useCVManager } from './context/CVContext';
+import { CVProvider } from './context/CVContext';
+import { useCVData, useCVAppearance, useCVManager } from './context/hooks';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Header } from './components/Layout/Header';
 import { EditorSidebar } from './components/Editor/EditorSidebar';

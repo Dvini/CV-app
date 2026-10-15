@@ -1,8 +1,9 @@
 /**
  * CVAppearanceContext — manages template, colors, fonts, and margin settings.
  */
-import React, { createContext, useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { CVAppearanceContext } from './hooks';
 import {
   MARGIN_PRESETS,
   COLUMN_INNER_GAP_LEFT,
@@ -19,14 +20,6 @@ import type {
   MarginVariant,
   CVAppearanceContextType,
 } from '../types/cv';
-
-export const CVAppearanceContext = createContext<CVAppearanceContextType | null>(null);
-
-export function useCVAppearance(): CVAppearanceContextType {
-  const ctx = useContext(CVAppearanceContext);
-  if (!ctx) throw new Error('useCVAppearance must be used within CVProvider');
-  return ctx;
-}
 
 interface CVAppearanceProviderProps {
   children: React.ReactNode;

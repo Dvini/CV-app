@@ -25,7 +25,7 @@
 - **Kolor akcentujący** – Wybierz spośród predefiniowanych kolorów lub użyj własnego (color picker).
 - **Kolor tła nagłówka** – Dedykowana opcja dla szablonu Kreatywnego.
 - **Typografia** – Pełna integracja z Google Fonts (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display).
-- **Skalowanie czcionki** – Niezależna regulacja rozmiaru nagłówków i tekstu (80–130%).
+- **Skalowanie czcionki** – Niezależna regulacja rozmiaru nagłówków i tekstu (80–180%).
 - **Ikony sekcji** – Opcjonalne ikony przy nagłówkach sekcji w dokumencie.
 - **Ikony danych kontaktowych** – Opcjonalne ikony (email, telefon, lokalizacja itp.).
 - **Marginesy dokumentu** – Presety (małe / normalne / duże) oraz tryb własny (0–50 mm osobno dla każdej krawędzi).
@@ -159,7 +159,7 @@ src/
 - **Accent colour** – Choose from predefined colours or use your own (colour picker).
 - **Header background colour** – Dedicated option for the Creative template.
 - **Typography** – Full integration with Google Fonts (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display).
-- **Font scaling** – Independent control of heading and body text size (80–130%).
+- **Font scaling** – Independent control of heading and body text size (80–180%).
 - **Section icons** – Optional icons next to section headings in the document.
 - **Contact icons** – Optional icons for email, phone, location, etc.
 - **Document margins** – Presets (small / normal / large) and custom mode (0–50 mm per edge independently).

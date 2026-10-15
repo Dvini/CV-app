@@ -1,4 +1,5 @@
 import type { Personal } from '../types/cv';
+import { PHOTO_DEFAULT_SIZE } from '../constants/layout';
 
 /**
  * Returns the CSS style object for the CV photo based on personal data settings.
@@ -6,7 +7,7 @@ import type { Personal } from '../types/cv';
  */
 export function getPhotoStyle(personal: Personal): React.CSSProperties {
   const shape = personal.photoShape || 'round';
-  const size = personal.photoSize || 80;
+  const size = personal.photoSize || PHOTO_DEFAULT_SIZE;
 
   let borderRadius = '50%';
   let aspectRatio = '1 / 1';

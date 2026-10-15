@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy, Suspense, useState, useCallback, useRef } from 'react';
 import { DataSyncPanel } from './panels/DataSyncPanel';
 import './EditorSidebar.css';
@@ -23,9 +22,9 @@ const MIN_WIDTH = 320;
 const MAX_WIDTH = 700;
 
 export function EditorSidebar() {
-  const [openPanels, setOpenPanels] = useState(new Set(['personal']));
+  const [openPanels, setOpenPanels] = useState<Set<string>>(() => new Set(['personal']));
   const [width, setWidth] = useState(480);
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const toggle = (id: string) => setOpenPanels((prev) => {
     const next = new Set(prev);
@@ -37,12 +36,12 @@ export function EditorSidebar() {
     return next;
   });
 
-  const handleResizeStart = useCallback((e) => {
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     const startX = e.clientX;
     const startWidth = width;
 
-    const onMouseMove = (e) => {
+    const onMouseMove = (e: MouseEvent) => {
       const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + (e.clientX - startX)));
       setWidth(newWidth);
     };

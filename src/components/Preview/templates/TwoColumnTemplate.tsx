@@ -1,6 +1,6 @@
 import React from 'react';
-import { useCVData, useCVAppearance } from '../../../context/CVContext';
-import { renderCVSection } from '../sections/CVSections';
+import { useCVData, useCVAppearance } from '../../../context/hooks';
+import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
 import '../CVPreview.css';
@@ -60,13 +60,13 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
           </div>
 
           <div className="cv-sidebar-sections">
-            {sideSections.map((section) => renderCVSection(section, 'side'))}
+            {sideSections.map((section) => <CVSection key={section} sectionKey={section} columnType="side" />)}
           </div>
         </div>
 
         {/* Right (wider) column */}
         <div className="cv-twocol-main" style={getMarginStyle('right-column', showClauseFooter)}>
-          {mainSections.map((section) => renderCVSection(section, 'main'))}
+          {mainSections.map((section) => <CVSection key={section} sectionKey={section} columnType="main" />)}
         </div>
       </div>
     </div>

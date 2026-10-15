@@ -1,7 +1,7 @@
 import React from 'react';
 import { SquarePen } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
-import { useCVAppearance } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
+import { useCVAppearance } from '../../../context/hooks';
 import { ItemListPanel } from '../shared/ItemListPanel';
 import { Input, Textarea } from '../shared/FormFields';
 import type { CustomItem } from '../../../types/cv';

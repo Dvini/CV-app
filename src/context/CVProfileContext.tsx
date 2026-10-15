@@ -1,19 +1,12 @@
 /**
  * CVProfileContext — manages CV profiles, import/export, and data sync.
  */
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
+import { CVManagerContext } from './hooks';
 import { DEFAULT_SNAPSHOT } from '../constants/defaults';
 import { normalizeProfiles, parseSnapshot, parseSnapshotJSON } from '../utils/cvSchema';
 import type { Profile, ProfileSnapshot, CVManagerContextType } from '../types/cv';
-
-export const CVManagerContext = createContext<CVManagerContextType | null>(null);
-
-export function useCVManager(): CVManagerContextType {
-  const ctx = useContext(CVManagerContext);
-  if (!ctx) throw new Error('useCVManager must be used within CVProvider');
-  return ctx;
-}
 
 interface CVProfileProviderProps {
   children: React.ReactNode;

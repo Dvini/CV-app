@@ -1,11 +1,34 @@
-// @ts-nocheck
-const LT_API = 'https://api.languagetool.org/v2/check';
-const LT_LANG_MAP = { pl: 'pl-PL', en: 'en-US' };
+import type { CVData, CVLanguage } from '../types/cv';
 
-export function extractTexts(data) {
-  const texts = [];
-  const add = (label, value) => {
-    if (value && typeof value === 'string' && value.trim()) {
+const LT_API = 'https://api.languagetool.org/v2/check';
+const LT_LANG_MAP: Record<CVLanguage, string> = { pl: 'pl-PL', en: 'en-US' };
+
+export interface SpellText {
+  label: string;
+  text: string;
+}
+
+export interface SpellIssue {
+  message: string;
+  context: string;
+  offset: number;
+  length: number;
+  replacements: string[];
+  rule?: string;
+}
+
+/** Subset of the LanguageTool /v2/check response that we use. */
+interface LTMatch {
+  message: string;
+  context?: { text?: string; offset?: number; length?: number };
+  replacements?: { value: string }[];
+  rule?: { id?: string };
+}
+
+export function extractTexts(data: CVData): SpellText[] {
+  const texts: SpellText[] = [];
+  const add = (label: string, value: string | undefined) => {
+    if (value && value.trim()) {
       texts.push({ label, text: value.trim() });
     }
   };
@@ -71,7 +94,7 @@ export function extractTexts(data) {
   return texts;
 }
 
-export async function checkSpelling(texts, language = 'pl') {
+export async function checkSpelling(texts: SpellText[], language: CVLanguage = 'pl'): Promise<SpellIssue[]> {
   const lang = LT_LANG_MAP[language] || 'pl-PL';
   const combined = texts.map((t) => t.text).join('\n\n');
 
@@ -93,7 +116,7 @@ export async function checkSpelling(texts, language = 'pl') {
     throw new Error(`LanguageTool API error: ${res.status}`);
   }
 
-  const result = await res.json();
+  const result: { matches?: LTMatch[] } = await res.json();
 
   return (result.matches || []).map((m) => ({
     message: m.message,

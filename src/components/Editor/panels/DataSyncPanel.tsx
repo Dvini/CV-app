@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Database, FileJson, Upload, RotateCcw, Plus, Copy, Trash2, Pencil, Check, X, SpellCheck, Loader, AlertTriangle } from 'lucide-react';
-import { useCVData, useCVAppearance, useCVManager } from '../../../context/CVContext';
+import { useCVData, useCVAppearance, useCVManager } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { Textarea } from '../shared/FormFields';
 

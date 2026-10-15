@@ -1,11 +1,11 @@
-// @ts-nocheck
 import React, { useRef, useState } from 'react';
 import { LayoutGrid, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
-import { useCVData, useCVAppearance } from '../../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { sectionNamesPl } from '../../../constants/translations';
+import type { SectionKey } from '../../../types/cv';
 
-export function LayoutPanel({ isOpen, onToggle }) {
+export function LayoutPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) {
   const {
     sectionOrder,
     sectionColumns,
@@ -17,15 +17,15 @@ export function LayoutPanel({ isOpen, onToggle }) {
   } = useCVData();
   const { template } = useCVAppearance();
 
-  const dragItem = useRef(null);
-  const [dragOverItem, setDragOverItem] = useState(null);
+  const dragItem = useRef<SectionKey | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<SectionKey | null>(null);
 
-  const handleDragStart = (e, section) => {
+  const handleDragStart = (e: React.DragEvent, section: SectionKey) => {
     dragItem.current = section;
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e, section) => {
+  const handleDragOver = (e: React.DragEvent, section: SectionKey) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (dragItem.current !== section) {
@@ -37,7 +37,7 @@ export function LayoutPanel({ isOpen, onToggle }) {
     setDragOverItem(null);
   };
 
-  const handleDrop = (e, targetSection) => {
+  const handleDrop = (e: React.DragEvent, targetSection: SectionKey) => {
     e.preventDefault();
     const sourceSection = dragItem.current;
     if (!sourceSection || sourceSection === targetSection) return;

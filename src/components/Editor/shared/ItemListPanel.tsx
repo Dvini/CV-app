@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { useCVData } from '../../../context/CVContext';
+import { useCVData } from '../../../context/hooks';
 import { Panel } from './Panel';
 import type { ArrayFieldName } from '../../../types/cv';
 import type { LucideIcon } from 'lucide-react';

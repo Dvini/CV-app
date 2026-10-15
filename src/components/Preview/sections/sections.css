@@ -175,21 +175,6 @@
   text-align: right;
 }
 
-/* Clause */
-.cv-clause {
-  margin-top: 1.5rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.cv-clause p {
-  font-size: calc(0.5625rem * var(--cv-text-scale, 1));
-  color: #94a3b8;
-  line-height: 1.4;
-  font-style: italic;
-  margin: 0;
-}
-
 /* Minimalist template item styling override */
 .template-minimalist .cv-item {
   padding-left: 0.75rem;

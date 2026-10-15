@@ -1,13 +1,9 @@
 /**
  * CVDataContext — manages core CV data, section order, and all CRUD operations.
  */
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { CVDataContext } from './hooks';
 import { useHistory } from '../hooks/useHistory';
 import {
   defaultData,
@@ -30,13 +26,6 @@ import type {
   TemplateName,
 } from '../types/cv';
 
-export const CVDataContext = createContext<CVDataContextType | null>(null);
-
-export function useCVData(): CVDataContextType {
-  const ctx = useContext(CVDataContext);
-  if (!ctx) throw new Error('useCVData must be used within CVProvider');
-  return ctx;
-}
 
 interface CVDataProviderProps {
   children: React.ReactNode;

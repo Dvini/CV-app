@@ -1,6 +1,6 @@
 import React from 'react';
-import { useCVData, useCVAppearance } from '../../../context/CVContext';
-import { renderCVSection } from '../sections/CVSections';
+import { useCVData, useCVAppearance } from '../../../context/hooks';
+import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
 import '../CVPreview.css';
@@ -78,7 +78,7 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
             paddingRight: '0.75rem',
           }}
         >
-          {sideSections.map((section) => renderCVSection(section, 'side'))}
+          {sideSections.map((section) => <CVSection key={section} sectionKey={section} columnType="side" />)}
         </div>
         <div
           className="cv-creative-main"
@@ -89,7 +89,7 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
             paddingLeft: '0.75rem',
           }}
         >
-          {mainSections.map((section) => renderCVSection(section, 'main'))}
+          {mainSections.map((section) => <CVSection key={section} sectionKey={section} columnType="main" />)}
         </div>
       </div>
     </div>

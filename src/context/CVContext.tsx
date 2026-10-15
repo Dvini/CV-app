@@ -1,19 +1,16 @@
 /**
  * CVContext — orchestrator that composes all three sub-contexts.
  *
- * Re-exports all hooks for backwards compatibility:
+ * Components read state through the hooks in ./hooks:
  *   useCVData, useCVAppearance, useCVManager
  */
 import React, { useCallback } from 'react';
-import { CVDataProvider, CVDataContext, useCVData } from './CVDataContext';
-import { CVAppearanceProvider, CVAppearanceContext, useCVAppearance } from './CVAppearanceContext';
-import { CVProfileProvider, CVManagerContext, useCVManager } from './CVProfileContext';
+import { CVDataProvider } from './CVDataContext';
+import { CVAppearanceProvider } from './CVAppearanceContext';
+import { CVProfileProvider } from './CVProfileContext';
+import { useCVData, useCVAppearance } from './hooks';
 import { APPEARANCE_KEYS } from '../constants/defaults';
 import type { AppearanceSettings, ProfileSnapshot, TemplateName } from '../types/cv';
-
-export { CVDataContext, useCVData };
-export { CVAppearanceContext, useCVAppearance };
-export { CVManagerContext, useCVManager };
 
 /**
  * Orchestrator provider — wires up snapshot callbacks between sub-contexts.

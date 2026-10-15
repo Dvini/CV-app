@@ -1,13 +1,12 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Download, Moon, Sun, FileText, Edit3 } from 'lucide-react';
-import { useCVData, useCVAppearance } from '../../context/CVContext';
+import { useCVData, useCVAppearance } from '../../context/hooks';
 import { exportToPDF, getPDFFileName } from '../../utils/pdfExport';
 import './Header.css';
 
 export function Header() {
   const { data } = useCVData();
-  const { themeColor, darkMode, setDarkMode } = useCVAppearance();
+  const { darkMode, setDarkMode } = useCVAppearance();
   const [mobileView, setMobileView] = useState('editor');
 
   const handleExport = () => exportToPDF(getPDFFileName(data.personal.fullName));
