@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useCVData, useCVAppearance } from '../../context/hooks';
 import { ClassicTemplate } from './templates/ClassicTemplate';
 import { TwoColumnTemplate } from './templates/TwoColumnTemplate';
@@ -6,7 +6,7 @@ import { MinimalistTemplate } from './templates/MinimalistTemplate';
 import { CompactTemplate } from './templates/CompactTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
-import { A4_HEIGHT_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX, isColumnTemplate } from '../../constants/layout';
+import { A4_HEIGHT_PX, A4_WIDTH_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX, isColumnTemplate } from '../../constants/layout';
 import { FONT_LOADERS, FONT_STACKS } from '../../constants/fonts';
 import type { TemplateName } from '../../types/cv';
 import './CVPreview.css';
@@ -39,6 +39,24 @@ export function CVPreview({ className }: { className?: string }) {
     });
   }, [fontFamily]);
 
+  // Pages keep the real A4 width (so the preview paginates like the PDF) and are scaled
+  // down to fit narrower preview areas, e.g. on phones or next to a wide editor
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = useState(1);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // ResizeObserver also reports the initial size right after observe()
+    const observer = new ResizeObserver(() => {
+      const style = getComputedStyle(el);
+      const available = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      // 0 while the preview is hidden on mobile — keep the last scale until it is shown
+      if (available > 0) setPreviewScale(Math.min(1, Math.floor((available / A4_WIDTH_PX) * 1000) / 1000));
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const fontFamilyValue = FONT_STACKS[fontFamily] ?? FONT_STACKS.sans;
   const showClauseFooter = !!(data.showClause && data.clause);
   const { v: marginV, h: marginH } = getMarginValues();
@@ -66,9 +84,10 @@ export function CVPreview({ className }: { className?: string }) {
         '--cv-text-scale': fontSizeText,
         '--cv-section-gap': `${sectionGap}rem`,
         '--cv-item-gap': `${itemGap}rem`,
+        '--cv-preview-scale': previewScale,
       } as React.CSSProperties}
     >
-      <div className="preview-scroll">
+      <div className="preview-scroll" ref={scrollRef}>
         <div className="cv-pages-stack" lang={cvLanguage}>
           {/* Hidden measuring container */}
           <div

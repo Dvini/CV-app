@@ -5,6 +5,7 @@ export const A4_HEIGHT_MM = 297;
 export const A4_WIDTH_MM = 210;
 export const MM_TO_PX = 96 / 25.4; // 1mm ≈ 3.7795px at 96dpi
 export const A4_HEIGHT_PX = Math.round(A4_HEIGHT_MM * MM_TO_PX); // ~1123px
+export const A4_WIDTH_PX = Math.round(A4_WIDTH_MM * MM_TO_PX); // ~794px
 
 // Pagination
 export const FOOTER_TEXT_HEIGHT_PX = 36;

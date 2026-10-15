@@ -108,23 +108,30 @@ export interface PageLayout {
 
 /**
  * Structural fingerprint of the visible pages: for every page, each breakable block
- * that is visible on it with its position relative to the page's content area.
+ * that is visible on it with its position relative to the page's content area,
+ * in unscaled CSS pixels (pages are zoomed out on narrow screens).
  */
 export function captureLayout(page: Page): Promise<PageLayout[]> {
   return page.evaluate(() =>
     Array.from(document.querySelectorAll('.cv-page-sheet'), (sheet) => {
+      const a4WidthPx = (210 * 96) / 25.4;
+      const measured = sheet.querySelector('.cv-preview-container')!.getBoundingClientRect().width / a4WidthPx;
+      const scale = Math.abs(measured - 1) < 0.01 ? 1 : measured;
       const clip = sheet.querySelector('.cv-page-content-clip')!.getBoundingClientRect();
+      const clipHeight = clip.height / scale;
       const items = Array.from(sheet.querySelectorAll<HTMLElement>('.cv-breakable'))
         .map((el) => {
           const rect = el.getBoundingClientRect();
+          const top = (rect.top - clip.top) / scale;
+          const bottom = (rect.bottom - clip.top) / scale;
           return {
             text: (el.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 40),
-            top: Math.round(rect.top - clip.top),
-            bottom: Math.round(rect.bottom - clip.top),
-            ...(rect.bottom - clip.top > clip.height + 0.5 ? { cut: true as const } : {}),
+            top: Math.round(top),
+            bottom: Math.round(bottom),
+            ...(bottom > clipHeight + 0.5 ? { cut: true as const } : {}),
           };
         })
-        .filter((item) => item.bottom > 0 && item.top < clip.height);
+        .filter((item) => item.bottom > 0 && item.top < clipHeight);
       return { items };
     }),
   );
