@@ -20,7 +20,9 @@ function AppContent() {
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+      // With Shift (or Caps Lock) held, e.key is uppercase
+      const key = e.key.toLowerCase();
+      if ((e.ctrlKey || e.metaKey) && key === 'z') {
         e.preventDefault();
         if (e.shiftKey) {
           redo();
@@ -28,7 +30,7 @@ function AppContent() {
           undo();
         }
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+      if ((e.ctrlKey || e.metaKey) && key === 'y') {
         e.preventDefault();
         redo();
       }

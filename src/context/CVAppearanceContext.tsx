@@ -75,7 +75,7 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
 
   const getMarginValues = useCallback((): { v: number; h: number } => {
     if (margins === 'custom')
-      return { v: customMargin.vertical || 15, h: customMargin.horizontal || 15 };
+      return { v: customMargin.vertical ?? 15, h: customMargin.horizontal ?? 15 };
     return MARGIN_PRESETS[margins] || MARGIN_PRESETS.normal;
   }, [margins, customMargin]);
 

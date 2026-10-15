@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Download, Moon, Sun, FileText, Edit3 } from 'lucide-react';
 import { useCVData, useCVAppearance } from '../../context/CVContext';
+import { exportToPDF, getPDFFileName } from '../../utils/pdfExport';
 import './Header.css';
 
 export function Header() {
@@ -9,16 +10,7 @@ export function Header() {
   const { themeColor, darkMode, setDarkMode } = useCVAppearance();
   const [mobileView, setMobileView] = useState('editor');
 
-  const handleExport = () => {
-    const name = data.personal.fullName
-      ? `CV_${data.personal.fullName.replace(/\s+/g, '_')}`
-      : 'CV';
-    // Set document title so browser suggests it as the filename in the Save dialog
-    const prev = document.title;
-    document.title = name;
-    window.print();
-    setTimeout(() => { document.title = prev; }, 1000);
-  };
+  const handleExport = () => exportToPDF(getPDFFileName(data.personal.fullName));
 
   return (
     <>

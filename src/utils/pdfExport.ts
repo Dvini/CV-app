@@ -5,18 +5,25 @@
  * The @media print styles in CVPreview.css already handle hiding the UI chrome
  * (header, sidebar, labels) and formatting pages correctly for A4 output.
  *
- * @param {string} fileName - Suggested PDF file name (shown in print dialog; browser may override)
+ * @param fileName - Suggested PDF file name (browsers use document.title for it)
  */
-export async function exportToPDF(fileName = 'CV') {
-  // Set the document title so the browser suggests it as the PDF filename
+export function exportToPDF(fileName = 'CV'): void {
   const previousTitle = document.title;
   document.title = fileName;
 
-  window.print();
+  window.addEventListener(
+    'afterprint',
+    () => {
+      document.title = previousTitle;
+    },
+    { once: true },
+  );
 
-  // Restore the original title after a short delay (print dialog is async)
-  setTimeout(() => {
-    document.title = previousTitle;
-  }, 1000);
+  window.print();
 }
 
+/** Builds a file name like `CV_Jan_Kowalski` from the person's full name. */
+export function getPDFFileName(fullName: string | undefined): string {
+  const name = fullName?.trim();
+  return name ? `CV_${name.replace(/\s+/g, '_')}` : 'CV';
+}

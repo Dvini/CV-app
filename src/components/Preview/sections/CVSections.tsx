@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCVData, useCVAppearance } from '../../../context/CVContext';
 import { cvTranslations } from '../../../constants/translations';
+import { formatUrl, displayUrl } from '../../../utils/url';
 import {
   User, Briefcase, GraduationCap, BookOpen, Code2, Globe,
   FolderOpen, Heart, Award, Users, FileText, HandHeart, SquarePen
@@ -253,8 +254,8 @@ export function ProjectsSection({ columnType }: { columnType?: ColumnType }) {
             <div className={`cv-item-header ${isSide ? 'cv-item-header--stacked' : ''}`}>
               <h3 className="cv-item-title">{proj.name}</h3>
               {proj.link && (
-                <a href={proj.link} target="_blank" rel="noopener noreferrer" className="cv-item-link">
-                  {proj.link.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                <a href={formatUrl(proj.link)} target="_blank" rel="noopener noreferrer" className="cv-item-link">
+                  {displayUrl(proj.link)}
                 </a>
               )}
             </div>
@@ -328,8 +329,8 @@ export function CertificatesSection({ columnType }: { columnType?: ColumnType })
             </div>
             {cert.issuer && <div className="cv-item-subtitle">{cert.issuer}</div>}
             {cert.credentialUrl && (
-              <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="cv-item-link">
-                {cert.credentialUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              <a href={formatUrl(cert.credentialUrl)} target="_blank" rel="noopener noreferrer" className="cv-item-link">
+                {displayUrl(cert.credentialUrl)}
               </a>
             )}
           </div>
@@ -381,8 +382,8 @@ export function PublicationsSection({ columnType }: { columnType?: ColumnType })
             </div>
             {pub.publisher && <div className="cv-item-subtitle">{pub.publisher}</div>}
             {pub.url && (
-              <a href={pub.url} target="_blank" rel="noopener noreferrer" className="cv-item-link">
-                {pub.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              <a href={formatUrl(pub.url)} target="_blank" rel="noopener noreferrer" className="cv-item-link">
+                {displayUrl(pub.url)}
               </a>
             )}
           </div>

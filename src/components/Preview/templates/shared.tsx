@@ -1,6 +1,7 @@
 import React from 'react';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 import type { Personal } from '../../../types/cv';
+import { formatUrl, displayUrl } from '../../../utils/url';
 
 /** Official LinkedIn "in" logo SVG */
 function LinkedInIcon({ size = 11, style }: { size?: number; style?: React.CSSProperties }) {
@@ -36,13 +37,6 @@ function GitHubIcon({ size = 11, style }: { size?: number; style?: React.CSSProp
   );
 }
 
-function formatUrl(url: string): string {
-  return url.startsWith('http') ? url : `https://${url}`;
-}
-
-function displayUrl(url: string): string {
-  return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
-}
 
 interface ContactLinkProps {
   url: string;

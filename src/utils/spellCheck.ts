@@ -24,9 +24,8 @@ export function extractTexts(data) {
   });
 
   (data.education || []).forEach((item, i) => {
-    add(`Edukacja #${i + 1} — uczelnia`, item.institution);
+    add(`Edukacja #${i + 1} — uczelnia`, item.school);
     add(`Edukacja #${i + 1} — kierunek`, item.degree);
-    add(`Edukacja #${i + 1} — opis`, item.description);
   });
 
   (data.projects || []).forEach((item, i) => {
@@ -39,10 +38,33 @@ export function extractTexts(data) {
     add(`Kurs #${i + 1} — organizator`, item.organizer);
   });
 
+  (data.certificates || []).forEach((item, i) => {
+    add(`Certyfikat #${i + 1} — nazwa`, item.name);
+    add(`Certyfikat #${i + 1} — wydawca`, item.issuer);
+  });
+
+  (data.publications || []).forEach((item, i) => {
+    add(`Publikacja #${i + 1} — tytuł`, item.title);
+    add(`Publikacja #${i + 1} — wydawca`, item.publisher);
+  });
+
+  (data.volunteer || []).forEach((item, i) => {
+    add(`Wolontariat #${i + 1} — rola`, item.role);
+    add(`Wolontariat #${i + 1} — organizacja`, item.organization);
+    add(`Wolontariat #${i + 1} — opis`, item.description);
+  });
+
+  (data.references || []).forEach((item, i) => {
+    add(`Referencja #${i + 1} — stanowisko`, item.position);
+  });
+
   (data.custom || []).forEach((item, i) => {
     add(`Sekcja własna #${i + 1} — tytuł`, item.title);
+    add(`Sekcja własna #${i + 1} — podtytuł`, item.subtitle);
     add(`Sekcja własna #${i + 1} — opis`, item.description);
   });
+
+  add('Zainteresowania', data.interests);
 
   add('Tytuł sekcji własnej', data.customSectionTitle);
 
