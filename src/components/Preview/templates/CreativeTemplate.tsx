@@ -3,10 +3,12 @@ import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
+import { useCVTranslation } from '../../../hooks/useCVTranslation';
 import '../CVPreview.css';
 
 export const CreativeTemplate = React.memo(function CreativeTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
+  const t = useCVTranslation();
   const {
     getMarginStyle, creativeHeaderBg, creativeHeaderImage, showContactIcons,
     twoColSidebarWidth, twoColSectionGap, twoColItemGap,
@@ -51,13 +53,13 @@ export const CreativeTemplate = React.memo(function CreativeTemplate() {
             {data.personal.showPhoto && data.personal.photo && (
               <img
                 src={data.personal.photo}
-                alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+                alt={[t.photoAlt, data.personal.fullName].filter(Boolean).join(' — ')}
                 className="cv-header-photo cv-header-photo--creative"
                 style={{ ...getPhotoStyle(data.personal), border: '3px solid rgba(255,255,255,0.5)' }}
               />
             )}
             <div className="cv-header-creative-text">
-              <h1 className="cv-name cv-name--creative">{data.personal.fullName || 'Imię Nazwisko'}</h1>
+              <h1 className="cv-name cv-name--creative">{data.personal.fullName || t.namePlaceholder}</h1>
               <div className="cv-title cv-title--creative">{data.personal.title}</div>
               <div className="cv-contact cv-contact--creative">
                 <ContactInfo personal={data.personal} linkClassName="cv-contact-creative-link" showIcons={showContactIcons} />

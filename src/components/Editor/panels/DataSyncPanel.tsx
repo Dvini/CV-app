@@ -146,7 +146,8 @@ export function DataSyncPanel() {
       {/* Spell check */}
       <div style={{ marginTop: '1rem', marginBottom: '1.25rem' }}>
         <p className="field-hint" style={{ marginBottom: '0.5rem' }}>
-          Sprawdź pisownię za pomocą LanguageTool (wymaga połączenia z internetem).
+          Sprawdź pisownię za pomocą LanguageTool. Tekst CV (bez zdjęcia) zostanie wysłany do zewnętrznej usługi
+          languagetool.org. Poza tym dane CV nie opuszczają Twojej przeglądarki.
         </p>
         <button
           className="btn-secondary"

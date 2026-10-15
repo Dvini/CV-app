@@ -3,10 +3,12 @@ import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
+import { useCVTranslation } from '../../../hooks/useCVTranslation';
 import '../CVPreview.css';
 
 export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
   const { data, sectionOrder } = useCVData();
+  const t = useCVTranslation();
   const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
@@ -16,13 +18,13 @@ export const MinimalistTemplate = React.memo(function MinimalistTemplate() {
         {data.personal.showPhoto && data.personal.photo && (
           <img
             src={data.personal.photo}
-            alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+            alt={[t.photoAlt, data.personal.fullName].filter(Boolean).join(' — ')}
             className="cv-header-photo cv-header-photo--minimalist"
             style={{ ...getPhotoStyle(data.personal), marginBottom: '0.75rem' }}
           />
         )}
         <h1 className="cv-name cv-name--minimalist">
-          {data.personal.fullName || 'Imię Nazwisko'}
+          {data.personal.fullName || t.namePlaceholder}
         </h1>
         <div className="cv-title" style={{ color: themeColor }}>
           {data.personal.title}

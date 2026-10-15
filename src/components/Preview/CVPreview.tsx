@@ -7,18 +7,9 @@ import { CompactTemplate } from './templates/CompactTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { usePagination } from '../../hooks/usePagination';
 import { A4_HEIGHT_PX, MM_TO_PX, FOOTER_TEXT_HEIGHT_PX, isColumnTemplate } from '../../constants/layout';
+import { FONT_LOADERS, FONT_STACKS } from '../../constants/fonts';
 import type { TemplateName } from '../../types/cv';
 import './CVPreview.css';
-
-const FONT_FAMILY_MAP: Record<string, string> = {
-  sans: 'Inter, system-ui, sans-serif',
-  serif: 'Merriweather, Georgia, serif',
-  Roboto: 'Roboto, sans-serif',
-  'Open Sans': '"Open Sans", sans-serif',
-  Montserrat: 'Montserrat, sans-serif',
-  Lato: 'Lato, sans-serif',
-  'Playfair Display': '"Playfair Display", serif',
-};
 
 function renderTemplate(template: TemplateName): React.ReactNode {
   switch (template) {
@@ -38,23 +29,17 @@ function renderTemplate(template: TemplateName): React.ReactNode {
 
 export function CVPreview({ className }: { className?: string }) {
   const { data } = useCVData();
-  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap } = useCVAppearance();
+  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap, cvLanguage } = useCVAppearance();
   const hasColumns = isColumnTemplate(template);
 
   useEffect(() => {
-    if (fontFamily !== 'sans' && fontFamily !== 'serif') {
-      const linkId = `font-${fontFamily.replace(/\s+/g, '-')}`;
-      if (!document.getElementById(linkId)) {
-        const link = document.createElement('link');
-        link.id = linkId;
-        link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`;
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-      }
-    }
+    // Font files load asynchronously; pagination re-measures when the layout changes size
+    FONT_LOADERS[fontFamily]?.().catch(() => {
+      /* offline or failed chunk — the fallback in the font stack is used */
+    });
   }, [fontFamily]);
 
-  const fontFamilyValue = FONT_FAMILY_MAP[fontFamily] || FONT_FAMILY_MAP.sans;
+  const fontFamilyValue = FONT_STACKS[fontFamily] ?? FONT_STACKS.sans;
   const showClauseFooter = !!(data.showClause && data.clause);
   const { v: marginV, h: marginH } = getMarginValues();
   const marginVPx = Math.round(marginV * MM_TO_PX);
@@ -84,7 +69,7 @@ export function CVPreview({ className }: { className?: string }) {
       } as React.CSSProperties}
     >
       <div className="preview-scroll">
-        <div className="cv-pages-stack">
+        <div className="cv-pages-stack" lang={cvLanguage}>
           {/* Hidden measuring container */}
           <div
             className="cv-measure-container cv-dynamic-fonts"

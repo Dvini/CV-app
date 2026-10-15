@@ -3,10 +3,12 @@ import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
+import { useCVTranslation } from '../../../hooks/useCVTranslation';
 import '../CVPreview.css';
 
 export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
   const { data, sectionOrder, sectionColumns } = useCVData();
+  const t = useCVTranslation();
   const {
     getMarginStyle, themeColor, showContactIcons,
     twoColLineWidth, twoColLineColor, twoColSidebarWidth,
@@ -44,13 +46,13 @@ export const TwoColumnTemplate = React.memo(function TwoColumnTemplate() {
             >
               <img
                 src={data.personal.photo}
-                alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+                alt={[t.photoAlt, data.personal.fullName].filter(Boolean).join(' — ')}
                 className="cv-sidebar-photo"
                 style={{ ...getPhotoStyle(data.personal) }}
               />
             </div>
           )}
-          <h1 className="cv-name cv-name--small">{data.personal.fullName || 'Imię Nazwisko'}</h1>
+          <h1 className="cv-name cv-name--small">{data.personal.fullName || t.namePlaceholder}</h1>
           <div className="cv-title cv-title--small" style={{ color: themeColor }}>
             {data.personal.title}
           </div>

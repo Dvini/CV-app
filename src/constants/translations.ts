@@ -16,6 +16,9 @@ export const cvTranslations = {
     custom: "Dodatkowe",
     tech: "Technologie:",
     present: "Obecnie",
+    namePlaceholder: "Imię Nazwisko",
+    photoAlt: "Zdjęcie profilowe",
+    nativeLevel: "Natywny",
   },
   en: {
     personal: "Profile",
@@ -34,6 +37,9 @@ export const cvTranslations = {
     custom: "Additional",
     tech: "Technologies:",
     present: "Present",
+    namePlaceholder: "Your Name",
+    photoAlt: "Profile photo",
+    nativeLevel: "Native",
   },
 };
 

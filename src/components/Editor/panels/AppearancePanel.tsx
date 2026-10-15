@@ -4,6 +4,7 @@ import { useCVAppearance } from '../../../context/hooks';
 import { Panel } from '../shared/Panel';
 import { RangeField } from '../shared/FormFields';
 import { presetColors } from '../../../constants/colors';
+import { FONT_STACKS } from '../../../constants/fonts';
 import { compressImage } from '../../../utils/imageUtils';
 import { FONT_SCALE_MIN, FONT_SCALE_MAX, FONT_SCALE_STEP, isColumnTemplate } from '../../../constants/layout';
 import type { FontFamily, MarginPreset, TemplateName } from '../../../types/cv';
@@ -151,7 +152,7 @@ export function AppearancePanel({ isOpen, onToggle }: { isOpen: boolean; onToggl
             value={fontFamily}
             onChange={(e) => setFontFamily(e.target.value as FontFamily)}
             className="field-input"
-            style={{ marginBottom: '1rem', fontFamily: ['sans', 'serif'].includes(fontFamily) ? 'inherit' : fontFamily }}
+            style={{ marginBottom: '1rem', fontFamily: ['sans', 'serif'].includes(fontFamily) ? 'inherit' : FONT_STACKS[fontFamily] }}
           >
             <option value="sans">Domyślna bezszeryfowa (Inter)</option>
             <option value="serif">Domyślna szeryfowa (Merriweather)</option>

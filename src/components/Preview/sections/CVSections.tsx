@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCVData, useCVAppearance } from '../../../context/hooks';
-import { cvTranslations } from '../../../constants/translations';
+import { useCVTranslation, type CVTranslation } from '../../../hooks/useCVTranslation';
 import { formatUrl, displayUrl } from '../../../utils/url';
 import {
   User, Briefcase, GraduationCap, BookOpen, Code2, Globe,
@@ -11,14 +11,17 @@ import './sections.css';
 
 type ColumnType = 'full' | 'main' | 'side';
 
-type CvTranslation = typeof cvTranslations['pl'];
-
-const formatDate = (date: string | undefined, t: CvTranslation) => {
+const formatDate = (date: string | undefined, t: CVTranslation) => {
   if (!date) return '';
   const d = date.trim().toLowerCase();
   if (d === 'obecnie' || d === 'present') return t.present || date;
   return date;
 };
+
+/** Levels are stored as picked in the editor (Polish); only "native" needs translating. */
+const formatLanguageLevel = (level: string, t: CVTranslation) =>
+  level.trim().toLowerCase() === 'natywny' ? t.nativeLevel : level;
+
 const SECTION_ICONS: Record<SectionKey, React.FC<{ size?: number; className?: string }>> = {
   personal: User,
   experience: Briefcase,
@@ -37,8 +40,8 @@ const SECTION_ICONS: Record<SectionKey, React.FC<{ size?: number; className?: st
 
 /* Shared heading context */
 function useHeading() {
-  const { template, themeColor, cvLanguage, showSectionIcons } = useCVAppearance();
-  const t: CvTranslation = cvTranslations[cvLanguage] || cvTranslations['pl'];
+  const { template, themeColor, showSectionIcons } = useCVAppearance();
+  const t = useCVTranslation();
 
   const headingClass =
     template === 'minimalist'
@@ -53,12 +56,12 @@ interface SectionHeadingProps {
   titleOverride?: string;
   headingClass: string;
   themeColor: string;
-  t: CvTranslation;
+  t: CVTranslation;
   showSectionIcons: boolean;
 }
 
 function SectionHeading({ sectionKey, titleOverride, headingClass, themeColor, t, showSectionIcons }: SectionHeadingProps) {
-  const title = titleOverride || t[sectionKey as keyof CvTranslation] || sectionKey;
+  const title = titleOverride || t[sectionKey as keyof CVTranslation] || sectionKey;
   const Icon = showSectionIcons ? SECTION_ICONS[sectionKey] : null;
   return (
     <h2 className={`${headingClass} cv-breakable`} style={{ color: themeColor }} data-keep-with-next="true">
@@ -229,7 +232,7 @@ export function LanguagesSection() {
         {data.languages.map((lang) => (
           <div key={lang.id} className="cv-lang-row cv-breakable">
             <span className="cv-lang-name">{lang.name}</span>
-            <span className="cv-lang-level">{lang.level}</span>
+            <span className="cv-lang-level">{formatLanguageLevel(lang.level, t)}</span>
           </div>
         ))}
       </div>

@@ -3,10 +3,12 @@ import { useCVData, useCVAppearance } from '../../../context/hooks';
 import { CVSection } from '../sections/CVSections';
 import { ContactInfo } from './shared';
 import { getPhotoStyle } from '../../../utils/photoUtils';
+import { useCVTranslation } from '../../../hooks/useCVTranslation';
 import '../CVPreview.css';
 
 export const CompactTemplate = React.memo(function CompactTemplate() {
   const { data, sectionOrder } = useCVData();
+  const t = useCVTranslation();
   const { getMarginStyle, themeColor, showContactIcons } = useCVAppearance();
   const showClauseFooter = data.showClause && !!data.clause;
 
@@ -17,13 +19,13 @@ export const CompactTemplate = React.memo(function CompactTemplate() {
           {data.personal.showPhoto && data.personal.photo && (
             <img
               src={data.personal.photo}
-              alt={`Zdjęcie profilowe — ${data.personal.fullName || ''}`}
+              alt={[t.photoAlt, data.personal.fullName].filter(Boolean).join(' — ')}
               className="cv-header-photo cv-header-photo--compact"
               style={{ ...getPhotoStyle(data.personal), maxWidth: '60px', maxHeight: '60px' }}
             />
           )}
           <div className="cv-header-compact-info">
-            <h1 className="cv-name cv-name--compact">{data.personal.fullName || 'Imię Nazwisko'}</h1>
+            <h1 className="cv-name cv-name--compact">{data.personal.fullName || t.namePlaceholder}</h1>
             <div className="cv-title cv-title--compact" style={{ color: themeColor }}>
               {data.personal.title}
             </div>

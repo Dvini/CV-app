@@ -24,7 +24,7 @@
   - **Kreatywny** – Dwukolumnowy z kolorowym nagłówkiem osobowym.
 - **Kolor akcentujący** – Wybierz spośród predefiniowanych kolorów lub użyj własnego (color picker).
 - **Kolor tła nagłówka** – Dedykowana opcja dla szablonu Kreatywnego.
-- **Typografia** – Pełna integracja z Google Fonts (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display).
+- **Typografia** – 7 krojów pisma (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display) hostowanych lokalnie — bez zapytań do Google Fonts.
 - **Skalowanie czcionki** – Niezależna regulacja rozmiaru nagłówków i tekstu (80–180%).
 - **Ikony sekcji** – Opcjonalne ikony przy nagłówkach sekcji w dokumencie.
 - **Ikony danych kontaktowych** – Opcjonalne ikony (email, telefon, lokalizacja itp.).
@@ -74,7 +74,7 @@ Aplikacja obsługuje kompleksowy zestaw sekcji:
 | **Vite** | Błyskawiczne środowisko deweloperskie |
 | **CSS3 (Vanilla)** | Custom properties, dynamiczny motyw, layout |
 | **Lucide React** | Elegancki zestaw ikon SVG |
-| **Google Fonts** | Integracja z popularnymi krojami pisma |
+| **Fontsource** | Lokalnie hostowane kroje pisma |
 | **AI Assisted** | Rozwijany przy wsparciu modeli Claude i Gemini |
 
 ---
@@ -160,7 +160,7 @@ src/
   - **Creative** – Two-column with a coloured personal header.
 - **Accent colour** – Choose from predefined colours or use your own (colour picker).
 - **Header background colour** – Dedicated option for the Creative template.
-- **Typography** – Full integration with Google Fonts (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display).
+- **Typography** – 7 typefaces (Inter, Merriweather, Roboto, Open Sans, Montserrat, Lato, Playfair Display), self-hosted — no requests to Google Fonts.
 - **Font scaling** – Independent control of heading and body text size (80–180%).
 - **Section icons** – Optional icons next to section headings in the document.
 - **Contact icons** – Optional icons for email, phone, location, etc.
@@ -210,7 +210,7 @@ The application supports a complete set of sections:
 | **Vite** | Lightning-fast development environment |
 | **CSS3 (Vanilla)** | Custom properties, dynamic theme, layout |
 | **Lucide React** | Elegant SVG icon set |
-| **Google Fonts** | Integration with popular typefaces |
+| **Fontsource** | Self-hosted typefaces |
 | **AI Assisted** | Developed with Claude & Gemini AI models |
 
 ---

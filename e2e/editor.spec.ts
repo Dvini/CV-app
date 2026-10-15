@@ -228,3 +228,46 @@ test('creative template offers column switches', async ({ page }) => {
   await expect(toggle).toHaveText('Lewa kol.');
   await expect(page.locator('.cv-page-sheet').first().locator('.cv-creative-side')).toContainText('Tech Solutions');
 });
+
+test('an English CV contains no Polish texts added by the app', async ({ page }) => {
+  await open(page);
+  await openPanel(page, 'Wygląd CV');
+  await page.getByRole('group', { name: 'Język dokumentu (CV)' }).getByRole('button', { name: 'Angielski' }).click();
+  await expect(page.locator('.cv-pages-stack')).toHaveAttribute('lang', 'en');
+
+  await nameInput(page).fill('');
+  await expect(previewName(page)).toHaveText('Your Name');
+
+  await openPanel(page, 'Języki');
+  await page.getByLabel('Poziom').first().selectOption('Natywny');
+  await expect(page.locator('.cv-page-sheet').first().locator('.cv-lang-level').first()).toHaveText('Native');
+});
+
+test('fonts are self-hosted and actually applied', async ({ page }) => {
+  const externalRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).hostname !== 'localhost') externalRequests.push(request.url());
+  });
+  await open(page);
+  await openPanel(page, 'Wygląd CV');
+
+  const fonts = {
+    Roboto: 'Roboto Variable',
+    'Open Sans': 'Open Sans Variable',
+    Montserrat: 'Montserrat Variable',
+    Lato: 'Lato',
+    'Playfair Display': 'Playfair Display Variable',
+  };
+  for (const [option, family] of Object.entries(fonts)) {
+    await page.getByLabel('Krój czcionki').selectOption(option);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          (f) => [...document.fonts].some((face) => face.family.replace(/"/g, '') === f && face.status === 'loaded'),
+          family,
+        ),
+      )
+      .toBe(true);
+  }
+  expect(externalRequests).toEqual([]);
+});
