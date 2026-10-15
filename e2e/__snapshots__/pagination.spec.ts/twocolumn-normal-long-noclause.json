@@ -1,0 +1,263 @@
+[
+ {
+  "items": [
+   {
+    "text": "Edukacja",
+    "top": 203,
+    "bottom": 227
+   },
+   {
+    "text": "Magister Inżynier, Informatyka10/2013 – ",
+    "top": 237,
+    "bottom": 304
+   },
+   {
+    "text": "Umiejętności",
+    "top": 318,
+    "bottom": 343
+   },
+   {
+    "text": "JavaScript",
+    "top": 353,
+    "bottom": 372
+   },
+   {
+    "text": "TypeScript",
+    "top": 375,
+    "bottom": 395
+   },
+   {
+    "text": "React",
+    "top": 398,
+    "bottom": 417
+   },
+   {
+    "text": "Next.js",
+    "top": 420,
+    "bottom": 440
+   },
+   {
+    "text": "Node.js",
+    "top": 443,
+    "bottom": 462
+   },
+   {
+    "text": "SQL",
+    "top": 465,
+    "bottom": 485
+   },
+   {
+    "text": "Git",
+    "top": 488,
+    "bottom": 507
+   },
+   {
+    "text": "Docker",
+    "top": 510,
+    "bottom": 530
+   },
+   {
+    "text": "Architektura Systemów",
+    "top": 533,
+    "bottom": 552
+   },
+   {
+    "text": "Scrum",
+    "top": 555,
+    "bottom": 575
+   },
+   {
+    "text": "Języki",
+    "top": 586,
+    "bottom": 610
+   },
+   {
+    "text": "AngielskiC1",
+    "top": 620,
+    "bottom": 640
+   },
+   {
+    "text": "NiemieckiB1",
+    "top": 644,
+    "bottom": 663
+   },
+   {
+    "text": "Zainteresowania",
+    "top": 675,
+    "bottom": 699
+   },
+   {
+    "text": "Fotografia",
+    "top": 709,
+    "bottom": 729
+   },
+   {
+    "text": "podróże",
+    "top": 732,
+    "bottom": 751
+   },
+   {
+    "text": "technologie webowe",
+    "top": 754,
+    "bottom": 774
+   },
+   {
+    "text": "Certyfikaty",
+    "top": 785,
+    "bottom": 809
+   },
+   {
+    "text": "Certyfikat 12023Instytut Certyfikacji",
+    "top": 819,
+    "bottom": 886
+   },
+   {
+    "text": "Certyfikat 22023Instytut Certyfikacji",
+    "top": 892,
+    "bottom": 959
+   },
+   {
+    "text": "Certyfikat 32023Instytut Certyfikacji",
+    "top": 965,
+    "bottom": 1032
+   },
+   {
+    "text": "Podsumowanie",
+    "top": 38,
+    "bottom": 62
+   },
+   {
+    "text": "Doświadczony inżynier oprogramowania z p",
+    "top": 72,
+    "bottom": 133
+   },
+   {
+    "text": "Doświadczenie",
+    "top": 153,
+    "bottom": 177
+   },
+   {
+    "text": "Firma 1 Sp. z o.o.Starszy specjalista 10",
+    "top": 187,
+    "bottom": 410
+   },
+   {
+    "text": "Firma 2 Sp. z o.o.Starszy specjalista 20",
+    "top": 424,
+    "bottom": 665
+   },
+   {
+    "text": "Firma 3 Sp. z o.o.Starszy specjalista 30",
+    "top": 679,
+    "bottom": 982
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Certyfikat 42023Instytut Certyfikacji",
+    "top": 38,
+    "bottom": 105
+   },
+   {
+    "text": "Certyfikat 52023Instytut Certyfikacji",
+    "top": 111,
+    "bottom": 178
+   },
+   {
+    "text": "Firma 4 Sp. z o.o.Starszy specjalista 40",
+    "top": 38,
+    "bottom": 239
+   },
+   {
+    "text": "Firma 5 Sp. z o.o.Starszy specjalista 50",
+    "top": 253,
+    "bottom": 515
+   },
+   {
+    "text": "Firma 6 Sp. z o.o.Starszy specjalista 60",
+    "top": 529,
+    "bottom": 811
+   },
+   {
+    "text": "Firma 7 Sp. z o.o.Starszy specjalista 70",
+    "top": 825,
+    "bottom": 1047
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Szkolenia i Kursy",
+    "top": 38,
+    "bottom": 62
+   },
+   {
+    "text": "Kurs zaawansowany 103/2022 – 04/2022Akad",
+    "top": 72,
+    "bottom": 119
+   },
+   {
+    "text": "Kurs zaawansowany 203/2022 – 04/2022Akad",
+    "top": 133,
+    "bottom": 180
+   },
+   {
+    "text": "Kurs zaawansowany 303/2022 – 04/2022Akad",
+    "top": 194,
+    "bottom": 241
+   },
+   {
+    "text": "Kurs zaawansowany 403/2022 – 04/2022Akad",
+    "top": 255,
+    "bottom": 302
+   },
+   {
+    "text": "Projekty",
+    "top": 328,
+    "bottom": 353
+   },
+   {
+    "text": "Projekt 1example.com/projekt-1Funkcja 1:",
+    "top": 363,
+    "bottom": 494
+   },
+   {
+    "text": "Projekt 2example.com/projekt-2Funkcja 1:",
+    "top": 508,
+    "bottom": 639
+   },
+   {
+    "text": "Projekt 3example.com/projekt-3Funkcja 1:",
+    "top": 653,
+    "bottom": 784
+   },
+   {
+    "text": "Projekt 4example.com/projekt-4Funkcja 1:",
+    "top": 798,
+    "bottom": 929
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Wolontariat",
+    "top": 38,
+    "bottom": 63
+   },
+   {
+    "text": "Wolontariusz 12018 – 2019Fundacja Pomocy",
+    "top": 73,
+    "bottom": 206
+   },
+   {
+    "text": "Wolontariusz 22018 – 2019Fundacja Pomocy",
+    "top": 220,
+    "bottom": 354
+   }
+  ]
+ }
+]

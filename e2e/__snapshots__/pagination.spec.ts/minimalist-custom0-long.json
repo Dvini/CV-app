@@ -1,0 +1,258 @@
+[
+ {
+  "items": [
+   {
+    "text": "Doświadczony inżynier oprogramowania z p",
+    "top": 129,
+    "bottom": 170
+   },
+   {
+    "text": "Doświadczenie",
+    "top": 194,
+    "bottom": 221
+   },
+   {
+    "text": "Firma 1 Sp. z o.o.Starszy specjalista 10",
+    "top": 233,
+    "bottom": 395
+   },
+   {
+    "text": "Firma 2 Sp. z o.o.Starszy specjalista 20",
+    "top": 415,
+    "bottom": 575
+   },
+   {
+    "text": "Firma 3 Sp. z o.o.Starszy specjalista 30",
+    "top": 595,
+    "bottom": 797
+   },
+   {
+    "text": "Firma 4 Sp. z o.o.Starszy specjalista 40",
+    "top": 817,
+    "bottom": 958
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Firma 5 Sp. z o.o.Starszy specjalista 50",
+    "top": 0,
+    "bottom": 182
+   },
+   {
+    "text": "Firma 6 Sp. z o.o.Starszy specjalista 60",
+    "top": 202,
+    "bottom": 383
+   },
+   {
+    "text": "Firma 7 Sp. z o.o.Starszy specjalista 70",
+    "top": 403,
+    "bottom": 565
+   },
+   {
+    "text": "Edukacja",
+    "top": 601,
+    "bottom": 628
+   },
+   {
+    "text": "Magister Inżynier, Informatyka10/2013 – ",
+    "top": 640,
+    "bottom": 687
+   },
+   {
+    "text": "Szkolenia i Kursy",
+    "top": 723,
+    "bottom": 750
+   },
+   {
+    "text": "Kurs zaawansowany 103/2022 – 04/2022Akad",
+    "top": 762,
+    "bottom": 809
+   },
+   {
+    "text": "Kurs zaawansowany 203/2022 – 04/2022Akad",
+    "top": 829,
+    "bottom": 876
+   },
+   {
+    "text": "Kurs zaawansowany 303/2022 – 04/2022Akad",
+    "top": 896,
+    "bottom": 943
+   },
+   {
+    "text": "Kurs zaawansowany 403/2022 – 04/2022Akad",
+    "top": 963,
+    "bottom": 1010
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Projekty",
+    "top": 0,
+    "bottom": 27
+   },
+   {
+    "text": "Projekt 1example.com/projekt-1Funkcja 1:",
+    "top": 39,
+    "bottom": 130
+   },
+   {
+    "text": "Projekt 2example.com/projekt-2Funkcja 1:",
+    "top": 150,
+    "bottom": 241
+   },
+   {
+    "text": "Projekt 3example.com/projekt-3Funkcja 1:",
+    "top": 261,
+    "bottom": 351
+   },
+   {
+    "text": "Projekt 4example.com/projekt-4Funkcja 1:",
+    "top": 371,
+    "bottom": 462
+   },
+   {
+    "text": "Umiejętności",
+    "top": 498,
+    "bottom": 525
+   },
+   {
+    "text": "JavaScript",
+    "top": 537,
+    "bottom": 557
+   },
+   {
+    "text": "TypeScript",
+    "top": 560,
+    "bottom": 579
+   },
+   {
+    "text": "React",
+    "top": 582,
+    "bottom": 602
+   },
+   {
+    "text": "Next.js",
+    "top": 605,
+    "bottom": 624
+   },
+   {
+    "text": "Node.js",
+    "top": 627,
+    "bottom": 647
+   },
+   {
+    "text": "SQL",
+    "top": 650,
+    "bottom": 669
+   },
+   {
+    "text": "Git",
+    "top": 672,
+    "bottom": 692
+   },
+   {
+    "text": "Docker",
+    "top": 695,
+    "bottom": 714
+   },
+   {
+    "text": "Architektura Systemów",
+    "top": 717,
+    "bottom": 737
+   },
+   {
+    "text": "Scrum",
+    "top": 740,
+    "bottom": 759
+   },
+   {
+    "text": "Języki",
+    "top": 783,
+    "bottom": 810
+   },
+   {
+    "text": "AngielskiC1",
+    "top": 822,
+    "bottom": 842
+   },
+   {
+    "text": "NiemieckiB1",
+    "top": 846,
+    "bottom": 865
+   },
+   {
+    "text": "Zainteresowania",
+    "top": 889,
+    "bottom": 916
+   },
+   {
+    "text": "Fotografia",
+    "top": 928,
+    "bottom": 948
+   },
+   {
+    "text": "podróże",
+    "top": 951,
+    "bottom": 970
+   },
+   {
+    "text": "technologie webowe",
+    "top": 973,
+    "bottom": 993
+   }
+  ]
+ },
+ {
+  "items": [
+   {
+    "text": "Certyfikaty",
+    "top": 0,
+    "bottom": 27
+   },
+   {
+    "text": "Certyfikat 12023Instytut Certyfikacji",
+    "top": 39,
+    "bottom": 86
+   },
+   {
+    "text": "Certyfikat 22023Instytut Certyfikacji",
+    "top": 106,
+    "bottom": 153
+   },
+   {
+    "text": "Certyfikat 32023Instytut Certyfikacji",
+    "top": 173,
+    "bottom": 220
+   },
+   {
+    "text": "Certyfikat 42023Instytut Certyfikacji",
+    "top": 240,
+    "bottom": 287
+   },
+   {
+    "text": "Certyfikat 52023Instytut Certyfikacji",
+    "top": 307,
+    "bottom": 354
+   },
+   {
+    "text": "Wolontariat",
+    "top": 390,
+    "bottom": 417
+   },
+   {
+    "text": "Wolontariusz 12018 – 2019Fundacja Pomocy",
+    "top": 429,
+    "bottom": 522
+   },
+   {
+    "text": "Wolontariusz 22018 – 2019Fundacja Pomocy",
+    "top": 542,
+    "bottom": 636
+   }
+  ]
+ }
+]

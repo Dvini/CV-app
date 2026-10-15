@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
     restoreMocks: true,
   },
 })
