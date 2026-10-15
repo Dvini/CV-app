@@ -5,17 +5,17 @@ import React, { createContext, useContext, useCallback } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   MARGIN_PRESETS,
-  DEFAULT_CUSTOM_MARGIN,
-  DEFAULT_THEME_COLOR,
   COLUMN_INNER_GAP_LEFT,
   COLUMN_INNER_GAP_RIGHT,
 } from '../constants/layout';
+import {
+  APPEARANCE_KEYS,
+  APPEARANCE_STORAGE_KEYS as KEYS,
+  defaultAppearance as DEFAULTS,
+} from '../constants/defaults';
+import { APPEARANCE_NORMALIZERS } from '../utils/cvSchema';
 import type {
-  TemplateName,
-  MarginPreset,
-  CustomMargin,
-  FontFamily,
-  CVLanguage,
+  AppearanceSettings,
   MarginVariant,
   CVAppearanceContextType,
 } from '../types/cv';
@@ -32,46 +32,74 @@ interface CVAppearanceProviderProps {
   children: React.ReactNode;
 }
 
+type AppearanceSetters = {
+  [K in keyof AppearanceSettings]: (value: AppearanceSettings[K]) => void;
+};
+
+/** One persisted appearance setting; invalid stored values fall back to the default. */
+function useAppearanceSetting<K extends keyof AppearanceSettings>(key: K) {
+  return useLocalStorage<AppearanceSettings[K]>(KEYS[key], DEFAULTS[key], APPEARANCE_NORMALIZERS[key]);
+}
+
 export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
-  const [template, setTemplate] = useLocalStorage<TemplateName>('cv_template', 'classic');
-  const [margins, setMargins] = useLocalStorage<MarginPreset>('cv_margins', 'normal');
-  const [customMargin, setCustomMargin] = useLocalStorage<CustomMargin>(
-    'cv_customMargin',
-    DEFAULT_CUSTOM_MARGIN,
-  );
-  const [themeColor, setThemeColor] = useLocalStorage<string>('cv_themeColor', DEFAULT_THEME_COLOR);
-  const [fontFamily, setFontFamily] = useLocalStorage<FontFamily>('cv_fontFamily', 'sans');
-  const [fontSizeHeading, setFontSizeHeading] = useLocalStorage<number>('cv_fontSizeHeading', 1);
-  const [fontSizeText, setFontSizeText] = useLocalStorage<number>('cv_fontSizeText', 1);
-  const [cvLanguage, setCvLanguage] = useLocalStorage<CVLanguage>('cv_language', 'pl');
+  const [template, setTemplate] = useAppearanceSetting('template');
+  const [margins, setMargins] = useAppearanceSetting('margins');
+  const [customMargin, setCustomMargin] = useAppearanceSetting('customMargin');
+  const [themeColor, setThemeColor] = useAppearanceSetting('themeColor');
+  const [fontFamily, setFontFamily] = useAppearanceSetting('fontFamily');
+  const [fontSizeHeading, setFontSizeHeading] = useAppearanceSetting('fontSizeHeading');
+  const [fontSizeText, setFontSizeText] = useAppearanceSetting('fontSizeText');
+  const [cvLanguage, setCvLanguage] = useAppearanceSetting('cvLanguage');
   const [darkMode, setDarkMode] = useLocalStorage<boolean>('cv_darkMode', false);
-  const [showSectionIcons, setShowSectionIcons] = useLocalStorage<boolean>(
-    'cv_showSectionIcons',
-    false,
-  );
-  const [showContactIcons, setShowContactIcons] = useLocalStorage<boolean>(
-    'cv_showContactIcons',
-    false,
-  );
-  const [creativeHeaderBg, setCreativeHeaderBg] = useLocalStorage<string>(
-    'cv_creativeHeaderBg',
-    DEFAULT_THEME_COLOR,
-  );
-  const [creativeHeaderImage, setCreativeHeaderImage] = useLocalStorage<string | null>(
-    'cv_creativeHeaderImage',
-    null,
-  );
-  const [sectionGap, setSectionGap] = useLocalStorage<number>('cv_sectionGap', 1.25);
-  const [itemGap, setItemGap] = useLocalStorage<number>('cv_itemGap', 0.5);
+  const [showSectionIcons, setShowSectionIcons] = useAppearanceSetting('showSectionIcons');
+  const [showContactIcons, setShowContactIcons] = useAppearanceSetting('showContactIcons');
+  const [creativeHeaderBg, setCreativeHeaderBg] = useAppearanceSetting('creativeHeaderBg');
+  const [creativeHeaderImage, setCreativeHeaderImage] = useAppearanceSetting('creativeHeaderImage');
+  const [sectionGap, setSectionGap] = useAppearanceSetting('sectionGap');
+  const [itemGap, setItemGap] = useAppearanceSetting('itemGap');
 
   // Two-column layout settings
-  const [twoColLineWidth, setTwoColLineWidth] = useLocalStorage<number>('cv_twoColLineWidth', 1);
-  const [twoColLineColor, setTwoColLineColor] = useLocalStorage<string>('cv_twoColLineColor', '#e2e8f0');
-  const [twoColSidebarWidth, setTwoColSidebarWidth] = useLocalStorage<number>('cv_twoColSidebarWidth', 33);
-  const [twoColGapLeft, setTwoColGapLeft] = useLocalStorage<number>('cv_twoColGapLeft', COLUMN_INNER_GAP_LEFT);
-  const [twoColGapRight, setTwoColGapRight] = useLocalStorage<number>('cv_twoColGapRight', COLUMN_INNER_GAP_RIGHT);
-  const [twoColSectionGap, setTwoColSectionGap] = useLocalStorage<number>('cv_twoColSectionGap', 0.5);
-  const [twoColItemGap, setTwoColItemGap] = useLocalStorage<number>('cv_twoColItemGap', 0.2);
+  const [twoColLineWidth, setTwoColLineWidth] = useAppearanceSetting('twoColLineWidth');
+  const [twoColLineColor, setTwoColLineColor] = useAppearanceSetting('twoColLineColor');
+  const [twoColSidebarWidth, setTwoColSidebarWidth] = useAppearanceSetting('twoColSidebarWidth');
+  const [twoColGapLeft, setTwoColGapLeft] = useAppearanceSetting('twoColGapLeft');
+  const [twoColGapRight, setTwoColGapRight] = useAppearanceSetting('twoColGapRight');
+  const [twoColSectionGap, setTwoColSectionGap] = useAppearanceSetting('twoColSectionGap');
+  const [twoColItemGap, setTwoColItemGap] = useAppearanceSetting('twoColItemGap');
+
+  // Typed as a mapped type so adding a field to AppearanceSettings without a setter fails to compile.
+  // useState setters are stable, so this map never goes stale.
+  const setters: AppearanceSetters = {
+    template: setTemplate,
+    margins: setMargins,
+    customMargin: setCustomMargin,
+    themeColor: setThemeColor,
+    fontFamily: setFontFamily,
+    fontSizeHeading: setFontSizeHeading,
+    fontSizeText: setFontSizeText,
+    cvLanguage: setCvLanguage,
+    showSectionIcons: setShowSectionIcons,
+    showContactIcons: setShowContactIcons,
+    creativeHeaderBg: setCreativeHeaderBg,
+    creativeHeaderImage: setCreativeHeaderImage,
+    sectionGap: setSectionGap,
+    itemGap: setItemGap,
+    twoColLineWidth: setTwoColLineWidth,
+    twoColLineColor: setTwoColLineColor,
+    twoColSidebarWidth: setTwoColSidebarWidth,
+    twoColGapLeft: setTwoColGapLeft,
+    twoColGapRight: setTwoColGapRight,
+    twoColSectionGap: setTwoColSectionGap,
+    twoColItemGap: setTwoColItemGap,
+  };
+
+  const applyAppearance = (patch: Partial<AppearanceSettings>) => {
+    for (const key of APPEARANCE_KEYS) {
+      if (patch[key] !== undefined) {
+        (setters[key] as (value: unknown) => void)(patch[key]);
+      }
+    }
+  };
 
   const getMarginValues = useCallback((): { v: number; h: number } => {
     if (margins === 'custom')
@@ -123,49 +151,50 @@ export function CVAppearanceProvider({ children }: CVAppearanceProviderProps) {
 
   const value: CVAppearanceContextType = {
     template,
-    setTemplate: setTemplate as CVAppearanceContextType['setTemplate'],
     margins,
-    setMargins: setMargins as CVAppearanceContextType['setMargins'],
     customMargin,
-    setCustomMargin: setCustomMargin as CVAppearanceContextType['setCustomMargin'],
     themeColor,
-    setThemeColor: setThemeColor as CVAppearanceContextType['setThemeColor'],
     fontFamily,
-    setFontFamily: setFontFamily as CVAppearanceContextType['setFontFamily'],
     fontSizeHeading,
-    setFontSizeHeading: setFontSizeHeading as CVAppearanceContextType['setFontSizeHeading'],
     fontSizeText,
-    setFontSizeText: setFontSizeText as CVAppearanceContextType['setFontSizeText'],
     cvLanguage,
-    setCvLanguage: setCvLanguage as CVAppearanceContextType['setCvLanguage'],
-    darkMode,
-    setDarkMode: setDarkMode as CVAppearanceContextType['setDarkMode'],
     showSectionIcons,
-    setShowSectionIcons: setShowSectionIcons as CVAppearanceContextType['setShowSectionIcons'],
     showContactIcons,
-    setShowContactIcons: setShowContactIcons as CVAppearanceContextType['setShowContactIcons'],
     creativeHeaderBg,
-    setCreativeHeaderBg: setCreativeHeaderBg as CVAppearanceContextType['setCreativeHeaderBg'],
     creativeHeaderImage,
-    setCreativeHeaderImage: setCreativeHeaderImage as CVAppearanceContextType['setCreativeHeaderImage'],
     sectionGap,
-    setSectionGap: setSectionGap as CVAppearanceContextType['setSectionGap'],
     itemGap,
-    setItemGap: setItemGap as CVAppearanceContextType['setItemGap'],
     twoColLineWidth,
-    setTwoColLineWidth: setTwoColLineWidth as CVAppearanceContextType['setTwoColLineWidth'],
     twoColLineColor,
-    setTwoColLineColor: setTwoColLineColor as CVAppearanceContextType['setTwoColLineColor'],
     twoColSidebarWidth,
-    setTwoColSidebarWidth: setTwoColSidebarWidth as CVAppearanceContextType['setTwoColSidebarWidth'],
     twoColGapLeft,
-    setTwoColGapLeft: setTwoColGapLeft as CVAppearanceContextType['setTwoColGapLeft'],
     twoColGapRight,
-    setTwoColGapRight: setTwoColGapRight as CVAppearanceContextType['setTwoColGapRight'],
     twoColSectionGap,
-    setTwoColSectionGap: setTwoColSectionGap as CVAppearanceContextType['setTwoColSectionGap'],
     twoColItemGap,
-    setTwoColItemGap: setTwoColItemGap as CVAppearanceContextType['setTwoColItemGap'],
+    setTemplate,
+    setMargins,
+    setCustomMargin,
+    setThemeColor,
+    setFontFamily,
+    setFontSizeHeading,
+    setFontSizeText,
+    setCvLanguage,
+    setShowSectionIcons,
+    setShowContactIcons,
+    setCreativeHeaderBg,
+    setCreativeHeaderImage,
+    setSectionGap,
+    setItemGap,
+    setTwoColLineWidth,
+    setTwoColLineColor,
+    setTwoColSidebarWidth,
+    setTwoColGapLeft,
+    setTwoColGapRight,
+    setTwoColSectionGap,
+    setTwoColItemGap,
+    darkMode,
+    setDarkMode,
+    applyAppearance,
     getMarginStyle,
     getMarginValues,
   };

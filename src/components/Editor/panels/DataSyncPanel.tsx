@@ -18,6 +18,26 @@ export function DataSyncPanel() {
   const [spellResults, setSpellResults] = useState<Array<{ message: string; context?: string; offset: number; length: number; replacements: string[] }> | null>(null);
   const [spellLoading, setSpellLoading] = useState<boolean>(false);
   const [spellError, setSpellError] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setImportError(await importJSON(file));
+  };
+
+  const handleReset = () => {
+    if (window.confirm('Zresetować bieżące CV do danych przykładowych? Tej operacji nie można cofnąć.')) {
+      resetToDefaults();
+    }
+  };
+
+  const handleDeleteProfile = (profile: { id: string; name: string }) => {
+    if (window.confirm(`Usunąć profil „${profile.name}”? Tej operacji nie można cofnąć.`)) {
+      deleteProfile(profile.id);
+    }
+  };
 
   const startRename = (profile: { id: string; name: string }) => {
     setEditingId(profile.id);
@@ -80,7 +100,7 @@ export function DataSyncPanel() {
                   <>
                     <button className="icon-btn" onClick={() => startRename(profile)} title="Zmień nazwę" aria-label={`Zmień nazwę: ${profile.name}`}><Pencil size={13} /></button>
                     {profiles.length > 1 && (
-                      <button className="icon-btn" onClick={() => deleteProfile(profile.id)} title="Usuń" aria-label={`Usuń profil: ${profile.name}`}><Trash2 size={13} /></button>
+                      <button className="icon-btn" onClick={() => handleDeleteProfile(profile)} title="Usuń" aria-label={`Usuń profil: ${profile.name}`}><Trash2 size={13} /></button>
                     )}
                   </>
                 )}
@@ -107,12 +127,17 @@ export function DataSyncPanel() {
         <button onClick={exportJSON} className="btn-secondary">
           <FileJson size={15} /> Pobierz JSON
         </button>
-        <input type="file" accept=".json" ref={fileInputRef} onChange={importJSON} style={{ display: 'none' }} />
+        <input type="file" accept=".json,application/json" ref={fileInputRef} onChange={handleImport} style={{ display: 'none' }} />
         <button onClick={() => fileInputRef.current?.click()} className="btn-secondary">
           <Upload size={15} /> Wgraj JSON
         </button>
       </div>
-      <button onClick={resetToDefaults} className="btn-danger-outline" style={{ width: '100%', marginBottom: '1.5rem' }}>
+      {importError && (
+        <p className="field-error" role="alert" style={{ marginTop: '-0.5rem', marginBottom: '1rem' }}>
+          Nie wczytano pliku: {importError}
+        </p>
+      )}
+      <button onClick={handleReset} className="btn-danger-outline" style={{ width: '100%', marginBottom: '1.5rem' }}>
         <RotateCcw size={15} /> Resetuj do domyślnych
       </button>
 

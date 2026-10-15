@@ -1,4 +1,18 @@
-export const defaultData = {
+import {
+  DEFAULT_CUSTOM_MARGIN,
+  DEFAULT_THEME_COLOR,
+  COLUMN_INNER_GAP_LEFT,
+  COLUMN_INNER_GAP_RIGHT,
+} from './layout';
+import type {
+  AppearanceSettings,
+  CVData,
+  ProfileSnapshot,
+  SectionColumns,
+  SectionKey,
+} from '../types/cv';
+
+export const defaultData: CVData = {
   personal: {
     fullName: 'Jan Kowalski',
     title: 'Senior Software Engineer',
@@ -101,7 +115,7 @@ export const defaultData = {
   customSectionTitle: '',
 };
 
-export const defaultSectionOrder = [
+export const defaultSectionOrder: SectionKey[] = [
   'personal',
   'experience',
   'education',
@@ -117,7 +131,7 @@ export const defaultSectionOrder = [
   'custom',
 ];
 
-export const defaultSectionColumns = {
+export const defaultSectionColumns: SectionColumns = {
   personal: 'main',
   experience: 'main',
   education: 'side',
@@ -131,4 +145,69 @@ export const defaultSectionColumns = {
   publications: 'main',
   volunteer: 'main',
   custom: 'main',
+};
+
+export const defaultAppearance: AppearanceSettings = {
+  template: 'classic',
+  margins: 'normal',
+  customMargin: DEFAULT_CUSTOM_MARGIN,
+  themeColor: DEFAULT_THEME_COLOR,
+  fontFamily: 'sans',
+  fontSizeHeading: 1,
+  fontSizeText: 1,
+  cvLanguage: 'pl',
+  showSectionIcons: false,
+  showContactIcons: false,
+  creativeHeaderBg: DEFAULT_THEME_COLOR,
+  creativeHeaderImage: null,
+  sectionGap: 1.25,
+  itemGap: 0.5,
+  twoColLineWidth: 1,
+  twoColLineColor: '#e2e8f0',
+  twoColSidebarWidth: 33,
+  twoColGapLeft: COLUMN_INNER_GAP_LEFT,
+  twoColGapRight: COLUMN_INNER_GAP_RIGHT,
+  twoColSectionGap: 0.5,
+  twoColItemGap: 0.2,
+};
+
+export const APPEARANCE_KEYS = Object.keys(defaultAppearance) as (keyof AppearanceSettings)[];
+
+/** localStorage key of each appearance setting (names kept compatible with saved data). */
+export const APPEARANCE_STORAGE_KEYS: Record<keyof AppearanceSettings, string> = {
+  template: 'cv_template',
+  margins: 'cv_margins',
+  customMargin: 'cv_customMargin',
+  themeColor: 'cv_themeColor',
+  fontFamily: 'cv_fontFamily',
+  fontSizeHeading: 'cv_fontSizeHeading',
+  fontSizeText: 'cv_fontSizeText',
+  cvLanguage: 'cv_language',
+  showSectionIcons: 'cv_showSectionIcons',
+  showContactIcons: 'cv_showContactIcons',
+  creativeHeaderBg: 'cv_creativeHeaderBg',
+  creativeHeaderImage: 'cv_creativeHeaderImage',
+  sectionGap: 'cv_sectionGap',
+  itemGap: 'cv_itemGap',
+  twoColLineWidth: 'cv_twoColLineWidth',
+  twoColLineColor: 'cv_twoColLineColor',
+  twoColSidebarWidth: 'cv_twoColSidebarWidth',
+  twoColGapLeft: 'cv_twoColGapLeft',
+  twoColGapRight: 'cv_twoColGapRight',
+  twoColSectionGap: 'cv_twoColSectionGap',
+  twoColItemGap: 'cv_twoColItemGap',
+};
+
+/** localStorage keys holding the active CV's content (besides appearance). */
+export const DATA_STORAGE_KEYS = {
+  data: 'cv_data',
+  sectionOrder: 'cv_sectionOrder',
+  sectionColumns: 'cv_sectionColumns',
+} as const;
+
+export const DEFAULT_SNAPSHOT: ProfileSnapshot = {
+  data: defaultData,
+  sectionOrder: defaultSectionOrder,
+  sectionColumns: defaultSectionColumns,
+  ...defaultAppearance,
 };

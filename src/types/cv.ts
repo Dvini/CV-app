@@ -192,11 +192,47 @@ export type ArrayFieldName = keyof Pick<
   | "custom"
 >;
 
+// ─── Appearance & snapshot ─────────────────────────────────────────────────
+
+/** Every per-CV appearance setting. Saved in profiles and JSON exports. */
+export interface AppearanceSettings {
+  template: TemplateName;
+  margins: MarginPreset;
+  customMargin: CustomMargin;
+  themeColor: string;
+  fontFamily: FontFamily;
+  fontSizeHeading: number;
+  fontSizeText: number;
+  cvLanguage: CVLanguage;
+  showSectionIcons: boolean;
+  showContactIcons: boolean;
+  creativeHeaderBg: string;
+  creativeHeaderImage: string | null;
+  sectionGap: number;
+  itemGap: number;
+  twoColLineWidth: number;
+  twoColLineColor: string;
+  twoColSidebarWidth: number;
+  twoColGapLeft: number;
+  twoColGapRight: number;
+  twoColSectionGap: number;
+  twoColItemGap: number;
+}
+
+/** Full state of one CV — what a profile stores and what JSON export contains. */
+export interface ProfileSnapshot extends AppearanceSettings {
+  data: CVData;
+  sectionOrder: SectionKey[];
+  sectionColumns: SectionColumns;
+}
+
 // ─── Context shape types ───────────────────────────────────────────────────
 
 export interface CVDataContextType {
   data: CVData;
   setData: (updater: CVData | ((prev: CVData) => CVData)) => void;
+  /** Replaces data without recording undo history and clears the history. */
+  replaceData: (data: CVData) => void;
   sectionOrder: SectionKey[];
   setSectionOrder: (order: SectionKey[] | ((prev: SectionKey[]) => SectionKey[])) => void;
   sectionColumns: SectionColumns;
@@ -220,62 +256,47 @@ export interface CVDataContextType {
   canRedo: boolean;
 }
 
-export interface CVAppearanceContextType {
-  template: TemplateName;
+export interface CVAppearanceContextType extends AppearanceSettings {
   setTemplate: (t: TemplateName) => void;
-  margins: MarginPreset;
   setMargins: (m: MarginPreset) => void;
-  customMargin: CustomMargin;
   setCustomMargin: (m: CustomMargin) => void;
-  themeColor: string;
   setThemeColor: (c: string) => void;
-  fontFamily: FontFamily;
   setFontFamily: (f: FontFamily) => void;
-  fontSizeHeading: number;
   setFontSizeHeading: (s: number) => void;
-  fontSizeText: number;
   setFontSizeText: (s: number) => void;
-  cvLanguage: CVLanguage;
   setCvLanguage: (l: CVLanguage) => void;
-  darkMode: boolean;
-  setDarkMode: (d: boolean) => void;
-  showSectionIcons: boolean;
   setShowSectionIcons: (s: boolean) => void;
-  showContactIcons: boolean;
   setShowContactIcons: (s: boolean) => void;
-  creativeHeaderBg: string;
   setCreativeHeaderBg: (c: string) => void;
-  creativeHeaderImage: string | null;
   setCreativeHeaderImage: (c: string | null) => void;
-  sectionGap: number;
   setSectionGap: (g: number) => void;
-  itemGap: number;
   setItemGap: (g: number) => void;
-  getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
-  getMarginValues: () => { v: number; h: number };
 
   // Two-column layout settings
-  twoColLineWidth: number;
   setTwoColLineWidth: (w: number) => void;
-  twoColLineColor: string;
   setTwoColLineColor: (c: string) => void;
-  twoColSidebarWidth: number;
   setTwoColSidebarWidth: (w: number) => void;
-  twoColGapLeft: number;
   setTwoColGapLeft: (g: number) => void;
-  twoColGapRight: number;
   setTwoColGapRight: (g: number) => void;
-  twoColSectionGap: number;
   setTwoColSectionGap: (g: number) => void;
-  twoColItemGap: number;
   setTwoColItemGap: (g: number) => void;
+
+  /** Editor UI preference — not part of the CV, so not saved in profiles. */
+  darkMode: boolean;
+  setDarkMode: (d: boolean) => void;
+
+  /** Applies every appearance field present in `patch`; missing fields are left unchanged. */
+  applyAppearance: (patch: Partial<AppearanceSettings>) => void;
+  getMarginStyle: (variant?: MarginVariant, omitBottom?: boolean) => React.CSSProperties;
+  getMarginValues: () => { v: number; h: number };
 }
 
 export interface CVManagerContextType {
   storageWarning: string | null;
   dismissWarning: () => void;
   exportJSON: () => void;
-  importJSON: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  /** Resolves to an error message, or null when the import succeeded. */
+  importJSON: (file: File) => Promise<string | null>;
   resetToDefaults: () => void;
   profiles: Profile[];
   activeProfileId: string;

@@ -6,11 +6,20 @@ import React, {
   useContext,
   useMemo,
   useCallback,
-  useEffect,
 } from 'react';
-import { useLocalStorage, onStorageError } from '../hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useHistory } from '../hooks/useHistory';
-import { defaultData, defaultSectionOrder, defaultSectionColumns } from '../constants/defaults';
+import {
+  defaultData,
+  defaultSectionOrder,
+  defaultSectionColumns,
+  DATA_STORAGE_KEYS,
+} from '../constants/defaults';
+import {
+  normalizeCVData,
+  normalizeSectionOrder,
+  normalizeSectionColumns,
+} from '../utils/cvSchema';
 import type {
   CVData,
   SectionKey,
@@ -35,86 +44,42 @@ interface CVDataProviderProps {
 }
 
 export function CVDataProvider({ children, template }: CVDataProviderProps) {
-  const [data, setDataRaw] = useLocalStorage<CVData>('cv_data', defaultData as CVData);
-  const { undo, redo, canUndo, canRedo, trackChange } = useHistory(data, setDataRaw);
+  const [data, setDataRaw] = useLocalStorage<CVData>(DATA_STORAGE_KEYS.data, defaultData);
+  const { undo, redo, canUndo, canRedo, trackChange, clearHistory } = useHistory(data, setDataRaw);
 
   const setData = useCallback(
     (updater: CVData | ((prev: CVData) => CVData)) => {
       setDataRaw((prev) => {
         trackChange(prev);
-        return typeof updater === 'function' ? updater(prev) : updater;
+        // Mutation helpers assume well-formed data, so never hand them raw stored data
+        const current = normalizeCVData(prev);
+        return typeof updater === 'function' ? updater(current) : updater;
       });
     },
     [setDataRaw, trackChange],
   );
 
+  const replaceData = useCallback(
+    (next: CVData) => {
+      setDataRaw(next);
+      clearHistory();
+    },
+    [setDataRaw, clearHistory],
+  );
+
   const [sectionOrder, setSectionOrder] = useLocalStorage<SectionKey[]>(
-    'cv_sectionOrder',
-    defaultSectionOrder as SectionKey[],
+    DATA_STORAGE_KEYS.sectionOrder,
+    defaultSectionOrder,
   );
   const [sectionColumns, setSectionColumns] = useLocalStorage<SectionColumns>(
-    'cv_sectionColumns',
-    defaultSectionColumns as SectionColumns,
+    DATA_STORAGE_KEYS.sectionColumns,
+    defaultSectionColumns,
   );
 
-  // Backwards-compat safe data
-  const safeData = useMemo<CVData>(() => {
-    // Migrate old experience format (role/startDate/endDate) to new positions[] format
-    const rawExperience = data?.experience || (defaultData as CVData).experience;
-    const migratedExperience = (rawExperience as unknown as Array<Record<string, unknown>>).map((exp) => {
-      if (!exp.positions && (exp.role || exp.startDate || exp.endDate)) {
-        return {
-          ...exp,
-          positions: [
-            {
-              id: `${exp.id}-pos-migrated`,
-              title: exp.role || '',
-              startDate: exp.startDate || '',
-              endDate: exp.endDate || '',
-            },
-          ],
-        };
-      }
-      return exp;
-    });
-
-    return {
-      ...(defaultData as CVData),
-      ...data,
-      personal: { ...(defaultData as CVData).personal, ...(data?.personal || {}) },
-      experience: migratedExperience as unknown as CVData['experience'],
-      education: data?.education || (defaultData as CVData).education,
-      courses: data?.courses || (defaultData as CVData).courses,
-      skills: data?.skills ?? (defaultData as CVData).skills,
-      languages: data?.languages || (defaultData as CVData).languages,
-      interests: data?.interests ?? (defaultData as CVData).interests,
-      projects: data?.projects || (defaultData as CVData).projects || [],
-      certificates: data?.certificates || (defaultData as CVData).certificates,
-      references: data?.references || (defaultData as CVData).references,
-      publications: data?.publications || (defaultData as CVData).publications,
-      volunteer: data?.volunteer || (defaultData as CVData).volunteer,
-      custom: data?.custom || (defaultData as CVData).custom,
-      customSectionTitle: data?.customSectionTitle ?? (defaultData as CVData).customSectionTitle,
-      clause: data?.clause ?? (defaultData as CVData).clause,
-      showClause: data?.showClause ?? (defaultData as CVData).showClause,
-    };
-  }, [data]);
-
-  const safeSectionOrder = useMemo<SectionKey[]>(() => {
-    const order = [...((sectionOrder as SectionKey[]) || defaultSectionOrder)];
-    for (const section of defaultSectionOrder as SectionKey[]) {
-      if (!order.includes(section)) order.push(section);
-    }
-    return order;
-  }, [sectionOrder]);
-
-  const safeSectionColumns = useMemo<SectionColumns>(
-    () => ({
-      ...(defaultSectionColumns as SectionColumns),
-      ...(sectionColumns || {}),
-    }),
-    [sectionColumns],
-  );
+  // Stored data may come from an older app version or be corrupted — normalize before use
+  const safeData = useMemo(() => normalizeCVData(data), [data]);
+  const safeSectionOrder = useMemo(() => normalizeSectionOrder(sectionOrder), [sectionOrder]);
+  const safeSectionColumns = useMemo(() => normalizeSectionColumns(sectionColumns), [sectionColumns]);
 
   // — Mutation helpers —
   const handlePersonalChange = useCallback(
@@ -266,6 +231,7 @@ export function CVDataProvider({ children, template }: CVDataProviderProps) {
   const value: CVDataContextType = {
     data: safeData,
     setData,
+    replaceData,
     sectionOrder: safeSectionOrder,
     setSectionOrder: setSectionOrder as CVDataContextType['setSectionOrder'],
     sectionColumns: safeSectionColumns,

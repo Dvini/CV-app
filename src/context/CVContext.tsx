@@ -2,21 +2,18 @@
  * CVContext — orchestrator that composes all three sub-contexts.
  *
  * Re-exports all hooks for backwards compatibility:
- *   useCVData, useCVAppearance, useCVManager, useCV
+ *   useCVData, useCVAppearance, useCVManager
  */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { CVDataProvider, CVDataContext, useCVData } from './CVDataContext';
 import { CVAppearanceProvider, CVAppearanceContext, useCVAppearance } from './CVAppearanceContext';
 import { CVProfileProvider, CVManagerContext, useCVManager } from './CVProfileContext';
-import type { CVData, TemplateName } from '../types/cv';
+import { APPEARANCE_KEYS } from '../constants/defaults';
+import type { AppearanceSettings, ProfileSnapshot, TemplateName } from '../types/cv';
 
 export { CVDataContext, useCVData };
 export { CVAppearanceContext, useCVAppearance };
 export { CVManagerContext, useCVManager };
-
-export function useCV() {
-  return { ...useCVData(), ...useCVAppearance(), ...useCVManager() };
-}
 
 /**
  * Orchestrator provider — wires up snapshot callbacks between sub-contexts.
@@ -30,46 +27,24 @@ function CVOrchestrator({ children }: { children: React.ReactNode }) {
   const dataCtx = useCVData();
   const appearanceCtx = useCVAppearance();
 
-  const getSnapshot = useCallback(
-    () => ({
+  const getSnapshot = useCallback((): ProfileSnapshot => {
+    const appearance = {} as Record<keyof AppearanceSettings, unknown>;
+    for (const key of APPEARANCE_KEYS) appearance[key] = appearanceCtx[key];
+    return {
+      ...(appearance as AppearanceSettings),
       data: dataCtx.data,
       sectionOrder: dataCtx.sectionOrder,
-      sectionColumns: dataCtx.sectionColumns as Record<string, string>,
-      template: appearanceCtx.template,
-      margins: appearanceCtx.margins,
-      customMargin: appearanceCtx.customMargin,
-      themeColor: appearanceCtx.themeColor,
-      fontFamily: appearanceCtx.fontFamily,
-      fontSizeHeading: appearanceCtx.fontSizeHeading,
-      fontSizeText: appearanceCtx.fontSizeText,
-      cvLanguage: appearanceCtx.cvLanguage,
-      showSectionIcons: appearanceCtx.showSectionIcons,
-      creativeHeaderBg: appearanceCtx.creativeHeaderBg,
-    }),
-    [dataCtx, appearanceCtx],
-  );
+      sectionColumns: dataCtx.sectionColumns,
+    };
+  }, [dataCtx, appearanceCtx]);
 
+  /** Fields missing from the snapshot (e.g. older files) keep their current value. */
   const loadSnapshot = useCallback(
-    (s: ReturnType<typeof getSnapshot>) => {
-      if (!s) return;
-      if (s.data) dataCtx.setData(s.data as CVData);
-      if (s.sectionOrder)
-        dataCtx.setSectionOrder(s.sectionOrder as Parameters<typeof dataCtx.setSectionOrder>[0]);
-      if (s.sectionColumns)
-        dataCtx.setSectionColumns(
-          s.sectionColumns as Parameters<typeof dataCtx.setSectionColumns>[0],
-        );
-      if (s.template) appearanceCtx.setTemplate(s.template as TemplateName);
-      if (s.margins) appearanceCtx.setMargins(s.margins);
-      if (s.customMargin) appearanceCtx.setCustomMargin(s.customMargin);
-      if (s.themeColor) appearanceCtx.setThemeColor(s.themeColor);
-      if (s.fontFamily) appearanceCtx.setFontFamily(s.fontFamily);
-      if (s.fontSizeHeading != null) appearanceCtx.setFontSizeHeading(s.fontSizeHeading);
-      if (s.fontSizeText != null) appearanceCtx.setFontSizeText(s.fontSizeText);
-      if (s.cvLanguage) appearanceCtx.setCvLanguage(s.cvLanguage);
-      if (s.showSectionIcons != null)
-        appearanceCtx.setShowSectionIcons(s.showSectionIcons);
-      if (s.creativeHeaderBg) appearanceCtx.setCreativeHeaderBg(s.creativeHeaderBg);
+    (s: Partial<ProfileSnapshot>) => {
+      if (s.data) dataCtx.replaceData(s.data);
+      if (s.sectionOrder) dataCtx.setSectionOrder(s.sectionOrder);
+      if (s.sectionColumns) dataCtx.setSectionColumns(s.sectionColumns);
+      appearanceCtx.applyAppearance(s);
     },
     [dataCtx, appearanceCtx],
   );
