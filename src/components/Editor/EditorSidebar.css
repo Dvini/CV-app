@@ -629,7 +629,7 @@
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .editor-sidebar {
     width: 100%;
     min-width: 100%;

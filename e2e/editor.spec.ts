@@ -271,3 +271,26 @@ test('fonts are self-hosted and actually applied', async ({ page }) => {
   }
   expect(externalRequests).toEqual([]);
 });
+
+test.describe('printing', () => {
+  // 794 px = A4 without margins; 718 px = A4 with the browser's default 10 mm margins
+  for (const width of [794, 718, 390]) {
+    test(`prints the CV at a ${width} px page width`, async ({ page }) => {
+      await open(page);
+      await page.emulateMedia({ media: 'print' });
+      await page.setViewportSize({ width, height: 1123 });
+      await expect(page.locator('.cv-page-sheet').first().locator('.cv-name')).toBeVisible();
+      await expect(page.locator('#app-sidebar')).toBeHidden();
+    });
+  }
+
+  test('PDF printed with browser margins contains the CV', async ({ page }) => {
+    await open(page);
+    const pdf = await page.pdf({
+      format: 'A4',
+      margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' },
+    });
+    // A blank page is about 1 kB; a CV with embedded fonts is far larger
+    expect(pdf.length).toBeGreaterThan(20_000);
+  });
+});

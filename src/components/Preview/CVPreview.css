@@ -498,7 +498,7 @@
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .preview-scroll {
     padding: 1rem;
   }
