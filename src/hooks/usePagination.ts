@@ -251,10 +251,14 @@ export function usePagination({
       characterData: true,
     });
 
+    // A web font finishing loading reflows text, possibly without changing the total height
+    document.fonts?.addEventListener('loadingdone', scheduleRecalc);
+
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
       resizeObserver.disconnect();
       mutationObserver.disconnect();
+      document.fonts?.removeEventListener('loadingdone', scheduleRecalc);
     };
   }, [calculatePages]);
 

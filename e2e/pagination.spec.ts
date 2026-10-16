@@ -103,3 +103,39 @@ for (const { label, viewport, mobile } of narrowViewports) {
     }
   });
 }
+
+/**
+ * Appearance changes can move content inside one column without changing the document's
+ * total height, which the DOM observers alone don't notice. Pages must still be re-split.
+ */
+test.describe('live appearance changes', () => {
+  const appearance = { template: 'twocolumn', margins: 'small' } as const;
+  const changes = [
+    { label: 'Odstęp między elementami (lewa kolumna)', value: 0.6, setting: { twoColItemGap: 0.6 } },
+    { label: 'Odstęp między sekcjami (lewa kolumna)', value: 1.5, setting: { twoColSectionGap: 1.5 } },
+    { label: 'Wielkość tekstów', value: 1.1, setting: { fontSizeText: 1.1 } },
+  ];
+
+  for (const { label, value, setting } of changes) {
+    test(`re-paginate after "${label}" changes`, async ({ page, browser }) => {
+      await seedCV(page, { data: longData, appearance });
+      await page.goto('/');
+      await waitForStablePagination(page);
+      await page.locator('button.panel-header', { hasText: 'Wygląd CV' }).click();
+      await page.getByLabel(label).first().fill(String(value));
+      await waitForStablePagination(page);
+      const live = await captureLayout(page);
+
+      // Reference: a separate page that starts with the changed setting
+      // (not a reload — seedCV's init script would restore the original settings)
+      const reference = await browser.newPage({ viewport: page.viewportSize()! });
+      await seedCV(reference, { data: longData, appearance: { ...appearance, ...setting } });
+      await reference.goto('/');
+      await waitForStablePagination(reference);
+      const fresh = await captureLayout(reference);
+      await reference.close();
+
+      expect(live).toEqual(fresh);
+    });
+  }
+});

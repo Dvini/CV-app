@@ -29,7 +29,8 @@ function renderTemplate(template: TemplateName): React.ReactNode {
 
 export function CVPreview({ className }: { className?: string }) {
   const { data } = useCVData();
-  const { template, fontFamily, fontSizeHeading, fontSizeText, margins, customMargin, getMarginValues, sectionGap, itemGap, cvLanguage } = useCVAppearance();
+  const appearance = useCVAppearance();
+  const { template, fontFamily, fontSizeHeading, fontSizeText, getMarginValues, sectionGap, itemGap, cvLanguage } = appearance;
   const hasColumns = isColumnTemplate(template);
 
   useEffect(() => {
@@ -64,8 +65,9 @@ export function CVPreview({ className }: { className?: string }) {
   // Use the shared constant — single source of truth for footer height
   const footerHeightPx = showClauseFooter ? FOOTER_TEXT_HEIGHT_PX : 0;
 
-  // Margin changes only touch style attributes, which the DOM observers don't see
-  const recalcToken = useMemo(() => ({ template, margins, customMargin, data }), [template, margins, customMargin, data]);
+  // Any appearance change re-splits the pages: it can move content inside one column (gaps,
+  // column width, font size) without changing the total height the observers react to
+  const recalcToken = useMemo(() => ({ appearance, data }), [appearance, data]);
   const { contentRef, pageCount, visualContentHeight } = usePagination({
     showClauseFooter,
     marginVMm: marginV,
